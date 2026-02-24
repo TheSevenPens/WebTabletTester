@@ -7,9 +7,9 @@ export let appPressureCurveCanvas = null;
 export let appPressureCurveCanvasCtx = null;
 
 export function initCanvasElements() {
-    appCanvasEl = document.getElementById("myCanvas");
+    appCanvasEl = /** @type {HTMLCanvasElement} */ (document.getElementById("myCanvas"));
     if (appCanvasEl) appCanvasContext = appCanvasEl.getContext("2d");
-    appPressureCurveCanvas = document.getElementById("curveCanvas");
+    appPressureCurveCanvas = /** @type {HTMLCanvasElement} */ (document.getElementById("curveCanvas"));
     if (appPressureCurveCanvas) appPressureCurveCanvasCtx = appPressureCurveCanvas.getContext("2d");
 }
 
@@ -40,7 +40,7 @@ export function getCanvasName() {
 }
 
 export function saveCanvas() {
-    const link = document.getElementById("link");
+    const link = /** @type {HTMLAnchorElement} */ (document.getElementById("link"));
     const url = appCanvasEl
         .toDataURL("image/png")
         .replace("image/png", "image/octet-stream");

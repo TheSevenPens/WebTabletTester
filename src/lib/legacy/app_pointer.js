@@ -5,6 +5,7 @@ import { Position } from './geometry.js';
 import { paintState, paintStrokeStats, processingSettings } from './paint_data.js';
 import { quantize } from './numerics.js';
 import { paintDab, paintStrokeStop } from './paint.js';
+import { PointerRecord } from './pointer_record.js';
 
 
 export const pointerButtonCode = {
@@ -17,9 +18,9 @@ export const pointerButtonCode = {
 
 export const pointerConstants =
 {
-    maxTiltAltitude : 90.0,
-    maxTiltAzimuth:  360.0,
-    maxTiltX : 60.0,
+    maxTiltAltitude: 90.0,
+    maxTiltAzimuth: 360.0,
+    maxTiltX: 60.0,
     maxTiltY: 60.0,
 }
 

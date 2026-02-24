@@ -19,17 +19,19 @@ export function toggleSmoothingSettings() {
 }
 
 export function toggleStrokeStatsVisibility() {
-  const checkbox = document.getElementById("toggleStrokeStatsCheckbox");
+  const checkbox = /** @type {HTMLInputElement} */ (document.getElementById("toggleStrokeStatsCheckbox"));
   const strokeStatsPanel = document.getElementById("strokeStatsPanel");
-  strokeStatsPanel.style.display = checkbox.checked ? "block" : "none";
+  if (strokeStatsPanel && checkbox) {
+    strokeStatsPanel.style.display = checkbox.checked ? "block" : "none";
+  }
 }
 
 export function resetAdvancedSettings() {
-  uxProcessingSettings.pressureSmoothingSlider.value = 0.0;
-  uxProcessingSettings.pressureCurveAmountSlider.value = 0.0;
-  uxProcessingSettings.positionSmoothingSlider.value = 0.0;
-  uxProcessingSettings.pressureQuantizationDropdown.value = 0.0;
-  uxProcessingSettings.tiltSmoothingSlider.value = 0.0;
+  /** @type {HTMLInputElement} */ (uxProcessingSettings.pressureSmoothingSlider).value = "0.0";
+  /** @type {HTMLInputElement} */ (uxProcessingSettings.pressureCurveAmountSlider).value = "0.0";
+  /** @type {HTMLInputElement} */ (uxProcessingSettings.positionSmoothingSlider).value = "0.0";
+  /** @type {HTMLSelectElement} */ (uxProcessingSettings.pressureQuantizationDropdown).value = "0";
+  /** @type {HTMLInputElement} */ (uxProcessingSettings.tiltSmoothingSlider).value = "0.0";
   updateSettingsFromUx();
 }
 
@@ -53,9 +55,12 @@ document.addEventListener('click', function (event) {
   const smoothingFlyout = document.getElementById("smoothingFlyout");
   const smoothingButton = document.getElementById("smoothingButton");
 
+  /** @type {Node} */
+  const targetNode = /** @type {Node} */ (event.target);
+
   if (smoothingFlyout && smoothingButton &&
-    !smoothingFlyout.contains(event.target) &&
-    !smoothingButton.contains(event.target) &&
+    !smoothingFlyout.contains(targetNode) &&
+    !smoothingButton.contains(targetNode) &&
     smoothingFlyout.style.display !== "none") {
     smoothingFlyout.style.display = "none";
   }

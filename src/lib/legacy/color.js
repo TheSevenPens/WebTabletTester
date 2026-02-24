@@ -1,4 +1,4 @@
-
+import { clampToRange, OrderedRange } from './ranges.js';
 
 export class RGBColor {
   constructor(r, g, b) {
@@ -16,7 +16,7 @@ export class RGBColor {
     );
   }
 
-    toWebRGB() {
+  toWebRGB() {
     const r = Math.round(this.r * 255);
     const g = Math.round(this.g * 255);
     const b = Math.round(this.b * 255);
@@ -25,32 +25,38 @@ export class RGBColor {
 }
 
 export const azimuthColorStops = [
-    new RGBColor( 1.000, 1.000, 0.000 ) , // Yellow
-    new RGBColor( 1.000, 0.000, 1.000 ), // Magenta
-    new RGBColor( 0.000, 0.700, 1.000 ), // Blue
-    new RGBColor( 0.000, 1.000, 1.000 ), // Cyan
-    new RGBColor( 1.000, 1.000, 0.000 )  // Yellow (cyclic)
+  new RGBColor(1.000, 1.000, 0.000), // Yellow
+  new RGBColor(1.000, 0.000, 1.000), // Magenta
+  new RGBColor(0.000, 0.700, 1.000), // Blue
+  new RGBColor(0.000, 1.000, 1.000), // Cyan
+  new RGBColor(1.000, 1.000, 0.000)  // Yellow (cyclic)
 ];
 
-export const azimuthAngleStops = [0, 90, 180, 270, 360]; 
+export const azimuthAngleStops = [0, 90, 180, 270, 360];
 
 export function angleToColor(angle, colorStops, angleStops) {
-    const normalizedAngle = angle % 360;
-    let lowerIdx = 0;
-    let upperIdx = 1;
-    let t = 0;
+  const normalizedAngle = angle % 360;
+  let lowerIdx = 0;
+  let upperIdx = 1;
+  let t = 0;
 
-    // Find the two closest stops
-    for (let i = 0; i < angleStops.length - 1; i++) {
-        if (normalizedAngle >= angleStops[i] && normalizedAngle <= angleStops[i + 1]) {
-            lowerIdx = i;
-            upperIdx = i + 1;
-            t = (normalizedAngle - angleStops[i]) / (angleStops[i + 1] - angleStops[i]);
-            break;
-        }
+  // Find the two closest stops
+  for (let i = 0; i < angleStops.length - 1; i++) {
+    if (normalizedAngle >= angleStops[i] && normalizedAngle <= angleStops[i + 1]) {
+      lowerIdx = i;
+      upperIdx = i + 1;
+      t = (normalizedAngle - angleStops[i]) / (angleStops[i + 1] - angleStops[i]);
+      break;
     }
+  }
 
-    // Interpolate between the two colors
-    const outputColor = RGBColor.interpolate(colorStops[lowerIdx], colorStops[upperIdx], t);
-    return outputColor;
+  // Interpolate between the two colors
+  const outputColor = RGBColor.interpolate(colorStops[lowerIdx], colorStops[upperIdx], t);
+  return outputColor;
+}
+
+// simple fallback since cet color wasn't implemented previously
+export function getCETColor(twist) {
+  const t = clampToRange(twist, new OrderedRange(0, 359)) / 359;
+  return `hsl(${t * 360}, 100%, 50%)`;
 }

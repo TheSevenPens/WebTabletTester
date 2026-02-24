@@ -23,6 +23,7 @@
 
 <svelte:window on:resize={setCanvasProps} />
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="parent" on:contextmenu|preventDefault>
     <div class="controlscontainer">
         <div class="controlscolumn" id="headerColumn">
@@ -48,8 +49,7 @@
         <div class="controlscolumn" id="strokeFormatColumn">
             <span style="font-weight: bold">STROKE FORMAT</span>
             <br/>
-            <label>Size </label>
-            <label for="brushSizeSelect"></label><select
+            <label for="brushSizeSelect">Size </label><select
                 id="brushSizeSelect"
                 on:change={updateSettingsFromUx}
         >
@@ -61,8 +61,7 @@
             <option value="300">300px</option>
         </select>
             <br/>
-            <label>Scale size by </label>
-            <label for="brushSizeControlSelect"></label><select
+            <label for="brushSizeControlSelect">Scale size by </label><select
                 id="brushSizeControlSelect"
                 on:change={updateSettingsFromUx}
         >
@@ -74,8 +73,7 @@
             <option value="TILTALT">Tilt Altitude</option>
         </select>
             <br/>
-            <label>Color </label>
-            <label for="brushColorControlSelect"></label><select
+            <label for="brushColorControlSelect">Color </label><select
                 id="brushColorControlSelect"
                 on:change={updateSettingsFromUx}
         >
@@ -90,8 +88,7 @@
             <option value="ERASER">Eraser</option>
         </select>
             <br/>
-            <label>Min size </label>
-            <label for="minStrokeSizeSelect"></label><select
+            <label for="minStrokeSizeSelect">Min size </label><select
                 id="minStrokeSizeSelect"
                 on:change={updateSettingsFromUx}
         >
@@ -114,20 +111,20 @@
             <span style="font-weight: bold">POINTER</span>
             <br/>
             Buttons:
-            <label> <span id="buttonsVal" class="monospace">---</span> </label>
+            <span> <span id="buttonsVal" class="monospace">---</span> </span>
             <br/>
             <span id="posXLabel">X:</span>
-            <label> <span id="posXVal" class="monospace">---</span> </label>
+            <span> <span id="posXVal" class="monospace">---</span> </span>
             <br/>
             <span id="posYLabel">Y:</span>
-            <label> <span id="posYVal" class="monospace">---</span> </label>
+            <span> <span id="posYVal" class="monospace">---</span> </span>
 
             <br/>
             Velocity:
-            <label> <span id="velocityVal" class="monospace">-----.--</span> px/s</label>
+            <span> <span id="velocityVal" class="monospace">-----.--</span> px/s</span>
             <br/>
             Direction:
-            <label> <span id="directionVal" class="monospace">---.-</span> </label>
+            <span> <span id="directionVal" class="monospace">---.-</span> </span>
             <br/>
 
 
@@ -137,33 +134,33 @@
             <span style="font-weight: bold">SENSORS</span> <br/>
 
             <span id="pressureLabel">Pressure:</span>
-            <label> <span id="pressureProcessedVal" class="monospace">---</span> </label>
+            <span> <span id="pressureProcessedVal" class="monospace">---</span> </span>
             <br/>
             <span id="tiltXLabel">Tilt x:</span>
-            <label> <span id="tiltXProcessedVal" class="monospace">---</span> </label>
+            <span> <span id="tiltXProcessedVal" class="monospace">---</span> </span>
             <br/>
             <span id="tiltYLabel">Tilt y:</span>
-            <label> <span id="tiltYProcessedVal" class="monospace">---</span> </label>
+            <span> <span id="tiltYProcessedVal" class="monospace">---</span> </span>
             <br/>
             <span id="tiltAzimuthLabel">Tilt azimuth:</span>
-            <label> <span id="tiltAzimuthProcessedVal" class="monospace">---</span> </label>
+            <span> <span id="tiltAzimuthProcessedVal" class="monospace">---</span> </span>
 
             <br/>
             <span id="tiltAltitudeLabel">Tilt altitude:</span>
-            <label> <span id="tiltAltitudeProcessedVal" class="monospace">---</span> </label>
+            <span> <span id="tiltAltitudeProcessedVal" class="monospace">---</span> </span>
 
             <br/>
             Barrel rotation:
-            <label>
+            <span>
                 <span id="barrelRotationVal" class="monospace">---</span>
-            </label>
+            </span>
 
         </div>
 
         <div class="controlscolumn" id="advancedColumn" style="position: relative;">
             <span style="font-weight: bold">ADVANCED</span>
             <br/>
-            Live size: <label> <span id="sizeVal" class="monospace">---</span></label>
+            Live size: <span> <span id="sizeVal" class="monospace">---</span></span>
             <br/>
             <label>
                 <input
@@ -231,8 +228,7 @@
                 />
 
                 <br/>
-                <label>Pressure quant </label>
-                <label for="pressureQuantSelect"></label><select
+                <label for="pressureQuantSelect">Pressure quant </label><select
                     id="pressureQuantSelect"
                     on:change={updateSettingsFromUx}>
                 <option value="0" selected>OFF</option>
@@ -284,24 +280,24 @@
             <span style="font-weight: bold">STROKE STATS</span>
             <br/>
             Count:
-            <label>
+            <span>
                 <span id="strokeCountVal" class="monospace">---</span>
-            </label>
+            </span>
             <br/>
             Events:
-            <label>
+            <span>
                 <span id="pointerEventCountVal" class="monospace">---</span>
-            </label>
+            </span>
             <br/>
             Duration:
-            <label>
+            <span>
                 <span id="strokeDurationVal" class="monospace">---</span>ms
-            </label>
+            </span>
             <br/>
             Events/sec:
-            <label>
+            <span>
                 <span id="strokeEventsPerSecVal" class="monospace">---</span> events/sec
-            </label>
+            </span>
         </div>
 
         <div class="controlscolumn" id="fillPanel">
@@ -310,10 +306,11 @@
     </div>
 </div>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="canvasDiv" on:contextmenu|preventDefault>
     <canvas id="myCanvas" height="800" style="border: 10px solid #d1d1d1">
     </canvas>
 </div>
 
 <!-- Hidden download link for saving the canvas -->
-<a id="link" href="#" style="display:none;">download</a>
+<a id="link" href="" style="display:none;">download</a>

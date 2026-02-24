@@ -3,7 +3,7 @@ import { radiansToDegrees } from './numerics.js';
 import { PRESSURE_RANGE, paintState, processingSettings } from './paint_data.js';
 import { processPressure } from './app_pointer.js';
 
- class PointerRecord {
+export class PointerRecord {
     constructor(canvasRect, ptrEvent) {
         // get the pressure reported in the event
         // if it is pointer pen event, just use that pressure

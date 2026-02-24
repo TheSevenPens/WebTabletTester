@@ -4,25 +4,24 @@ import { buttonToString } from './app_pointer.js';
 
 // POINTER STATS ----------------------------------------------
 export const uxPointerStats = {
-    get buttons() { return document.getElementById("buttonsVal"); },
-    get pressureProcessed() { return document.getElementById("pressureProcessedVal"); },
+    get buttons() { return /** @type {HTMLElement} */ (document.getElementById("buttonsVal")); },
+    get pressureProcessed() { return /** @type {HTMLElement} */ (document.getElementById("pressureProcessedVal")); },
 
-    get tiltXProcessed() { return document.getElementById("tiltXProcessedVal"); },
-    get tiltYProcessed() { return document.getElementById("tiltYProcessedVal"); },
-    get tiltAzimuthProcessed() { return document.getElementById("tiltAzimuthProcessedVal"); },
-    get tiltAltitudeProcessed() { return document.getElementById("tiltAltitudeProcessedVal"); },
+    get tiltXProcessed() { return /** @type {HTMLElement} */ (document.getElementById("tiltXProcessedVal")); },
+    get tiltYProcessed() { return /** @type {HTMLElement} */ (document.getElementById("tiltYProcessedVal")); },
+    get tiltAzimuthProcessed() { return /** @type {HTMLElement} */ (document.getElementById("tiltAzimuthProcessedVal")); },
+    get tiltAltitudeProcessed() { return /** @type {HTMLElement} */ (document.getElementById("tiltAltitudeProcessedVal")); },
 
-    get posXCanvasProcessed() { return document.getElementById("posXVal"); },
-    get posYCanvasProcessed() { return document.getElementById("posYVal"); },
+    get posXCanvasProcessed() { return /** @type {HTMLElement} */ (document.getElementById("posXVal")); },
+    get posYCanvasProcessed() { return /** @type {HTMLElement} */ (document.getElementById("posYVal")); },
 
-    get velocity() { return document.getElementById("velocityVal"); },
-    get direction() { return document.getElementById("directionVal"); },
+    get velocity() { return /** @type {HTMLElement} */ (document.getElementById("velocityVal")); },
+    get direction() { return /** @type {HTMLElement} */ (document.getElementById("directionVal")); },
 
-    get brushSize() { return document.getElementById("brushSizeSelect"); },
-    get barrelRotation() { return document.getElementById("barrelRotationVal"); },
+    get brushSize() { return /** @type {HTMLSelectElement} */ (document.getElementById("brushSizeSelect")); },
+    get barrelRotation() { return /** @type {HTMLElement} */ (document.getElementById("barrelRotationVal")); },
 
-    get size() { return document.getElementById("sizeVal"); },
-
+    get size() { return /** @type {HTMLElement} */ (document.getElementById("sizeVal")); },
 };
 
 export function updateUxPointerStats(ptrRec) {
@@ -37,7 +36,7 @@ export function updateUxPointerStats(ptrRec) {
     uxPointerStats.posYCanvasProcessed.innerText = format4Digits1Decimal(ptrRec.canvasPosYProcessed);
     uxPointerStats.barrelRotation.innerText = ptrRec.barrelRotation.toString();
 
-    if (ptrRec.velocity>0) {
+    if (ptrRec.velocity > 0) {
         uxPointerStats.velocity.innerText = format4Digits1Decimal(ptrRec.velocity);
         uxPointerStats.direction.innerText = format4Digits1Decimal(ptrRec.direction);
     }
