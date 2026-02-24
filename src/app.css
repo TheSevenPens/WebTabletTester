@@ -1,0 +1,141 @@
+
+* {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-size: 12px; /* Sets default font size for all non-heading text */
+    padding: 0;
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.canvasDiv {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.monospace {
+    font-family: "Consolas", "Monaco", "Courier New", Courier, monospace;
+}
+
+div {
+    /*border: 1px solid black;*/
+    padding: 5;
+    padding-top: 5;
+}
+
+button {
+    font-size: 12px;
+}
+
+select {
+    font-size: 12px;
+}
+
+#myCanvas {
+    touch-action: none; /*prevent canvas scrolling and system touch behavior*/
+    overscroll-behavior: none; /*added at suggestion of nahkd*/
+    display: block;
+    margin: 0;
+    /* This doesn't ensure background color saved in image.
+    background-color: tan;
+    See https://stackoverflow.com/questions/6957034/save-canvas-with-background-image
+  */
+}
+
+#curveCanvas {
+    border: 1px solid #000;
+    background-color: white;
+    margin-top: 10px;
+}
+
+.controlscontainer {
+    display: flex; /* Enables Flexbox */
+    justify-content: space-between; /* Distributes items evenly */
+    align-items: top; /* Vertically centers items */
+    gap: 2px; /* Adds spacing between items */
+    padding: 2px;
+    /*background-color: #f0f0f0;*/
+    /*height: 200px; /* For visibility */
+}
+
+.controlscolumn {
+    background-color: #f7f7f7;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #e4e4e4;
+    color: rgb(0, 0, 0);
+    padding: 2px;
+    text-align: left;
+    flex: 1; /* Each item takes equal space */
+}
+
+div.controlscolumn#headerColumn{
+    flex: 0 0 110px; /* Fixed width: don't grow, don't shrink, 200px base */
+    width: 110px;
+}
+
+div.controlscolumn#strokeFormatColumn{
+    flex: 0 0 160px; /* Fixed width: don't grow, don't shrink, 200px base */
+    width: 160px;
+}
+
+div.controlscolumn#pointerColumn{
+    flex: 0 0 140px; /* Fixed width: don't grow, don't shrink, 200px base */
+    width: 140px;
+}
+
+div.controlscolumn#sensorsColumn{
+    flex: 0 0 140px; /* Fixed width: don't grow, don't shrink, 200px base */
+    width: 140px;
+}
+
+div.controlscolumn#advancedColumn{
+    flex: 0 0 140px; /* Fixed width: don't grow, don't shrink, 200px base */
+    width: 140px;
+}
+
+
+.basiccontainer {
+    display: flex; /* Enables Flexbox */
+    justify-content: space-between; /* Distributes items evenly */
+    align-items: top; /* Vertically centers items */
+    gap: 0px; /* Adds spacing between items */
+    padding: 0px;
+}
+
+.basiccolumn {
+    background-color: #f7f7f7;
+    border-width: 0px;
+    border-style: solid;
+    border-color: #e4e4e4;
+    color: rgb(0, 0, 0);
+    padding: 0px;
+    text-align: left;
+    flex: 1; /* Each item takes equal space */
+}
+
+.smoothing-flyout {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 5px;
+    background-color: #f7f7f7;
+    border: 1px solid #e4e4e4;
+    padding: 10px;
+    min-width: 200px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+       

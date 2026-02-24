@@ -1,0 +1,319 @@
+<script>
+    import { onMount } from 'svelte';
+    import { initCanvasElements, setCanvasProps, saveCanvas } from './lib/legacy/app_canvas.js';
+    import { initPage, registerEventHandlers, toggleSmoothingSettings, toggleStrokeStatsVisibility, resetAdvancedSettings, updateSettingsFromUx } from './lib/legacy/app.js';
+    import { clearCanvas } from './lib/legacy/draw.js';
+    import { clearUxPointerStats } from './lib/legacy/app_ux_pointer_stats.js';
+    import './app.css';
+
+    onMount(() => {
+        // Initialize canvas and its 2d context references
+        initCanvasElements();
+
+        // Run the original legacy initialization logic
+        initPage();
+        updateSettingsFromUx();
+        registerEventHandlers();
+        clearUxPointerStats();
+
+        // Ensure canvas sizes appropriately
+        setCanvasProps();
+    });
+</script>
+
+<svelte:window on:resize={setCanvasProps} />
+
+<div class="parent" on:contextmenu|preventDefault>
+    <div class="controlscontainer">
+        <div class="controlscolumn" id="headerColumn">
+            <h3>SevenPens <br/> Tablet Tester <br/> v0.910</h3>
+            <p>
+                <a
+                        href="https://thesevenpens.github.io/HtmlTabletTester/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                >DOCS</a>
+                |
+                <a
+                        href="https://github.com/TheSevenPens/HtmlTabletTester"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                >CODE</a>
+                <br/>
+                <button type="button" on:click={clearCanvas}>CLEAR</button>
+                <button type="button" on:click={saveCanvas}>SAVE</button>
+
+            </p>
+        </div>
+        <div class="controlscolumn" id="strokeFormatColumn">
+            <span style="font-weight: bold">STROKE FORMAT</span>
+            <br/>
+            <label>Size </label>
+            <label for="brushSizeSelect"></label><select
+                id="brushSizeSelect"
+                on:change={updateSettingsFromUx}
+        >
+            <option value="1">1px</option>
+            <option value="5">5px</option>
+            <option value="10">10px</option>
+            <option value="50" selected>50px</option>
+            <option value="100">100px</option>
+            <option value="300">300px</option>
+        </select>
+            <br/>
+            <label>Scale size by </label>
+            <label for="brushSizeControlSelect"></label><select
+                id="brushSizeControlSelect"
+                on:change={updateSettingsFromUx}
+        >
+            <option value="USER">Don't scale</option>
+            <option value="PRESSURE" selected>Pressure</option>
+            <option value="TILTX">Tilt X</option>
+            <option value="TILTY">Tilt Y</option>
+            <option value="TILTAZ">Tilt Azimuth</option>
+            <option value="TILTALT">Tilt Altitude</option>
+        </select>
+            <br/>
+            <label>Color </label>
+            <label for="brushColorControlSelect"></label><select
+                id="brushColorControlSelect"
+                on:change={updateSettingsFromUx}
+        >
+            <option value="DEFAULT" selected>Black</option>
+            <option value="RED">Red</option>
+            <option value="PRESSURE">Pressure</option>
+            <option value="TILTX">Tilt X</option>
+            <option value="TILTY">Tilt Y</option>
+            <option value="TILTAZ">Tilt Azimuth</option>
+            <option value="TILTALT">Tilt Altitude</option>
+            <option value="BARRELROTATION">Barrel rotation</option>
+            <option value="ERASER">Eraser</option>
+        </select>
+            <br/>
+            <label>Min size </label>
+            <label for="minStrokeSizeSelect"></label><select
+                id="minStrokeSizeSelect"
+                on:change={updateSettingsFromUx}
+        >
+            <option value="0.25">0.25px</option>
+            <option value="0.5">0.5px</option>
+            <option value="1" selected>1px</option>
+            <option value="2">2px</option>
+            <option value="3">3px</option>
+            <option value="4">4px</option>
+            <option value="5">5px</option>
+            <option value="6">6px</option>
+            <option value="7">7px</option>
+            <option value="8">8px</option>
+            <option value="9">9px</option>
+            <option value="10">10px</option>
+        </select>
+        </div>
+
+        <div class="controlscolumn" id="pointerColumn">
+            <span style="font-weight: bold">POINTER</span>
+            <br/>
+            Buttons:
+            <label> <span id="buttonsVal" class="monospace">---</span> </label>
+            <br/>
+            <span id="posXLabel">X:</span>
+            <label> <span id="posXVal" class="monospace">---</span> </label>
+            <br/>
+            <span id="posYLabel">Y:</span>
+            <label> <span id="posYVal" class="monospace">---</span> </label>
+
+            <br/>
+            Velocity:
+            <label> <span id="velocityVal" class="monospace">-----.--</span> px/s</label>
+            <br/>
+            Direction:
+            <label> <span id="directionVal" class="monospace">---.-</span> </label>
+            <br/>
+
+
+        </div>
+
+        <div class="controlscolumn" id="sensorsColumn">
+            <span style="font-weight: bold">SENSORS</span> <br/>
+
+            <span id="pressureLabel">Pressure:</span>
+            <label> <span id="pressureProcessedVal" class="monospace">---</span> </label>
+            <br/>
+            <span id="tiltXLabel">Tilt x:</span>
+            <label> <span id="tiltXProcessedVal" class="monospace">---</span> </label>
+            <br/>
+            <span id="tiltYLabel">Tilt y:</span>
+            <label> <span id="tiltYProcessedVal" class="monospace">---</span> </label>
+            <br/>
+            <span id="tiltAzimuthLabel">Tilt azimuth:</span>
+            <label> <span id="tiltAzimuthProcessedVal" class="monospace">---</span> </label>
+
+            <br/>
+            <span id="tiltAltitudeLabel">Tilt altitude:</span>
+            <label> <span id="tiltAltitudeProcessedVal" class="monospace">---</span> </label>
+
+            <br/>
+            Barrel rotation:
+            <label>
+                <span id="barrelRotationVal" class="monospace">---</span>
+            </label>
+
+        </div>
+
+        <div class="controlscolumn" id="advancedColumn" style="position: relative;">
+            <span style="font-weight: bold">ADVANCED</span>
+            <br/>
+            Live size: <label> <span id="sizeVal" class="monospace">---</span></label>
+            <br/>
+            <label>
+                <input
+                        type="checkbox"
+                        id="toggleEraseOnStartStrokeCheckbox"
+                />
+                Erase on stroke start
+            </label>
+            <br/>
+            <label>
+                <input
+                        type="checkbox"
+                        id="toggleStrokeStatsCheckbox"
+                        on:change={toggleStrokeStatsVisibility}
+                />
+                Show stroke stats
+            </label>
+            <br/>
+            <button type="button" id="smoothingButton" on:click={toggleSmoothingSettings}>processing</button>
+            <div class="smoothing-flyout" id="smoothingFlyout" style="display: none;">
+                <label for="positionSmoothingSlider"> Position smoothing:
+                    <span id="positionSmoothingValue">---</span></label>
+                <br/>
+                <input
+                        type="range"
+                        id="positionSmoothingSlider"
+                        min="0.0"
+                        max="1.0"
+                        step="0.01"
+                        value="0.0"
+                        on:input={updateSettingsFromUx}
+                />
+
+                <br/>
+                <label for="pressureSmoothingSlider">
+                    Pressure smoothing:
+                    <span id="pressureSmoothingValue">---</span>
+                </label>
+
+                <br/>
+                <input
+                        type="range"
+                        id="pressureSmoothingSlider"
+                        min="0.0"
+                        max="1.0"
+                        step="0.01"
+                        value="0.0"
+                        on:input={updateSettingsFromUx}
+                />
+
+                <br/>
+                <label for="tiltSmoothingSlider"
+                >Tilt smoothing:
+                    <span id="tiltSmoothingValue">---</span>
+                </label>
+                <br/>
+                <input
+                        type="range"
+                        id="tiltSmoothingSlider"
+                        min="0.0"
+                        max="1.0"
+                        step="0.01"
+                        value="0.0"
+                        on:input={updateSettingsFromUx}
+                />
+
+                <br/>
+                <label>Pressure quant </label>
+                <label for="pressureQuantSelect"></label><select
+                    id="pressureQuantSelect"
+                    on:change={updateSettingsFromUx}>
+                <option value="0" selected>OFF</option>
+                <option value="4">4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+                <option value="64">64</option>
+                <option value="128">128</option>
+                <option value="256">256</option>
+                <option value="1024">1024</option>
+                <option value="2048">2048</option>
+                <option value="4096">4096</option>
+                <option value="8129">8192</option>
+            </select>
+                <br/>
+
+                <div class="basiccontainer" id="advancedcontrols2" >
+                    <div class="basiccolumn">
+                        <label
+                        >Pressure curve: <span id="pressureCurveAmountValue">1.0</span>
+                            <br/>
+
+                            <input
+                                    type="range"
+                                    id="pressureCurveAmountSlider"
+                                    min="-0.90"
+                                    max="0.90"
+                                    step="0.1"
+                                    value="0.0"
+                                    list="pressureCurveTickmarks"
+                                    on:input={updateSettingsFromUx}
+                            />
+                            <datalist id="pressureCurveTickmarks">
+                                <option value="0.0"></option>
+                            </datalist>
+                        </label>
+                    </div>
+                    <div class="basiccolumn">
+                        <canvas id="curveCanvas" width="40" height="40"></canvas>
+                    </div>
+                </div>
+                <br/>
+                <button type="button" on:click={resetAdvancedSettings}>RESET</button>
+            </div>
+        </div>
+
+        <div class="controlscolumn" id="strokeStatsPanel" style="display: none;">
+            <span style="font-weight: bold">STROKE STATS</span>
+            <br/>
+            Count:
+            <label>
+                <span id="strokeCountVal" class="monospace">---</span>
+            </label>
+            <br/>
+            Events:
+            <label>
+                <span id="pointerEventCountVal" class="monospace">---</span>
+            </label>
+            <br/>
+            Duration:
+            <label>
+                <span id="strokeDurationVal" class="monospace">---</span>ms
+            </label>
+            <br/>
+            Events/sec:
+            <label>
+                <span id="strokeEventsPerSecVal" class="monospace">---</span> events/sec
+            </label>
+        </div>
+
+        <div class="controlscolumn" id="fillPanel">
+        </div>
+
+    </div>
+</div>
+
+<div class="canvasDiv" on:contextmenu|preventDefault>
+    <canvas id="myCanvas" height="800" style="border: 10px solid #d1d1d1">
+    </canvas>
+</div>
+
+<!-- Hidden download link for saving the canvas -->
+<a id="link" href="#" style="display:none;">download</a>
