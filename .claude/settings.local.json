@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(npm run build:*)",
+      "Bash(source:*)",
+      "Bash(conda activate:*)"
+    ]
+  }
+}

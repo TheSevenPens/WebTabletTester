@@ -28,8 +28,6 @@ export class PointerRecord {
         this.pressureRaw = pressureRaw;
         this.pressureProcessed = processPressure(pressureRaw, processingSettings);
 
-        this.buttons = ptrEvent.buttons;
-
         this.tiltX = ptrEvent.tiltX;
         this.tiltY = ptrEvent.tiltY;
 
@@ -60,9 +58,9 @@ export class PointerRecord {
                     const dist = Math.hypot(dx, dy);
                     const rawSpeed = dist / dt;
                     const smoothedSpeed = processingSettings.velocitySmoother.apply(rawSpeed);
-                    var direction = Math.atan2(dy, dx) * 180.0 / Math.PI;
+                    let direction = Math.atan2(dy, dx) * 180.0 / Math.PI;
                     if (direction < 0) {
-                        direction = 359 + direction;
+                        direction = 360 + direction;
                     }
 
                     this.velocity = smoothedSpeed;

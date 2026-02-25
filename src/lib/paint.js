@@ -8,8 +8,8 @@ import { roundTo3DecimalPlaces } from './utils/numerics.js';
 import { pointerButtonCode, pointerConstants } from './app_pointer.js';
 
 
-export function paintStrokeStart(paintSettings, canvasEl, appSettings) {
-    if (paintSettings.eraseOnStrokeStart) {
+export function paintStrokeStart(settings, canvasEl, appSettings) {
+    if (settings.eraseOnStrokeStart) {
         clearCanvas(canvasEl.getContext('2d'), canvasEl, appSettings.canvasColor);
     }
     paintState.isDrawing = true;
@@ -34,17 +34,10 @@ export function paintStrokeStop() {
 
 
 export function getDabSize(ptrRec) {
-    var newSize = paintSettings.brushSize;
-
-    // If the brush size is not dynamic,
-    // simply use the the user's
-    // desired brush size
+    let newSize = paintSettings.brushSize;
 
     // HANDLE DAB SIZE
-    if (paintSettings.brushSizeControl === "USER") {
-        paintCurrentDabSettings.brushSize = newSize;
-    }
-    else if (paintSettings.brushSizeControl === "PRESSURE") {
+    if (paintSettings.brushSizeControl === "PRESSURE") {
         newSize = newSize * ptrRec.pressureProcessed;
     }
     else if (paintSettings.brushSizeControl === "TILTX") {
@@ -69,7 +62,7 @@ export function getDabSize(ptrRec) {
 }
 
 export function getDabColor(ptrRec, appSettings) {
-    var dabColor = settingStylusPenColor;
+    let dabColor = settingStylusPenColor;
 
     if (ptrRec.buttons === pointerButtonCode.eraser) {
         dabColor = appSettings.canvasColor;

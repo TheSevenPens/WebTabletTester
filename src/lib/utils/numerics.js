@@ -33,7 +33,7 @@ export function roundTo1DecimalPlaces(v)
 
 export function radiansToDegrees(r)
 {
-    return (r * 57.2958);
+    return (r * (180 / Math.PI));
 }
 
 export function quantize(value, levels) 

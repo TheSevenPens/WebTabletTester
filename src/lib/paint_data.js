@@ -1,10 +1,7 @@
-import { OrderedRange } from './utils/ranges.js';
 import { NumericSmoother } from './utils/numeric_smoother.js';
 import { NumericCurve } from './utils/numeric_curve.js';
-
-export const settingStylusPenColor = "black";
-export const PRESSURE_RANGE = new OrderedRange(0.0, 1.0);
-export const BRUSHSIZE_RANGE = new OrderedRange(0.1, 300.0);
+import { settingStylusPenColor, PRESSURE_RANGE, BRUSHSIZE_RANGE } from './stores.js';
+export { settingStylusPenColor, PRESSURE_RANGE, BRUSHSIZE_RANGE };
 
 export const paintSettings =
 {

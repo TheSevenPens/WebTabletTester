@@ -4,7 +4,7 @@ import { Position } from './utils/geometry.js';
 import { quantize } from './utils/numerics.js';
 import { paintDab, paintStrokeStop } from './paint.js';
 import { PointerRecord } from './pointer_record.js';
-import { paintStrokeStats as dbStats } from './paint_data.js';
+import { paintStrokeStats as legacyStrokeStats } from './paint_data.js';
 
 
 export const pointerButtonCode = {
@@ -23,20 +23,16 @@ export const pointerConstants =
     maxTiltY: 60.0,
 }
 
+const buttonNames = new Map([
+    [pointerButtonCode.none,   "none"],
+    [pointerButtonCode.tip,    "pen tip"],
+    [pointerButtonCode.barrel, "pen button"],
+    [pointerButtonCode.middle, "middle mouse"],
+    [pointerButtonCode.eraser, "eraser"],
+]);
+
 export function buttonToString(button) {
-    if (button === pointerButtonCode.none) {
-        return "none";
-    } else if (button === pointerButtonCode.tip) {
-        return "pen tip";
-    } else if (button === pointerButtonCode.barrel) {
-        return "pen button";
-    } else if (button === pointerButtonCode.middle) {
-        return "middle mouse";
-    } else if (button === pointerButtonCode.eraser) {
-        return "eraser";
-    } else {
-        return "unknown";
-    }
+    return buttonNames.get(button) ?? "unknown";
 }
 
 export function isTargetPointerEvent(ptrEvent) {
@@ -92,12 +88,12 @@ export function onPointerLeave(ptrEvent) {
 // Deprecated: HTML element binding is handled locally via CanvasArea.svelte event properties
 
 export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState) {
-    dbStats.ptreventCount = dbStats.ptreventCount + 1;
+    legacyStrokeStats.ptreventCount = legacyStrokeStats.ptreventCount + 1;
     return new PointerRecord(canvasRect, ptrEvent, processingSettings, paintState);
 }
 
 export function processPressure(inputPressure, processingSettings) {
-    var outputPressure = inputPressure;
+    let outputPressure = inputPressure;
     // FIRST QUANTIZE
     if (processingSettings.pressureQuant > 0) {
         outputPressure = quantize(inputPressure, processingSettings.pressureQuant);
