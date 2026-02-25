@@ -6,21 +6,10 @@
     } from "../lib/stores.js";
     import { paintSettings as legacyPaintSettings } from "../lib/paint_data.js";
     import { processingSettings as legacyProcessingSettings } from "../lib/paint_data.js";
-    import { drawPressureCurve } from "../lib/utils/draw.js";
     import SliderWithNumber from "./SliderWithNumber.svelte";
+    import CurveGraph from "./CurveGraph.svelte";
 
-    let curveCanvas;
     let showSmoothing = false;
-
-    $: {
-        if (curveCanvas && $processingSettings.pressureCurveAmount) {
-            drawPressureCurve(
-                curveCanvas.getContext("2d"),
-                curveCanvas,
-                $processingSettings.pressureCurveAmount,
-            );
-        }
-    }
 
     function resetAdvancedSettings() {
         $paintSettings.eraseOnStrokeStart = false;
@@ -186,12 +175,12 @@
                     </datalist>
                 </div>
                 <div class="basiccolumn">
-                    <canvas
-                        bind:this={curveCanvas}
+                    <CurveGraph
                         id="curveCanvas"
-                        width="40"
-                        height="40"
-                    ></canvas>
+                        width={40}
+                        height={40}
+                        curveAmount={$processingSettings.pressureCurveAmount}
+                    />
                 </div>
             </div>
             <br />
