@@ -14,6 +14,7 @@ export const paintSettings =
     eraserSize: 30,
     linecap: "round",
     minStrokeSize: 1.0,
+    eraseOnStrokeStart: false,
 };
 
 export const processingSettings =

@@ -42,6 +42,8 @@
     }
 
     $: {
+        legacyPaintSettings.eraseOnStrokeStart =
+            $paintSettings.eraseOnStrokeStart;
         legacyProcessingSettings.posXSmoother.setSmoothingAmount(
             $processingSettings.posXSmoother.amount,
         );
