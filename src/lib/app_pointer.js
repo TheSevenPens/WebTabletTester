@@ -4,6 +4,7 @@ import { Position } from './utils/geometry.js';
 import { quantize } from './utils/numerics.js';
 import { paintDab, paintStrokeStop } from './paint.js';
 import { PointerRecord } from './pointer_record.js';
+import { paintStrokeStats as dbStats } from './paint_data.js';
 
 
 export const pointerButtonCode = {
@@ -53,7 +54,7 @@ export function defaultPtrEventHandlerDoNothing(ptrEvent) {
 /////////////////////////////////////////////////////////////////////////
 // Handle drawing for HTML5 Pointer Events.
 //
-export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingSettings, paintState, paintStrokeStats) {
+export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingSettings, paintState, _paintStrokeStats) {
     // Ignore events we don't care about
     if (!isTargetPointerEvent(ptrEvent)) {
         return;
@@ -63,7 +64,7 @@ export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingS
     const canvasRect = canvasEl.getBoundingClientRect();
     // given the canvas and the pointer event the paint_rec
     // has all the information needed to draw
-    const ptrRec = getPtrRec(canvasRect, ptrEvent, processingSettings, paintState, paintStrokeStats);
+    const ptrRec = getPtrRec(canvasRect, ptrEvent, processingSettings, paintState);
 
     // Live stats such as pointer position need to updated
     updateUxPointerStats(ptrRec);
@@ -90,8 +91,8 @@ export function onPointerLeave(ptrEvent) {
 
 // Deprecated: HTML element binding is handled locally via CanvasArea.svelte event properties
 
-export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState, paintStrokeStats) {
-    paintStrokeStats.ptreventCount = paintStrokeStats.ptreventCount + 1;
+export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState) {
+    dbStats.ptreventCount = dbStats.ptreventCount + 1;
     return new PointerRecord(canvasRect, ptrEvent, processingSettings, paintState);
 }
 
