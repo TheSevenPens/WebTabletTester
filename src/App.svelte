@@ -56,7 +56,9 @@
 
         <AdvancedSettingsPanel />
 
-        <StrokeStatsPanel />
+        {#if $uiState.showStrokeStats}
+            <StrokeStatsPanel />
+        {/if}
     </div>
 
     <!-- The actual canvas is now a component -->
