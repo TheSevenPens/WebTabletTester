@@ -120,6 +120,7 @@
                     $processingSettings.posYSmoother.setSmoothingAmount(
                         parseFloat(target.value),
                     );
+                    $processingSettings = $processingSettings;
                 }}
             />
 
@@ -144,6 +145,7 @@
                     $processingSettings.pressureSmoother.setSmoothingAmount(
                         parseFloat(target.value),
                     );
+                    $processingSettings = $processingSettings;
                 }}
             />
 
@@ -170,6 +172,7 @@
                     $processingSettings.tiltYSmoother.setSmoothingAmount(
                         parseFloat(target.value),
                     );
+                    $processingSettings = $processingSettings;
                 }}
             />
 
@@ -218,6 +221,7 @@
                                 $processingSettings.pressureCurveAmount.setCurveAmount(
                                     parseFloat(target.value),
                                 );
+                                $processingSettings = $processingSettings;
                             }}
                         />
                         <datalist id="pressureCurveTickmarks">
