@@ -15,6 +15,18 @@
     let canvasAreaRef;
 </script>
 
+<svelte:window
+    on:keydown={(e) => {
+        if (e.key === "Delete" || e.key === "Backspace") {
+            clearCanvas(
+                mainCanvas.getContext("2d"),
+                mainCanvas,
+                $appSettings.canvasColor,
+            );
+        }
+    }}
+/>
+
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="parent" on:contextmenu|preventDefault>
     <div class="controlscontainer">

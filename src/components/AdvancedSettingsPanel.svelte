@@ -7,6 +7,7 @@
     import { paintSettings as legacyPaintSettings } from "../lib/paint_data.js";
     import { processingSettings as legacyProcessingSettings } from "../lib/paint_data.js";
     import { drawPressureCurve } from "../lib/utils/draw.js";
+    import SliderWithNumber from "./SliderWithNumber.svelte";
 
     let curveCanvas;
     let showSmoothing = false;
@@ -99,137 +100,90 @@
     <!-- Smoothing Flyout Element -->
     {#if showSmoothing}
         <div id="smoothingFlyout" class="smoothing-flyout">
-            <label for="positionSmoothingSlider">
-                Position smoothing:
-                <span>{$processingSettings.posXSmoother.amount || 0}</span
-                ></label
-            >
-            <br />
-            <input
-                type="range"
+            <SliderWithNumber
                 id="positionSmoothingSlider"
-                min="0.0"
-                max="1.0"
-                step="0.01"
+                label="Position smoothing:"
                 value={$processingSettings.posXSmoother.amount}
                 on:input={(e) => {
-                    const target = /** @type {HTMLInputElement} */ (
-                        e.currentTarget
-                    );
                     $processingSettings.posXSmoother.setSmoothingAmount(
-                        parseFloat(target.value),
+                        e.detail.value,
                     );
                     $processingSettings.posYSmoother.setSmoothingAmount(
-                        parseFloat(target.value),
+                        e.detail.value,
                     );
                     $processingSettings = $processingSettings;
                 }}
             />
-
             <br />
-            <label for="pressureSmoothingSlider">
-                Pressure smoothing:
-                <span>{$processingSettings.pressureSmoother.amount || 0}</span>
-            </label>
 
-            <br />
-            <input
-                type="range"
+            <SliderWithNumber
                 id="pressureSmoothingSlider"
-                min="0.0"
-                max="1.0"
-                step="0.01"
+                label="Pressure smoothing:"
                 value={$processingSettings.pressureSmoother.amount}
                 on:input={(e) => {
-                    const target = /** @type {HTMLInputElement} */ (
-                        e.currentTarget
-                    );
                     $processingSettings.pressureSmoother.setSmoothingAmount(
-                        parseFloat(target.value),
+                        e.detail.value,
                     );
                     $processingSettings = $processingSettings;
                 }}
             />
+            <br />
 
-            <br />
-            <label for="tiltSmoothingSlider"
-                >Tilt smoothing:
-                <span>{$processingSettings.tiltXSmoother.amount || 0}</span>
-            </label>
-            <br />
-            <input
-                type="range"
+            <SliderWithNumber
                 id="tiltSmoothingSlider"
-                min="0.0"
-                max="1.0"
-                step="0.01"
+                label="Tilt smoothing:"
                 value={$processingSettings.tiltXSmoother.amount}
                 on:input={(e) => {
-                    const target = /** @type {HTMLInputElement} */ (
-                        e.currentTarget
-                    );
                     $processingSettings.tiltXSmoother.setSmoothingAmount(
-                        parseFloat(target.value),
+                        e.detail.value,
                     );
                     $processingSettings.tiltYSmoother.setSmoothingAmount(
-                        parseFloat(target.value),
+                        e.detail.value,
                     );
                     $processingSettings = $processingSettings;
                 }}
             />
-
             <br />
-            <label for="pressureQuantSelect">Pressure quant </label><select
+            <label for="pressureQuantSelect">Pressure quantization: </label>
+            <select
                 id="pressureQuantSelect"
                 bind:value={$processingSettings.pressureQuant}
             >
-                <option value="0" selected>OFF</option>
-                <option value="4">4</option>
-                <option value="8">8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
-                <option value="64">64</option>
-                <option value="128">128</option>
-                <option value="256">256</option>
-                <option value="1024">1024</option>
-                <option value="2048">2048</option>
-                <option value="4096">4096</option>
-                <option value="8192">8192</option>
+                <option value={0} selected>OFF</option>
+                <option value={4}>4</option>
+                <option value={8}>8</option>
+                <option value={16}>16</option>
+                <option value={32}>32</option>
+                <option value={64}>64</option>
+                <option value={128}>128</option>
+                <option value={256}>256</option>
+                <option value={1024}>1024</option>
+                <option value={2048}>2048</option>
+                <option value={4096}>4096</option>
+                <option value={8192}>8192</option>
             </select>
             <br />
 
             <div class="basiccontainer" id="advancedcontrols2">
                 <div class="basiccolumn">
-                    <label
-                        >Pressure curve: <span
-                            >{$processingSettings.pressureCurveAmount
-                                .amount}</span
-                        >
-                        <br />
-
-                        <input
-                            type="range"
-                            id="pressureCurveAmountSlider"
-                            min="-0.90"
-                            max="0.90"
-                            step="0.1"
-                            value={$processingSettings.pressureCurveAmount
-                                .amount}
-                            list="pressureCurveTickmarks"
-                            on:input={(e) => {
-                                const target = /** @type {HTMLInputElement} */ (
-                                    e.currentTarget
-                                );
-                                $processingSettings.pressureCurveAmount.setCurveAmount(
-                                    parseFloat(target.value),
-                                );
-                                $processingSettings = $processingSettings;
-                            }}
-                        />
-                        <datalist id="pressureCurveTickmarks">
-                            <option value="0.0"></option>
-                        </datalist>
-                    </label>
+                    <SliderWithNumber
+                        id="pressureCurveAmountSlider"
+                        label="Pressure curve:"
+                        min="-0.90"
+                        max="0.90"
+                        step="0.1"
+                        list="pressureCurveTickmarks"
+                        value={$processingSettings.pressureCurveAmount.amount}
+                        on:input={(e) => {
+                            $processingSettings.pressureCurveAmount.setCurveAmount(
+                                e.detail.value,
+                            );
+                            $processingSettings = $processingSettings;
+                        }}
+                    />
+                    <datalist id="pressureCurveTickmarks">
+                        <option value="0.0"></option>
+                    </datalist>
                 </div>
                 <div class="basiccolumn">
                     <canvas
