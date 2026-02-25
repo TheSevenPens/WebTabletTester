@@ -1,9 +1,7 @@
-import { appCanvasEl } from './app_canvas.js';
 import { clearUxPointerStats, updateUxPointerStats } from './app_ux_pointer_stats.js';
 import { updateUxStrokeStats } from './app_ux_stroke_stats.js';
-import { Position } from './geometry.js';
-import { paintState, paintStrokeStats, processingSettings } from './paint_data.js';
-import { quantize } from './numerics.js';
+import { Position } from './utils/geometry.js';
+import { quantize } from './utils/numerics.js';
 import { paintDab, paintStrokeStop } from './paint.js';
 import { PointerRecord } from './pointer_record.js';
 
@@ -55,22 +53,22 @@ export function defaultPtrEventHandlerDoNothing(ptrEvent) {
 /////////////////////////////////////////////////////////////////////////
 // Handle drawing for HTML5 Pointer Events.
 //
-export function pointerEventHandler(ptrEvent) {
+export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingSettings, paintState, paintStrokeStats) {
     // Ignore events we don't care about
     if (!isTargetPointerEvent(ptrEvent)) {
         return;
     }
 
     // The paint system needs to know the dimensions of the canvas it will draw on
-    const canvasRect = appCanvasEl.getBoundingClientRect();
+    const canvasRect = canvasEl.getBoundingClientRect();
     // given the canvas and the pointer event the paint_rec
     // has all the information needed to draw
-    const ptrRec = getPtrRec(canvasRect, ptrEvent);
+    const ptrRec = getPtrRec(canvasRect, ptrEvent, processingSettings, paintState, paintStrokeStats);
 
     // Live stats such as pointer position need to updated
     updateUxPointerStats(ptrRec);
     // perform the actual paint
-    paintDab(ptrRec);
+    paintDab(ptrRec, canvasEl, appSettings);
 
     paintState.canvasPosOldAllEvents = new Position(ptrRec.canvasPosXProcessed, ptrRec.canvasPosYProcessed);
     paintState.timeOld = ptrRec.time;
@@ -90,63 +88,14 @@ export function onPointerLeave(ptrEvent) {
     clearUxPointerStats();
 }
 
-export function registerWindowLoadEventListeners() {
-    if (!window.PointerEvent) {
-        console.log("INFO: Browser DOES NOT support pointer events");
-        return;
-    }
+// Deprecated: HTML element binding is handled locally via CanvasArea.svelte event properties
 
-    // pointerover -> handled
-    // pointerenter -> not handled
-    // pointerdown -> handled
-    // pointermove -> handled
-    // pointerup -> handled
-    // pointercancel -> handled
-    // pointerout -> handled
-    // pointerleave -> not handled
-    // pointerrawupdate -> not handled
-    // gotpointercapture -> not handled
-    // lostpointercapture -> not handled
-
-    appCanvasEl.addEventListener("pointerdown", pointerEventHandler, false);
-    appCanvasEl.addEventListener("pointerup", onPointerUp, false);
-
-    appCanvasEl.addEventListener("pointercancel", pointerEventHandler, false);
-    appCanvasEl.addEventListener("pointermove", pointerEventHandler, false);
-
-    appCanvasEl.addEventListener(
-        "pointerover",
-        defaultPtrEventHandlerDoNothing,
-        false
-    );
-
-    appCanvasEl.addEventListener(
-        "pointerout",
-        defaultPtrEventHandlerDoNothing,
-        false
-    );
-
-    appCanvasEl.addEventListener("pointerenter", onPointerEnter, false);
-    appCanvasEl.addEventListener("pointerleave", onPointerLeave, false);
-
-    appCanvasEl.addEventListener(
-        "gotpointercapture",
-        defaultPtrEventHandlerDoNothing,
-        false
-    );
-    appCanvasEl.addEventListener(
-        "lostpointercapture",
-        defaultPtrEventHandlerDoNothing,
-        false
-    );
-}
-
-export function getPtrRec(canvasRect, ptrEvent) {
+export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState, paintStrokeStats) {
     paintStrokeStats.ptreventCount = paintStrokeStats.ptreventCount + 1;
-    return new PointerRecord(canvasRect, ptrEvent);
+    return new PointerRecord(canvasRect, ptrEvent, processingSettings, paintState);
 }
 
-export function processPressure(inputPressure) {
+export function processPressure(inputPressure, processingSettings) {
     var outputPressure = inputPressure;
     // FIRST QUANTIZE
     if (processingSettings.pressureQuant > 0) {

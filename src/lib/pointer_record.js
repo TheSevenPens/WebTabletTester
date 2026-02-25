@@ -1,10 +1,10 @@
-import { clampToRange } from './ranges.js';
-import { radiansToDegrees } from './numerics.js';
-import { PRESSURE_RANGE, paintState, processingSettings } from './paint_data.js';
+import { clampToRange } from './utils/ranges.js';
+import { radiansToDegrees } from './utils/numerics.js';
+import { PRESSURE_RANGE } from './paint_data.js';
 import { processPressure } from './app_pointer.js';
 
 export class PointerRecord {
-    constructor(canvasRect, ptrEvent) {
+    constructor(canvasRect, ptrEvent, processingSettings, paintState) {
         // get the pressure reported in the event
         // if it is pointer pen event, just use that pressure
         // if it is any other kind of event, then just the maximum pressure
@@ -26,7 +26,7 @@ export class PointerRecord {
         this.canvasPosYProcessed = processingSettings.posYSmoother.apply(canvasPosYRaw);
 
         this.pressureRaw = pressureRaw;
-        this.pressureProcessed = processPressure(pressureRaw);
+        this.pressureProcessed = processPressure(pressureRaw, processingSettings);
 
         this.buttons = ptrEvent.buttons;
 

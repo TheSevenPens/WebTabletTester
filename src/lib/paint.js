@@ -1,19 +1,16 @@
 import { BRUSHSIZE_RANGE, paintCurrentDabSettings, paintSettings, paintState, paintStrokeStats, processingSettings, settingStylusPenColor } from './paint_data.js';
-import { clampToRange } from './ranges.js';
-import { appCanvasContext } from './app_canvas.js';
-import { lerp } from './interpolation.js';
-import { clearCanvas, drawLine } from './draw.js';
-import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './color.js';
-import { Position } from './geometry.js';
-import { roundTo3DecimalPlaces } from './numerics.js';
+import { clampToRange } from './utils/ranges.js';
+import { lerp } from './utils/interpolation.js';
+import { clearCanvas, drawLine } from './utils/draw.js';
+import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './utils/color.js';
+import { Position } from './utils/geometry.js';
+import { roundTo3DecimalPlaces } from './utils/numerics.js';
 import { pointerButtonCode, pointerConstants } from './app_pointer.js';
-import { uxFormatSettings } from './app_ux_format_settings.js';
-import { appSettings } from './app.js';
 
 
-export function paintStrokeStart() {
-    if (uxFormatSettings.eraseOnStrokeStart.checked) {
-        clearCanvas();
+export function paintStrokeStart(paintSettings, canvasEl, appSettings) {
+    if (paintSettings.eraseOnStrokeStart) {
+        clearCanvas(canvasEl.getContext('2d'), canvasEl, appSettings.canvasColor);
     }
     paintState.isDrawing = true;
     paintStrokeStats.ptreventCount = 0;
@@ -71,7 +68,7 @@ export function getDabSize(ptrRec) {
     return newSize;
 }
 
-export function getDabColor(ptrRec) {
+export function getDabColor(ptrRec, appSettings) {
     var dabColor = settingStylusPenColor;
 
     if (ptrRec.buttons === pointerButtonCode.eraser) {
@@ -110,16 +107,17 @@ export function getDabColor(ptrRec) {
     return dabColor;
 }
 
-export function updateDabSettings(ptrRec) {
+export function updateDabSettings(ptrRec, appSettings) {
     // SIZE
     const newSize = getDabSize(ptrRec);
     paintCurrentDabSettings.brushSize = newSize;
 
     // COLOR
-    paintCurrentDabSettings.brushColor = getDabColor(ptrRec);
+    paintCurrentDabSettings.brushColor = getDabColor(ptrRec, appSettings);
 }
 
-export function paintDab(ptrRec) {
+export function paintDab(ptrRec, canvasEl, appSettings) {
+    const appCanvasContext = canvasEl.getContext('2d');
     if (ptrRec.pressureRaw <= 0) {
         // If No pressure input
         // - reset any smoothing
@@ -138,7 +136,7 @@ export function paintDab(ptrRec) {
 
     switch (ptrRec.type) {
         case "pointerdown":
-            paintStrokeStart();
+            paintStrokeStart(paintSettings, canvasEl, appSettings);
             paintState.canvasPosOld = currentPos;
             break;
 
@@ -147,7 +145,7 @@ export function paintDab(ptrRec) {
                 return;
             }
 
-            updateDabSettings(ptrRec);
+            updateDabSettings(ptrRec, appSettings);
 
 
             if (ptrRec.pressureRaw > 0) {
