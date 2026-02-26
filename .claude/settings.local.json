@@ -4,7 +4,8 @@
       "Bash(wc:*)",
       "Bash(npm run build:*)",
       "Bash(source:*)",
-      "Bash(conda activate:*)"
+      "Bash(conda activate:*)",
+      "Bash(git remote:*)"
     ]
   }
 }
