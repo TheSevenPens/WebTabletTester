@@ -1,4 +1,5 @@
 import { writable, derived } from 'svelte/store';
+import type { ProcessingSettings } from './types';
 import { roundTo1DecimalPlaces } from './utils/numerics';
 import { MS_PER_SECOND } from './constants';
 import { OrderedRange } from './utils/ranges';
@@ -27,7 +28,7 @@ export const appSettings = writable({
 export const paintSettings = writable({ ...INITIAL_PAINT_SETTINGS });
 
 // Processing Math Handlers
-export const processingSettings = writable(createInitialProcessingSettings());
+export const processingSettings = writable<ProcessingSettings>(createInitialProcessingSettings());
 
 // The current evaluated dab
 export const paintCurrentDabSettings = writable({ ...INITIAL_PAINT_CURRENT_DAB_SETTINGS });

@@ -38,6 +38,7 @@ body {
     /* Sets default font size for all non-heading text */
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 
 h1,
