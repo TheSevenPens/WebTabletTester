@@ -2,11 +2,12 @@
     import { keydown } from './lib/actions/keydown';
     import InfoPanel from './components/InfoPanel.svelte';
     import DocPanel from './components/DocPanel.svelte';
-    import FormatSettingsPanel from './components/FormatSettingsPanel.svelte';
+    import BrushSettingsPanel from './components/BrushSettingsPanel.svelte';
     import ButtonsPanel from './components/ButtonsPanel.svelte';
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
-    import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
+    import ProcessingSettingsPanel from './components/ProcessingSettingsPanel.svelte';
+    import ToolsPanel from './components/ToolsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
@@ -35,7 +36,7 @@
         <div class="controlscontainer">
             <InfoPanel />
             <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
-            <FormatSettingsPanel />
+            <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />
             <PointerStatsPanel />
@@ -48,12 +49,14 @@
         </div>
     </div>
 
-    <!-- Bottom row: Advanced panel + Canvas -->
+    <!-- Bottom row: Processing panel + Canvas -->
     <div class="bottom-row">
-        <AdvancedSettingsPanel />
+        <ProcessingSettingsPanel />
 
         <div class="controlscolumn" id="canvasColumn">
             <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
         </div>
+
+        <ToolsPanel />
     </div>
 </div>

@@ -19,6 +19,36 @@
         $canvasViewport.panY = DEFAULT_CANVAS_PAN_Y;
     }
 
+    function fitToViewport() {
+        const dpr = window.devicePixelRatio || 1;
+        const viewportWidth = $canvasViewport.viewportWidth || window.innerWidth;
+        const viewportHeight = $canvasViewport.viewportHeight || window.innerHeight;
+        const fitPadding = 24;
+
+        const baseCanvasWidth = $canvasViewport.width / dpr;
+        const baseCanvasHeight = $canvasViewport.height / dpr;
+        if (baseCanvasWidth <= 0 || baseCanvasHeight <= 0) {
+            return;
+        }
+
+        const availableWidth = Math.max(1, viewportWidth - fitPadding * 2);
+        const availableHeight = Math.max(1, viewportHeight - fitPadding * 2);
+
+        const fitZoom = Math.max(
+            0.1,
+            Math.min(
+                10.0,
+                Math.min(availableWidth / baseCanvasWidth, availableHeight / baseCanvasHeight)
+            )
+        );
+
+        const renderScale = fitZoom / dpr;
+
+        $canvasViewport.zoom = fitZoom;
+        $canvasViewport.panX = (viewportWidth - $canvasViewport.width * renderScale) / 2;
+        $canvasViewport.panY = (viewportHeight - $canvasViewport.height * renderScale) / 2;
+    }
+
     function setZoomFromInput(value: string) {
         let percent = parseInt(value, 10);
         if (!isNaN(percent)) {
@@ -30,10 +60,12 @@
         newZoom = Math.max(0.1, Math.min(newZoom, 10.0));
 
         const dpr = window.devicePixelRatio || 1;
+        const viewportWidth = $canvasViewport.viewportWidth || window.innerWidth;
+        const viewportHeight = $canvasViewport.viewportHeight || window.innerHeight;
 
-        // Use the center of the screen as the relative zoom point
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        // Use the center of the canvas viewport as the relative zoom point
+        const centerX = viewportWidth / 2;
+        const centerY = viewportHeight / 2;
 
         const currentRenderScale = $canvasViewport.zoom / dpr;
         const newRenderScale = newZoom / dpr;
@@ -66,6 +98,7 @@
     </div>
     <div style="margin-top: 5px;">
         <button type="button" onclick={zoomOut}>-</button>
+        <button type="button" onclick={fitToViewport}>FIT</button>
         <button type="button" onclick={resetZoomAndPan}>RESET</button>
         <button type="button" onclick={zoomIn}>+</button>
     </div>
