@@ -13,7 +13,7 @@
 </script>
 
 <div class="controlscolumn" id="strokeFormatColumn">
-    <span style="font-weight: bold">STROKE FORMAT</span>
+    <span style="font-weight: bold">BRUSH</span>
     <br />
     <label for="brushSizeSelect">Size </label>
     <select id="brushSizeSelect" bind:value={$paintSettings.brushSize}>

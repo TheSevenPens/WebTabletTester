@@ -2,7 +2,7 @@
     import { keydown } from './lib/actions/keydown';
     import InfoPanel from './components/InfoPanel.svelte';
     import DocPanel from './components/DocPanel.svelte';
-    import FormatSettingsPanel from './components/FormatSettingsPanel.svelte';
+    import BrushSettingsPanel from './components/BrushSettingsPanel.svelte';
     import ButtonsPanel from './components/ButtonsPanel.svelte';
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
@@ -36,7 +36,7 @@
         <div class="controlscontainer">
             <InfoPanel />
             <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
-            <FormatSettingsPanel />
+            <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />
             <PointerStatsPanel />

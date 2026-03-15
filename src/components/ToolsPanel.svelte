@@ -1,6 +1,7 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import BackgroundSettings from './BackgroundSettings.svelte';
+    import GridSettings from './GridSettings.svelte';
     import ConfigSettings from './ConfigSettings.svelte';
 
     const minimized = writable(true);
@@ -27,6 +28,7 @@
     {#if !$minimized}
         <div class="advanced-panel-content">
             <BackgroundSettings />
+            <GridSettings />
             <ConfigSettings />
         </div>
     {:else}
