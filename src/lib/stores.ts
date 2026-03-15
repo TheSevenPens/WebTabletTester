@@ -53,3 +53,12 @@ export const uiState = writable({
 
 // Live Pointer Record State
 export const pointerLiveStats = writable({ ...POINTER_LIVE_STATS_DEFAULT });
+
+// Canvas Viewport State
+export const canvasViewport = writable({
+    width: 1920,
+    height: 1080,
+    zoom: 1.0,
+    panX: 0,
+    panY: 0
+});

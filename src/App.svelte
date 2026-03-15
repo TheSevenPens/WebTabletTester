@@ -8,6 +8,7 @@
     import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
+    import CanvasInfoPanel from './components/CanvasInfoPanel.svelte';
     import { uiState, appSettings } from './lib/stores';
     import './app.css';
 
@@ -25,12 +26,12 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="parent" oncontextmenu={(e) => e.preventDefault()} use:keydown={clearKeys}>
-    <!-- Top row: Info, Format, Pointer, Sensors, (Stroke stats) -->
+    <!-- Top row: Info, Format, Canvas, Pointer, Sensors, (Stroke stats) -->
     <div class="top-row">
         <div class="controlscontainer">
             <InfoPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
             <FormatSettingsPanel />
-
+            <CanvasInfoPanel />
             <PointerStatsPanel />
 
             <SensorsPanel />

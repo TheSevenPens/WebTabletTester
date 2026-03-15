@@ -5,6 +5,7 @@
         processingSettings,
         paintState,
         paintStrokeStats,
+        canvasViewport
     } from '../lib/stores';
     import {
         pointerEventHandler,
@@ -22,15 +23,6 @@
     let downloadLink: HTMLAnchorElement;
 
     const dispatch = createEventDispatcher();
-
-    // Custom dimensions for our fixed canvas
-    const CANVAS_WIDTH = 1920;
-    const CANVAS_HEIGHT = 1080;
-
-    // Viewport state
-    let zoom = 1.0;
-    let panX = 0;
-    let panY = 0;
 
     // Pan interaction state
     let isPanning = false;
@@ -66,8 +58,8 @@
         } else if (e.type === 'pointermove' && isPanning) {
             const dx = e.clientX - lastPanX;
             const dy = e.clientY - lastPanY;
-            panX += dx;
-            panY += dy;
+            $canvasViewport.panX += dx;
+            $canvasViewport.panY += dy;
             lastPanX = e.clientX;
             lastPanY = e.clientY;
         } else if (e.type === 'pointerup') {
@@ -85,7 +77,7 @@
         const zoomSensitivity = 0.001;
         const delta = -e.deltaY * zoomSensitivity;
         
-        let newZoom = zoom * Math.exp(delta);
+        let newZoom = $canvasViewport.zoom * Math.exp(delta);
         
         // Clamp zoom between 0.1x and 10x
         newZoom = Math.max(0.1, Math.min(newZoom, 10.0));
@@ -98,26 +90,26 @@
         const mouseY = e.clientY - rect.top;
 
         // Where is the mouse currently relative to the raw canvas size (scaled inversely)
-        const unscaledX = (mouseX - panX) / zoom;
-        const unscaledY = (mouseY - panY) / zoom;
+        const unscaledX = (mouseX - $canvasViewport.panX) / $canvasViewport.zoom;
+        const unscaledY = (mouseY - $canvasViewport.panY) / $canvasViewport.zoom;
 
         // Apply new zoom
-        zoom = newZoom;
+        $canvasViewport.zoom = newZoom;
 
         // Adjust pan to keep the unscaled point under the mouse
-        panX = mouseX - unscaledX * zoom;
-        panY = mouseY - unscaledY * zoom;
+        $canvasViewport.panX = mouseX - unscaledX * $canvasViewport.zoom;
+        $canvasViewport.panY = mouseY - unscaledY * $canvasViewport.zoom;
 
     }
 
     onMount(() => {
         // Initialize our fixed canvas
-        canvas.width = CANVAS_WIDTH;
-        canvas.height = CANVAS_HEIGHT;
+        canvas.width = $canvasViewport.width;
+        canvas.height = $canvasViewport.height;
         
         // Center it roughly
-        panX = (window.innerWidth - CANVAS_WIDTH) / 2;
-        panY = 50; 
+        $canvasViewport.panX = (window.innerWidth - $canvasViewport.width) / 2;
+        $canvasViewport.panY = 50; 
 
         const ctx = getCanvas2DContext(canvas);
         if (ctx) clearCanvas(ctx, canvas, $appSettings.canvasColor);
@@ -147,7 +139,7 @@
 >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-    <div class="canvas-transform-wrapper" style="transform: translate({panX}px, {panY}px) scale({zoom});">
+    <div class="canvas-transform-wrapper" style="transform: translate({$canvasViewport.panX}px, {$canvasViewport.panY}px) scale({$canvasViewport.zoom});">
         <canvas
             bind:this={canvas}
             id="myCanvas"
