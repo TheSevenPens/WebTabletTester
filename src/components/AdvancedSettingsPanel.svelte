@@ -13,9 +13,9 @@
     import SliderWithNumber from "./SliderWithNumber.svelte";
     import CurveGraph from "./CurveGraph.svelte";
 
-    const showSmoothing = writable(false);
-    function toggleShowSmoothing() {
-        showSmoothing.update((v) => !v);
+    const minimized = writable(false);
+    function toggleMinimized() {
+        minimized.update((v) => !v);
     }
 
     function resetAdvancedSettings() {
@@ -31,38 +31,25 @@
     $effect(() => syncProcessingSettingsToLegacy($processingSettings, legacyProcessingSettings));
 </script>
 
-<div class="controlscolumn" id="advancedColumn" style="position: relative;">
-    <span style="font-weight: bold">ADVANCED</span>
-    <br />
-    Live size:
-    <span> <span class="monospace">---</span></span>
-    <br />
-    <label>
-        <input
-            type="checkbox"
-            bind:checked={$paintSettings.eraseOnStrokeStart}
-        />
-        Erase on stroke start
-    </label>
-    <br />
-    <label>
-        <input type="checkbox" bind:checked={$uiState.showStrokeStats} />
-        Show stroke stats
-    </label>
-    <br />
+<div class="advanced-panel" class:minimized={$minimized}>
+    <div class="advanced-panel-header">
+        <span class="advanced-panel-title">ADVANCED</span>
+        <button
+            type="button"
+            class="advanced-panel-toggle"
+            onclick={toggleMinimized}
+            title={$minimized ? "Restore Advanced panel" : "Minimize Advanced panel"}
+            aria-label={$minimized ? "Restore Advanced panel" : "Minimize Advanced panel"}
+        >
+            {$minimized ? "▶" : "◀"}
+        </button>
+    </div>
 
-    <button
-        type="button"
-        id="smoothingButton"
-        onclick={toggleShowSmoothing}
-    >
-        {$showSmoothing ? "HIDE PROCESSING" : "SHOW PROCESSING"}
-    </button>
-
-    <!-- Smoothing Flyout Element -->
-    {#if $showSmoothing}
-        <div id="smoothingFlyout" class="smoothing-flyout">
-            <SliderWithNumber
+    {#if !$minimized}
+        <div class="advanced-panel-content">
+            <section class="advanced-panel-section">
+                <h4 class="advanced-panel-section-title">Processing</h4>
+                <SliderWithNumber
                 id="positionSmoothingSlider"
                 label="Position smoothing:"
                 value={$processingSettings.posXSmoother.amount}
@@ -140,8 +127,33 @@
                 </div>
             </div>
             <br />
-            <button type="button" onclick={resetAdvancedSettings}>RESET</button
-            >
+                <button type="button" onclick={resetAdvancedSettings}>RESET</button>
+            </section>
+
+            <section class="advanced-panel-section">
+                <h4 class="advanced-panel-section-title">Config</h4>
+                <label>
+                    <input
+                        type="checkbox"
+                        bind:checked={$paintSettings.eraseOnStrokeStart}
+                    />
+                    Erase on stroke start
+                </label>
+                <br />
+                <label>
+                    <input type="checkbox" bind:checked={$uiState.showStrokeStats} />
+                    Show stroke stats
+                </label>
+            </section>
         </div>
+    {:else}
+        <button
+            type="button"
+            class="advanced-panel-minimized-label"
+            onclick={toggleMinimized}
+            title="Restore Advanced panel"
+        >
+            <span>Advanced</span>
+        </button>
     {/if}
 </div>

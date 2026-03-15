@@ -5,6 +5,28 @@
     --column-width-header: 110px;
     --column-width-format: 160px;
     --column-width-default: 140px;
+    --advanced-panel-width: 220px;
+    --advanced-panel-minimized-width: 36px;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 100vh;
+}
+
+.top-row {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.bottom-row {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
 }
 
 * {
@@ -71,16 +93,11 @@ select {
 
 .controlscontainer {
     display: flex;
-    /* Enables Flexbox */
+    flex-shrink: 0;
     justify-content: flex-start;
-    /* Distributes items from the start */
     align-items: top;
-    /* Vertically centers items */
     gap: 2px;
-    /* Adds spacing between items */
     padding: 2px;
-    /*background-color: #f0f0f0;*/
-    /*height: 200px; /* For visibility */
 }
 
 .controlscolumn {
@@ -121,10 +138,124 @@ div.controlscolumn#strokeFormatColumn {
 
 div.controlscolumn#pointerColumn,
 div.controlscolumn#sensorsColumn,
-div.controlscolumn#advancedColumn,
 div.controlscolumn#strokeStatsPanel {
     flex: 0 0 var(--column-width-default);
     width: var(--column-width-default);
+}
+
+/* Advanced panel: to the left of the canvas, can be minimized */
+.advanced-panel {
+    flex: 0 0 var(--advanced-panel-width);
+    width: var(--advanced-panel-width);
+    min-width: var(--advanced-panel-width);
+    background-color: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-right: none;
+    color: var(--panel-text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: min-width 0.2s ease, width 0.2s ease;
+}
+
+.advanced-panel.minimized {
+    flex: 0 0 var(--advanced-panel-minimized-width);
+    width: var(--advanced-panel-minimized-width);
+    min-width: var(--advanced-panel-minimized-width);
+}
+
+.advanced-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px;
+    font-weight: bold;
+    flex-shrink: 0;
+    background-color: var(--panel-bg);
+    border-bottom: 1px solid var(--panel-border);
+}
+
+.advanced-panel.minimized .advanced-panel-header {
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 2px;
+}
+
+.advanced-panel-title {
+    font-size: 11px;
+}
+
+.advanced-panel.minimized .advanced-panel-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+.advanced-panel-toggle {
+    flex-shrink: 0;
+    padding: 2px 6px;
+    font-size: 11px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    border-radius: 2px;
+}
+
+.advanced-panel-toggle:hover {
+    background-color: #eee;
+}
+
+.advanced-panel-content {
+    padding: 8px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.advanced-panel-section {
+    margin-bottom: 12px;
+}
+
+.advanced-panel-section:last-child {
+    margin-bottom: 0;
+}
+
+.advanced-panel-section-title {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--panel-border);
+}
+
+.advanced-panel-minimized-label {
+    padding: 8px 4px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+}
+
+.advanced-panel-minimized-label:hover {
+    background-color: #eee;
+}
+
+#canvasColumn {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 
