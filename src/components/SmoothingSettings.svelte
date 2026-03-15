@@ -9,6 +9,8 @@
     <SliderWithNumber
         id="positionSmoothingSlider"
         label="Position smoothing:"
+        max="0.999"
+        step="0.001"
         value={$processingSettings.posXSmoother.amount}
         onInput={(v) => {
             $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
@@ -22,6 +24,8 @@
     <SliderWithNumber
         id="tiltSmoothingSlider"
         label="Tilt smoothing:"
+        max="0.999"
+        step="0.001"
         value={$processingSettings.tiltXSmoother.amount}
         onInput={(v) => {
             $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
@@ -35,6 +39,8 @@
     <SliderWithNumber
         id="pressureSmoothingSlider"
         label="Pressure smoothing:"
+        max="0.999"
+        step="0.001"
         value={$processingSettings.pressureSmoother.amount}
         onInput={(v) => {
             $processingSettings = setProcessingAndNotify($processingSettings, (p) => {

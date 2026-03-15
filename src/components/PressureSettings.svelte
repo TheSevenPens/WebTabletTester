@@ -18,36 +18,34 @@
     </select>
     <br />
 
-    <div class="basiccontainer" id="advancedcontrols2">
-        <div class="basiccolumn">
-            <SliderWithNumber
-                id="pressureCurveAmountSlider"
-                label="Pressure curve:"
-                min="-0.90"
-                max="0.90"
-                step="0.1"
-                list="pressureCurveTickmarks"
-                value={$processingSettings.pressureCurveAmount.amount}
-                onInput={(v: number) => {
-                    $processingSettings = setProcessingAndNotify(
-                        $processingSettings,
-                        (p: ProcessingSettings) => {
-                            p.pressureCurveAmount.setCurveAmount(v);
-                        }
-                    );
-                }}
-            />
-            <datalist id="pressureCurveTickmarks">
-                <option value="0.0"></option>
-            </datalist>
-        </div>
-        <div class="basiccolumn">
-            <CurveGraph
-                id="curveCanvas"
-                width={40}
-                height={40}
-                curveAmount={$processingSettings.pressureCurveAmount}
-            />
-        </div>
+    <div>
+        <SliderWithNumber
+            id="pressureCurveAmountSlider"
+            label="Pressure curve:"
+            min="-0.90"
+            max="0.90"
+            step="0.1"
+            list="pressureCurveTickmarks"
+            value={$processingSettings.pressureCurveAmount.amount}
+            onInput={(v: number) => {
+                $processingSettings = setProcessingAndNotify(
+                    $processingSettings,
+                    (p: ProcessingSettings) => {
+                        p.pressureCurveAmount.setCurveAmount(v);
+                    }
+                );
+            }}
+        />
+        <datalist id="pressureCurveTickmarks">
+            <option value="0.0"></option>
+        </datalist>
+    </div>
+    <div style="margin-top: 8px;">
+        <CurveGraph
+            id="curveCanvas"
+            width={40}
+            height={40}
+            curveAmount={$processingSettings.pressureCurveAmount}
+        />
     </div>
 </section>
