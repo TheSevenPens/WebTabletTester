@@ -47,8 +47,13 @@ export class PointerRecord {
         // if it is any other kind of event, then just the maximum pressure
         const pressureRaw = clampToRange(ptrEvent.pressure, PRESSURE_RANGE);
 
-        const canvasPosXRaw = ptrEvent.offsetX;
-        const canvasPosYRaw = ptrEvent.offsetY;
+        // Calculate coordinates correctly reversing the CSS transform scaling.
+        // offsetX/Y is preserved by browsers even under scale(), but we will 
+        // calculate it from clientX/Y and bounding ClientRect to be absolutely robust
+        // across all interactions.
+        const canvasPosXRaw = (ptrEvent.clientX - canvasRect.left) * (ptrEvent.target.width / canvasRect.width);
+        const canvasPosYRaw = (ptrEvent.clientY - canvasRect.top) * (ptrEvent.target.height / canvasRect.height);
+        
         this.type = ptrEvent.type;
         this.buttons = ptrEvent.buttons;
         this.pointerType = ptrEvent.pointerType;
