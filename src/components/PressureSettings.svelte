@@ -25,6 +25,7 @@
             min="-0.90"
             max="0.90"
             step="0.1"
+            digits={2}
             list="pressureCurveTickmarks"
             value={$processingSettings.pressureCurveAmount.amount}
             onInput={(v: number) => {
