@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, createEventDispatcher } from 'svelte';
+    import { onMount } from 'svelte';
     import {
         appSettings,
         processingSettings,
@@ -14,27 +14,30 @@
         onPointerLeave,
         defaultPtrEventHandlerDoNothing,
     } from '../lib/app_pointer';
-    import { clearCanvas, getCanvas2DContext } from '../lib/utils/draw';
+    import { clearCanvas, clearCanvasToTransparent, getCanvas2DContext } from '../lib/utils/draw';
     import { DEFAULT_CANVAS_PAN_X, DEFAULT_CANVAS_PAN_Y } from '../lib/constants';
 
-    /** @type {HTMLCanvasElement} */
-    export let canvas: HTMLCanvasElement;
+    interface Props {
+        canvas?: HTMLCanvasElement;
+    }
+    let { canvas = $bindable() }: Props = $props();
 
     /** @type {HTMLAnchorElement} */
     let downloadLink: HTMLAnchorElement;
 
-    const dispatch = createEventDispatcher();
+    let backgroundLayerCanvas: HTMLCanvasElement | null = null;
+    let foregroundLayerCanvas: HTMLCanvasElement | null = null;
 
     // Pan interaction state
-    let isPanning = false;
+    let isPanning = $state(false);
     let lastPanX = 0;
     let lastPanY = 0;
 
     // Device Pixel Ratio binding
-    let dpr = 1;
+    let dpr = $state(1);
 
     // Keyboard state
-    let isSpacebarDown = false;
+    let isSpacebarDown = $state(false);
 
     function handleKeyDown(e: KeyboardEvent) {
         if (e.code === 'Space' && !e.repeat) {
@@ -60,14 +63,30 @@
             return;
         }
 
+        if (!foregroundLayerCanvas) return;
+
+        if (!canvas) return;
+
         pointerEventHandler(
             e,
             canvas,
+            foregroundLayerCanvas,
             $appSettings,
             $processingSettings,
             $paintState,
             $paintStrokeStats
         );
+
+        composeLayers();
+    }
+
+    function handlePointerUpEvent(e: PointerEvent) {
+        if (e.buttons === 4 || isPanning) {
+            handlePan(e);
+            return;
+        }
+        onPointerUp(e);
+        composeLayers();
     }
 
     function handlePan(e: PointerEvent) {
@@ -130,21 +149,121 @@
 
     }
 
+    function composeLayers() {
+        if (!canvas) return;
+
+        const outputContext = getCanvas2DContext(canvas);
+        if (!outputContext) return;
+
+        outputContext.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (backgroundLayerCanvas) {
+            outputContext.drawImage(backgroundLayerCanvas, 0, 0);
+        }
+
+        if (foregroundLayerCanvas) {
+            outputContext.drawImage(foregroundLayerCanvas, 0, 0);
+        }
+    }
+
+    function drawGrid(
+        canvasContext: CanvasRenderingContext2D,
+        canvasEl: HTMLCanvasElement,
+        gridSize: number,
+        gridColor: string
+    ) {
+        if (gridSize <= 0) return;
+
+        canvasContext.beginPath();
+        for (let x = gridSize; x < canvasEl.width; x += gridSize) {
+            const crispX = x + 0.5;
+            canvasContext.moveTo(crispX, 0);
+            canvasContext.lineTo(crispX, canvasEl.height);
+        }
+
+        for (let y = gridSize; y < canvasEl.height; y += gridSize) {
+            const crispY = y + 0.5;
+            canvasContext.moveTo(0, crispY);
+            canvasContext.lineTo(canvasEl.width, crispY);
+        }
+
+        canvasContext.strokeStyle = gridColor;
+        canvasContext.lineWidth = 1;
+        canvasContext.stroke();
+    }
+
+    function fillBackgroundLayer(
+        backgroundColor: string,
+        showGrid: boolean,
+        gridSize: number,
+        gridColor: string
+    ) {
+        if (!backgroundLayerCanvas) return;
+        const backgroundContext = getCanvas2DContext(backgroundLayerCanvas);
+        if (!backgroundContext) return;
+
+        clearCanvas(backgroundContext, backgroundLayerCanvas, backgroundColor);
+
+        if (showGrid) {
+            drawGrid(backgroundContext, backgroundLayerCanvas, Math.max(5, gridSize), gridColor);
+        }
+    }
+
+    export function clearForeground() {
+        if (!foregroundLayerCanvas) return;
+        const foregroundContext = getCanvas2DContext(foregroundLayerCanvas);
+        clearCanvasToTransparent(foregroundContext, foregroundLayerCanvas);
+        composeLayers();
+    }
+
+    $effect(() => {
+        const currentBackgroundColor = $appSettings.canvasColor;
+        const currentShowGrid = $appSettings.showGrid;
+        const currentGridSize = $appSettings.gridSize;
+        const currentGridColor = $appSettings.gridColor;
+        if (!backgroundLayerCanvas || !canvas) return;
+        fillBackgroundLayer(
+            currentBackgroundColor,
+            currentShowGrid,
+            currentGridSize,
+            currentGridColor
+        );
+        composeLayers();
+    });
+
     onMount(() => {
         dpr = window.devicePixelRatio || 1;
         const updateDpr = () => { dpr = window.devicePixelRatio || 1; };
         window.addEventListener('resize', updateDpr);
 
+        if (!canvas) {
+            return () => window.removeEventListener('resize', updateDpr);
+        }
+
         // Initialize our fixed canvas
         canvas.width = $canvasViewport.width;
         canvas.height = $canvasViewport.height;
+
+        backgroundLayerCanvas = document.createElement('canvas');
+        backgroundLayerCanvas.width = $canvasViewport.width;
+        backgroundLayerCanvas.height = $canvasViewport.height;
+
+        foregroundLayerCanvas = document.createElement('canvas');
+        foregroundLayerCanvas.width = $canvasViewport.width;
+        foregroundLayerCanvas.height = $canvasViewport.height;
         
         // Start near the top-left so the drawing area is easier to reach quickly.
         $canvasViewport.panX = DEFAULT_CANVAS_PAN_X;
         $canvasViewport.panY = DEFAULT_CANVAS_PAN_Y;
 
-        const ctx = getCanvas2DContext(canvas);
-        if (ctx) clearCanvas(ctx, canvas, $appSettings.canvasColor);
+        fillBackgroundLayer(
+            $appSettings.canvasColor,
+            $appSettings.showGrid,
+            $appSettings.gridSize,
+            $appSettings.gridColor
+        );
+        clearForeground();
+        composeLayers();
 
         return () => window.removeEventListener('resize', updateDpr);
     });
@@ -182,7 +301,7 @@
             id="myCanvas"
             class="drawing-canvas"
             onpointerdown={handlePointer}
-            onpointerup={(e) => { e.buttons === 4 || isPanning ? handlePan(e) : onPointerUp(e); }}
+            onpointerup={handlePointerUpEvent}
             onpointercancel={handlePointer}
             onpointermove={handlePointer}
             onpointerover={defaultPtrEventHandlerDoNothing}
@@ -228,7 +347,7 @@
 
     .drawing-canvas {
         display: block;
-        background-color: white; /* Make sure the fixed bounds are always solidly backgrounded */
+        background-color: transparent;
         touch-action: none;
     }
 </style>

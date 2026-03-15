@@ -6,6 +6,7 @@
     function toggleCollapsed() {
         collapsed = !collapsed;
     }
+
 </script>
 
 <section class="advanced-panel-section">

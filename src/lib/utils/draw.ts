@@ -18,6 +18,11 @@ export function clearCanvas(canvasContext: CanvasRenderingContext2D | null, canv
   canvasContext.fillRect(0, 0, canvasEl.width, canvasEl.height);
 }
 
+export function clearCanvasToTransparent(canvasContext: CanvasRenderingContext2D | null, canvasEl: HTMLCanvasElement): void {
+  if (!canvasContext) return;
+  canvasContext.clearRect(0, 0, canvasEl.width, canvasEl.height);
+}
+
 export function drawLine(canvasContext: CanvasRenderingContext2D | null, fromPos: { x: number, y: number }, toPos: { x: number, y: number }, width: number, color: string, linecap: CanvasLineCap): void {
   if (!canvasContext) return;
   canvasContext.lineWidth = width;
