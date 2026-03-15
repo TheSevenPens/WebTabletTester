@@ -43,44 +43,47 @@ export function isTargetPointerEvent(ptrEvent) {
     );
 }
 
-export function defaultPtrEventHandlerDoNothing(ptrEvent) {
+export function defaultPtrEventHandlerDoNothing(_ptrEvent) {
     // do nothing
 }
 
 /////////////////////////////////////////////////////////////////////////
-// Handle drawing for HTML5 Pointer Events.
+// Handle drawing for HTML5 Pointer Events. Thin orchestrator: filter → build record → apply.
 //
 export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingSettings, paintState, _paintStrokeStats) {
-    // Ignore events we don't care about
-    if (!isTargetPointerEvent(ptrEvent)) {
-        return;
-    }
+    if (!isTargetPointerEvent(ptrEvent)) return;
 
-    // The paint system needs to know the dimensions of the canvas it will draw on
     const canvasRect = canvasEl.getBoundingClientRect();
-    // given the canvas and the pointer event the paint_rec
-    // has all the information needed to draw
     const ptrRec = getPtrRec(canvasRect, ptrEvent, processingSettings, paintState);
 
-    // Live stats such as pointer position need to updated
-    updateUxPointerStats(ptrRec);
-    // perform the actual paint
-    paintDab(ptrRec, canvasEl, appSettings);
+    applyPointerEvent(ptrRec, canvasEl, appSettings, paintState);
+}
 
+/**
+ * Update live stats, perform paint, and persist state for next event.
+ * @param {import('./pointer_record.js').PointerRecord} ptrRec
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {{ canvasColor: string }} appSettings
+ * @param {import('./types.js').PaintState} paintState
+ * @returns {void}
+ */
+export function applyPointerEvent(ptrRec, canvasEl, appSettings, paintState) {
+    updateUxPointerStats(ptrRec);
+    paintDab(ptrRec, canvasEl, appSettings);
     paintState.canvasPosOldAllEvents = new Position(ptrRec.canvasPosXProcessed, ptrRec.canvasPosYProcessed);
     paintState.timeOld = ptrRec.time;
 }
 
-export function onPointerUp(ptrEvent) {
+export function onPointerUp(_ptrEvent) {
     paintStrokeStop();
     updateUxStrokeStats();
 }
 
-export function onPointerEnter(ptrEvent) {
+export function onPointerEnter(_ptrEvent) {
     document.body.style.cursor = "crosshair";
 }
 
-export function onPointerLeave(ptrEvent) {
+export function onPointerLeave(_ptrEvent) {
     document.body.style.cursor = "default";
     clearUxPointerStats();
 }
@@ -92,6 +95,12 @@ export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState) 
     return new PointerRecord(canvasRect, ptrEvent, processingSettings, paintState);
 }
 
+/**
+ * Apply quantization, curve, and smoothing to raw pressure.
+ * @param {number} inputPressure - Raw pressure in [0, 1]
+ * @param {import('./types.js').ProcessingSettings} processingSettings
+ * @returns {number} Processed pressure in [0, 1]
+ */
 export function processPressure(inputPressure, processingSettings) {
     let outputPressure = inputPressure;
     // FIRST QUANTIZE

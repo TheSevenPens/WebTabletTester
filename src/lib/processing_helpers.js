@@ -6,7 +6,8 @@
 /**
  * Set all smoothing/curve amounts to 0 and pressureQuant to 0.
  * Caller should then trigger store update: $processingSettings = $processingSettings
- * @param {{ posXSmoother: { setSmoothingAmount: (v: number) => void }; posYSmoother: { setSmoothingAmount: (v: number) => void }; pressureSmoother: { setSmoothingAmount: (v: number) => void }; pressureCurveAmount: { setCurveAmount: (v: number) => void }; tiltXSmoother: { setSmoothingAmount: (v: number) => void }; tiltYSmoother: { setSmoothingAmount: (v: number) => void }; tiltAzimuthSmoother: { setSmoothingAmount: (v: number) => void }; tiltAltitudeSmoother: { setSmoothingAmount: (v: number) => void }; pressureQuant: number }} processing
+ * @param {import('./types.js').ProcessingSettings} processing
+ * @returns {void}
  */
 export function resetAllProcessingToDefault(processing) {
     processing.posXSmoother.setSmoothingAmount(0.0);
@@ -22,7 +23,9 @@ export function resetAllProcessingToDefault(processing) {
 
 /**
  * Apply a slider update and return the same object so caller can assign to trigger reactivity.
- * Usage: $processingSettings = setProcessingAndNotify($processingSettings, (p) => { ... });
+ * @param {import('./types.js').ProcessingSettings} processing
+ * @param {(p: import('./types.js').ProcessingSettings) => void} updateFn
+ * @returns {import('./types.js').ProcessingSettings}
  */
 export function setProcessingAndNotify(processing, updateFn) {
     updateFn(processing);

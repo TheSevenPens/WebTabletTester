@@ -12,7 +12,7 @@
     import SliderWithNumber from "./SliderWithNumber.svelte";
     import CurveGraph from "./CurveGraph.svelte";
 
-    let showSmoothing = false;
+    let showSmoothing = $state(false);
 
     function resetAdvancedSettings() {
         $paintSettings.eraseOnStrokeStart = false;
@@ -23,8 +23,8 @@
         $uiState = $uiState;
     }
 
-    $: syncPaintSettingsToLegacy($paintSettings, legacyPaintSettings);
-    $: syncProcessingSettingsToLegacy($processingSettings, legacyProcessingSettings);
+    $effect(() => syncPaintSettingsToLegacy($paintSettings, legacyPaintSettings));
+    $effect(() => syncProcessingSettingsToLegacy($processingSettings, legacyProcessingSettings));
 </script>
 
 <div class="controlscolumn" id="advancedColumn" style="position: relative;">
@@ -50,7 +50,7 @@
     <button
         type="button"
         id="smoothingButton"
-        on:click={() => (showSmoothing = !showSmoothing)}
+        onclick={() => (showSmoothing = !showSmoothing)}
     >
         {showSmoothing ? "HIDE PROCESSING" : "SHOW PROCESSING"}
     </button>
@@ -62,10 +62,10 @@
                 id="positionSmoothingSlider"
                 label="Position smoothing:"
                 value={$processingSettings.posXSmoother.amount}
-                on:input={(e) => {
+                onInput={(v) => {
                     $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
-                        p.posXSmoother.setSmoothingAmount(e.detail.value);
-                        p.posYSmoother.setSmoothingAmount(e.detail.value);
+                        p.posXSmoother.setSmoothingAmount(v);
+                        p.posYSmoother.setSmoothingAmount(v);
                     });
                 }}
             />
@@ -75,9 +75,9 @@
                 id="pressureSmoothingSlider"
                 label="Pressure smoothing:"
                 value={$processingSettings.pressureSmoother.amount}
-                on:input={(e) => {
+                onInput={(v) => {
                     $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
-                        p.pressureSmoother.setSmoothingAmount(e.detail.value);
+                        p.pressureSmoother.setSmoothingAmount(v);
                     });
                 }}
             />
@@ -87,10 +87,10 @@
                 id="tiltSmoothingSlider"
                 label="Tilt smoothing:"
                 value={$processingSettings.tiltXSmoother.amount}
-                on:input={(e) => {
+                onInput={(v) => {
                     $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
-                        p.tiltXSmoother.setSmoothingAmount(e.detail.value);
-                        p.tiltYSmoother.setSmoothingAmount(e.detail.value);
+                        p.tiltXSmoother.setSmoothingAmount(v);
+                        p.tiltYSmoother.setSmoothingAmount(v);
                     });
                 }}
             />
@@ -116,9 +116,9 @@
                         step="0.1"
                         list="pressureCurveTickmarks"
                         value={$processingSettings.pressureCurveAmount.amount}
-                        on:input={(e) => {
+                        onInput={(v) => {
                             $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
-                                p.pressureCurveAmount.setCurveAmount(e.detail.value);
+                                p.pressureCurveAmount.setCurveAmount(v);
                             });
                         }}
                     />
@@ -136,7 +136,7 @@
                 </div>
             </div>
             <br />
-            <button type="button" on:click={resetAdvancedSettings}>RESET</button
+            <button type="button" onclick={resetAdvancedSettings}>RESET</button
             >
         </div>
     {/if}

@@ -4,8 +4,10 @@
  */
 
 /**
- * @param {Record<string, unknown>} storeValue
+ * Copy paint settings from store value into legacy object for paint_data consumers.
+ * @param {import('./types.js').PaintSettings} storeValue
  * @param {Record<string, unknown>} legacy
+ * @returns {void}
  */
 export function syncPaintSettingsToLegacy(storeValue, legacy) {
     legacy.brushSize = storeValue.brushSize;
@@ -16,8 +18,10 @@ export function syncPaintSettingsToLegacy(storeValue, legacy) {
 }
 
 /**
- * @param {{ posXSmoother: { setSmoothingAmount: (v: number) => void }; posYSmoother: { setSmoothingAmount: (v: number) => void }; pressureSmoother: { setSmoothingAmount: (v: number) => void }; pressureCurveAmount: { setCurveAmount: (v: number) => void }; tiltXSmoother: { setSmoothingAmount: (v: number) => void }; tiltYSmoother: { setSmoothingAmount: (v: number) => void }; tiltAzimuthSmoother: { setSmoothingAmount: (v: number) => void }; tiltAltitudeSmoother: { setSmoothingAmount: (v: number) => void }; pressureQuant: number }} storeValue
+ * Sync processing settings (smoother amounts, pressure quant) from store to legacy object.
+ * @param {import('./types.js').ProcessingSettings} storeValue
  * @param {Record<string, unknown>} legacy
+ * @returns {void}
  */
 export function syncProcessingSettingsToLegacy(storeValue, legacy) {
     legacy.posXSmoother.setSmoothingAmount(storeValue.posXSmoother.amount);

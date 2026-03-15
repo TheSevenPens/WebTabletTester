@@ -1,6 +1,19 @@
 /**
  * Shared option lists for selects and other UI constants.
+ * Also numeric/theme constants used across lib (paint, pointer, draw).
  */
+
+/** HSL hue range for pressure/tilt-to-color mapping (min, max in degrees). */
+export const HUE_RANGE = { min: 150, max: 360 };
+
+/** Milliseconds per second for rate calculations. */
+export const MS_PER_SECOND = 1000;
+
+/** When pen is vertical (tilt altitude), dab size scale offset so size stays small. */
+export const MIN_TILT_SIZE_OFFSET = 0.05;
+
+/** Stroke color for the pressure curve preview in AdvancedSettingsPanel. */
+export const CURVE_GRAPH_STROKE = 'rgb(150,180,255)';
 
 export const BRUSH_SIZES = [
     { value: 1, label: '1px' },

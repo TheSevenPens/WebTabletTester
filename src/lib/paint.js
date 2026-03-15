@@ -1,16 +1,18 @@
 import { BRUSHSIZE_RANGE, paintCurrentDabSettings, paintSettings, paintState, paintStrokeStats, processingSettings, settingStylusPenColor } from './paint_data.js';
 import { clampToRange } from './utils/ranges.js';
 import { lerp } from './utils/interpolation.js';
-import { clearCanvas, drawLine } from './utils/draw.js';
+import { clearCanvas, drawLine, getCanvas2DContext } from './utils/draw.js';
 import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './utils/color.js';
 import { Position } from './utils/geometry.js';
 import { roundTo3DecimalPlaces } from './utils/numerics.js';
 import { pointerButtonCode, pointerConstants } from './app_pointer.js';
+import { HUE_RANGE, MIN_TILT_SIZE_OFFSET } from './constants.js';
 
 
 export function paintStrokeStart(settings, canvasEl, appSettings) {
     if (settings.eraseOnStrokeStart) {
-        clearCanvas(canvasEl.getContext('2d'), canvasEl, appSettings.canvasColor);
+        const ctx = getCanvas2DContext(canvasEl);
+        if (ctx) clearCanvas(ctx, canvasEl, appSettings.canvasColor);
     }
     paintState.isDrawing = true;
     paintStrokeStats.ptreventCount = 0;
@@ -33,6 +35,11 @@ export function paintStrokeStop() {
 }
 
 
+/**
+ * Compute dab size from pointer record and current paint settings (brush size control, min size).
+ * @param {import('./pointer_record.js').PointerRecord} ptrRec
+ * @returns {number}
+ */
 export function getDabSize(ptrRec) {
     let newSize = paintSettings.brushSize;
 
@@ -50,7 +57,7 @@ export function getDabSize(ptrRec) {
         newSize = newSize * ptrRec.tiltAzimuthProcessed / pointerConstants.maxTiltAzimuth;
     }
     else if (paintSettings.brushSizeControl === "TILTALT") {
-        newSize = newSize * ((1.0 - (ptrRec.tiltAltitudeProcessed / pointerConstants.maxTiltAltitude)) + 0.05); // when pen is vertical size is small, as pen tilts dab gets larger
+        newSize = newSize * ((1.0 - (ptrRec.tiltAltitudeProcessed / pointerConstants.maxTiltAltitude)) + MIN_TILT_SIZE_OFFSET);
     }
     newSize = clampToRange(newSize, BRUSHSIZE_RANGE)
     // Apply minimum stroke size constraint
@@ -61,6 +68,12 @@ export function getDabSize(ptrRec) {
     return newSize;
 }
 
+/**
+ * Compute dab color from pointer record and app settings (brush color control, eraser, etc.).
+ * @param {import('./pointer_record.js').PointerRecord} ptrRec
+ * @param {{ canvasColor: string }} appSettings
+ * @returns {string} CSS color string
+ */
 export function getDabColor(ptrRec, appSettings) {
     let dabColor = settingStylusPenColor;
 
@@ -68,22 +81,22 @@ export function getDabColor(ptrRec, appSettings) {
         dabColor = appSettings.canvasColor;
     }
     else if (paintSettings.brushColorControl === "PRESSURE") {
-        const hue1 = lerp(360, 150, ptrRec.pressureProcessed);
+        const hue1 = lerp(HUE_RANGE.max, HUE_RANGE.min, ptrRec.pressureProcessed);
         dabColor = `hsl(${hue1}, 100%, 50%)`;
     }
     else if (paintSettings.brushColorControl === "TILTALT") {
-        const hue2 = lerp(360, 150, ptrRec.tiltAltitudeProcessed / pointerConstants.maxTiltAltitude);
+        const hue2 = lerp(HUE_RANGE.max, HUE_RANGE.min, ptrRec.tiltAltitudeProcessed / pointerConstants.maxTiltAltitude);
         dabColor = `hsl(${hue2}, 100%, 50%)`;
     }
     else if (paintSettings.brushColorControl === "TILTAZ") {
         dabColor = angleToColor(ptrRec.tiltAzimuthProcessed, azimuthColorStops, azimuthAngleStops).toWebRGB();
     }
     else if (paintSettings.brushColorControl === "TILTX") {
-        const hue3 = lerp(360, 150, ptrRec.tiltXProcessed / pointerConstants.maxTiltX);
+        const hue3 = lerp(HUE_RANGE.max, HUE_RANGE.min, ptrRec.tiltXProcessed / pointerConstants.maxTiltX);
         dabColor = `hsl(${hue3}, 100%, 50%)`;
     }
     else if (paintSettings.brushColorControl === "TILTY") {
-        const hue4 = lerp(360, 150, ptrRec.tiltYProcessed / pointerConstants.maxTiltY);
+        const hue4 = lerp(HUE_RANGE.max, HUE_RANGE.min, ptrRec.tiltYProcessed / pointerConstants.maxTiltY);
         dabColor = `hsl(${hue4}, 100%, 50%)`;
     }
     else if (paintSettings.brushColorControl === "BARRELROTATION") {
@@ -109,8 +122,15 @@ export function updateDabSettings(ptrRec, appSettings) {
     paintCurrentDabSettings.brushColor = getDabColor(ptrRec, appSettings);
 }
 
+/**
+ * Handle one pointer event: start stroke, or continue stroke (draw segment), or no-op.
+ * @param {import('./pointer_record.js').PointerRecord} ptrRec
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {{ canvasColor: string }} appSettings
+ * @returns {void}
+ */
 export function paintDab(ptrRec, canvasEl, appSettings) {
-    const appCanvasContext = canvasEl.getContext('2d');
+    const appCanvasContext = getCanvas2DContext(canvasEl);
     if (ptrRec.pressureRaw <= 0) {
         // If No pressure input
         // - reset any smoothing
@@ -141,7 +161,7 @@ export function paintDab(ptrRec, canvasEl, appSettings) {
             updateDabSettings(ptrRec, appSettings);
 
 
-            if (ptrRec.pressureRaw > 0) {
+            if (ptrRec.pressureRaw > 0 && appCanvasContext) {
                 drawLine(appCanvasContext,
                     paintState.canvasPosOld,
                     currentPos,

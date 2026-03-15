@@ -2,6 +2,7 @@ import { clampToRange } from './utils/ranges.js';
 import { radiansToDegrees } from './utils/numerics.js';
 import { PRESSURE_RANGE } from './paint_data.js';
 import { processPressure } from './app_pointer.js';
+import { MS_PER_SECOND } from './constants.js';
 
 export class PointerRecord {
     constructor(canvasRect, ptrEvent, processingSettings, paintState) {
@@ -52,7 +53,7 @@ export class PointerRecord {
             const dy = this.canvasPosYProcessed - paintState.canvasPosOldAllEvents.y;
 
             if (paintState.timeOld != null) {
-                const dt = (this.time - paintState.timeOld) / 1000.0;
+                const dt = (this.time - paintState.timeOld) / MS_PER_SECOND;
                 if (dt > 0) {
 
                     const dist = Math.hypot(dx, dy);

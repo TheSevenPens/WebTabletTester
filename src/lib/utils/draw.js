@@ -1,17 +1,38 @@
 import { lerpPoint } from '../utils/interpolation.js';
+import { CURVE_GRAPH_STROKE } from '../constants.js';
 
 /**
- * 
- * @param {CanvasRenderingContext2D} canvasContext 
- * @param {HTMLCanvasElement} canvasEl 
- * @param {string} canvasColor 
+ * Get 2D context for a canvas. Returns null if canvas is missing or context is unavailable.
+ * @param {HTMLCanvasElement | null | undefined} canvas
+ * @returns {CanvasRenderingContext2D | null}
+ */
+export function getCanvas2DContext(canvas) {
+  if (!canvas || typeof canvas.getContext !== 'function') return null;
+  const ctx = canvas.getContext('2d');
+  return ctx;
+}
+
+/**
+ * @param {CanvasRenderingContext2D | null} canvasContext
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {string} canvasColor
  */
 export function clearCanvas(canvasContext, canvasEl, canvasColor) {
+  if (!canvasContext) return;
   canvasContext.fillStyle = canvasColor;
   canvasContext.fillRect(0, 0, canvasEl.width, canvasEl.height);
 }
 
+/**
+ * @param {CanvasRenderingContext2D | null} canvasContext
+ * @param {{ x: number; y: number }} fromPos
+ * @param {{ x: number; y: number }} toPos
+ * @param {number} width
+ * @param {string} color
+ * @param {string} linecap
+ */
 export function drawLine(canvasContext, fromPos, toPos, width, color, linecap) {
+  if (!canvasContext) return;
   canvasContext.lineWidth = width;
   canvasContext.strokeStyle = color;
   canvasContext.beginPath();
@@ -24,12 +45,12 @@ export function drawLine(canvasContext, fromPos, toPos, width, color, linecap) {
 }
 
 /**
- * 
- * @param {CanvasRenderingContext2D} canvasContext 
- * @param {HTMLCanvasElement} canvasEl 
- * @param {{apply: (val: number) => number}} pressureCurveAmount 
+ * @param {CanvasRenderingContext2D | null} canvasContext
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {{ apply: (val: number) => number }} pressureCurveAmount
  */
 export function drawPressureCurve(canvasContext, canvasEl, pressureCurveAmount) {
+  if (!canvasContext) return;
   canvasContext.clearRect(0, 0, canvasEl.width, canvasEl.height);
   canvasContext.beginPath();
   canvasContext.moveTo(0, canvasEl.height);
@@ -39,7 +60,7 @@ export function drawPressureCurve(canvasContext, canvasEl, pressureCurveAmount) 
     const y = canvasEl.height * (1 - curvedPressure);
     canvasContext.lineTo(x, y);
   }
-  canvasContext.strokeStyle = "rgb(150,180,255)";
+  canvasContext.strokeStyle = CURVE_GRAPH_STROKE;
   canvasContext.lineWidth = 3;
   canvasContext.stroke();
 

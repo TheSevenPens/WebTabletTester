@@ -13,7 +13,7 @@
         onPointerLeave,
         defaultPtrEventHandlerDoNothing,
     } from "../lib/app_pointer.js";
-    import { clearCanvas } from "../lib/utils/draw.js";
+    import { clearCanvas, getCanvas2DContext } from "../lib/utils/draw.js";
 
     /** @type {HTMLCanvasElement} */
     export let canvas;
@@ -31,10 +31,8 @@
         if (canvas.width < window.innerWidth) {
             canvas.width = window.innerWidth - 50;
         }
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-            clearCanvas(ctx, canvas, $appSettings.canvasColor);
-        }
+        const ctx = getCanvas2DContext(canvas);
+        if (ctx) clearCanvas(ctx, canvas, $appSettings.canvasColor);
     });
 
     export function saveCanvas() {

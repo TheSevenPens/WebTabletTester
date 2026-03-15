@@ -1,20 +1,18 @@
 <script>
-    import { drawPressureCurve } from "../lib/utils/draw.js";
+    import { drawPressureCurve, getCanvas2DContext } from '../lib/utils/draw.js';
 
-    export let curveAmount;
-    export let id = "curveCanvas";
-    export let width = 40;
-    export let height = 40;
+    /** @type {{ amount: number; apply: (v: number) => number } | undefined */
+    let { curveAmount, id = 'curveCanvas', width = 40, height = 40 } = $props();
 
     /** @type {HTMLCanvasElement} */
     let canvas;
 
-    // Use a reactive block to re-draw whenever the curveAmount or canvas elements change
-    $: {
+    $effect(() => {
         if (canvas && curveAmount) {
-            drawPressureCurve(canvas.getContext("2d"), canvas, curveAmount);
+            const ctx = getCanvas2DContext(canvas);
+            if (ctx) drawPressureCurve(ctx, canvas, curveAmount);
         }
-    }
+    });
 </script>
 
 <canvas bind:this={canvas} {id} {width} {height}></canvas>

@@ -1,5 +1,6 @@
 <script>
-    import { clearCanvas } from "./lib/utils/draw.js";
+    import { clearCanvas, getCanvas2DContext } from "./lib/utils/draw.js";
+    import { keydown } from "./lib/actions/keydown.js";
     import FormatSettingsPanel from "./components/FormatSettingsPanel.svelte";
     import PointerStatsPanel from "./components/PointerStatsPanel.svelte";
     import SensorsPanel from "./components/SensorsPanel.svelte";
@@ -14,22 +15,16 @@
     let canvasAreaRef;
 
     function clearMainCanvas() {
-        if (mainCanvas) {
-            clearCanvas(mainCanvas.getContext("2d"), mainCanvas, $appSettings.canvasColor);
-        }
+        const ctx = getCanvas2DContext(mainCanvas);
+        if (ctx && mainCanvas) clearCanvas(ctx, mainCanvas, $appSettings.canvasColor);
     }
+
+    const clearKeys = { Delete: clearMainCanvas, Backspace: clearMainCanvas };
 </script>
 
-<svelte:window
-    on:keydown={(e) => {
-        if (e.key === "Delete" || e.key === "Backspace") {
-            clearMainCanvas();
-        }
-    }}
-/>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="parent" on:contextmenu|preventDefault>
+<div class="parent" on:contextmenu|preventDefault use:keydown={clearKeys}>
     <div class="controlscontainer">
         <div class="controlscolumn" id="headerColumn">
             <h3>SevenPens <br /> Tablet Tester <br /> v0.910</h3>
@@ -48,11 +43,11 @@
                 <br />
                 <button
                     type="button"
-                    on:click={clearMainCanvas}>CLEAR</button
+                    onclick={clearMainCanvas}>CLEAR</button
                 >
                 <button
                     type="button"
-                    on:click={() => canvasAreaRef.saveCanvas()}>SAVE</button
+                    onclick={() => canvasAreaRef.saveCanvas()}>SAVE</button
                 >
             </p>
         </div>

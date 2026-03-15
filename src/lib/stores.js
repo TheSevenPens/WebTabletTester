@@ -1,4 +1,6 @@
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
+import { roundTo1DecimalPlaces } from './utils/numerics.js';
+import { MS_PER_SECOND } from './constants.js';
 import { OrderedRange } from './utils/ranges.js';
 import {
     STYLUS_PEN_COLOR,
@@ -33,8 +35,16 @@ export const paintCurrentDabSettings = writable({ ...INITIAL_PAINT_CURRENT_DAB_S
 // Current Paint State
 export const paintState = writable({ ...INITIAL_PAINT_STATE });
 
-// Statistics
+// Statistics (rate is derived, not stored)
 export const paintStrokeStats = writable({ ...INITIAL_PAINT_STROKE_STATS });
+
+/** Derived store: stroke stats with rate = events/sec computed from duration and ptreventCount. */
+export const paintStrokeStatsWithRate = derived(paintStrokeStats, ($s) => {
+    const rate = $s.duration > 0
+        ? roundTo1DecimalPlaces(($s.ptreventCount / $s.duration) * MS_PER_SECOND)
+        : 0;
+    return { ...$s, rate };
+});
 
 // UI View State
 export const uiState = writable({

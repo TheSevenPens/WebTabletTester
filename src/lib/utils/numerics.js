@@ -13,6 +13,9 @@ export function format1Digit4Decimals(num) {
 
 /**
  * Round to n decimal places. Use this for arbitrary precision; use roundTo1DecimalPlaces etc. for convenience.
+ * @param {number} v
+ * @param {number} n
+ * @returns {number}
  */
 export function roundToNDecimalPlaces(v, n) {
     const factor = 10 ** n;
@@ -40,6 +43,13 @@ export function radiansToDegrees(r)
     return (r * (180 / Math.PI));
 }
 
+/**
+ * Quantize value in [0, 1] to `levels` discrete steps.
+ * @param {number} value - In [0, 1]
+ * @param {number} levels - Integer >= 2
+ * @returns {number}
+ * @throws {Error} If value or levels are invalid
+ */
 export function quantize(value, levels) 
 {
   if (typeof value !== 'number' || value < 0 || value > 1) {

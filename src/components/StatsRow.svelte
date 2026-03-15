@@ -1,10 +1,6 @@
 <script>
-    /** @type {string} */
-    export let label;
-    /** @type {string} */
-    export let value = '';
-    /** @type {string} - optional suffix (e.g. "px", "ms", "events/sec") */
-    export let suffix = '';
+    /** Svelte 5 $props. */
+    let { label, value = '', suffix = '' } = $props();
 </script>
 
 <span>{label}:</span>

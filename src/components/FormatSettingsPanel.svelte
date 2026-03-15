@@ -9,7 +9,7 @@
         MIN_STROKE_SIZES,
     } from "../lib/constants.js";
 
-    $: syncPaintSettingsToLegacy($paintSettings, legacyPaintSettings);
+    $effect(() => syncPaintSettingsToLegacy($paintSettings, legacyPaintSettings));
 </script>
 
 <div class="controlscolumn" id="strokeFormatColumn">
