@@ -1,3 +1,12 @@
+:root {
+    --panel-bg: #f7f7f7;
+    --panel-border: #e4e4e4;
+    --panel-text: rgb(0, 0, 0);
+    --column-width-header: 110px;
+    --column-width-format: 160px;
+    --column-width-default: 140px;
+}
+
 * {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -75,51 +84,47 @@ select {
 }
 
 .controlscolumn {
-    background-color: #f7f7f7;
+    background-color: var(--panel-bg);
     border-width: 1px;
     border-style: solid;
-    border-color: #e4e4e4;
-    color: rgb(0, 0, 0);
+    border-color: var(--panel-border);
+    color: var(--panel-text);
     padding: 2px;
     text-align: left;
     flex: 1;
-    /* Each item takes equal space */
+}
+
+.controlscolumn--narrow {
+    flex: 0 0 var(--column-width-header);
+    width: var(--column-width-header);
+}
+
+.controlscolumn--format {
+    flex: 0 0 var(--column-width-format);
+    width: var(--column-width-format);
+}
+
+.controlscolumn--default {
+    flex: 0 0 var(--column-width-default);
+    width: var(--column-width-default);
 }
 
 div.controlscolumn#headerColumn {
-    flex: 0 0 110px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 110px;
+    flex: 0 0 var(--column-width-header);
+    width: var(--column-width-header);
 }
 
 div.controlscolumn#strokeFormatColumn {
-    flex: 0 0 160px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 160px;
+    flex: 0 0 var(--column-width-format);
+    width: var(--column-width-format);
 }
 
-div.controlscolumn#pointerColumn {
-    flex: 0 0 140px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 140px;
-}
-
-div.controlscolumn#sensorsColumn {
-    flex: 0 0 140px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 140px;
-}
-
-div.controlscolumn#advancedColumn {
-    flex: 0 0 140px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 140px;
-}
-
+div.controlscolumn#pointerColumn,
+div.controlscolumn#sensorsColumn,
+div.controlscolumn#advancedColumn,
 div.controlscolumn#strokeStatsPanel {
-    flex: 0 0 140px;
-    /* Fixed width: don't grow, don't shrink, 200px base */
-    width: 140px;
+    flex: 0 0 var(--column-width-default);
+    width: var(--column-width-default);
 }
 
 
@@ -136,15 +141,14 @@ div.controlscolumn#strokeStatsPanel {
 }
 
 .basiccolumn {
-    background-color: #f7f7f7;
+    background-color: var(--panel-bg);
     border-width: 0px;
     border-style: solid;
-    border-color: #e4e4e4;
-    color: rgb(0, 0, 0);
+    border-color: var(--panel-border);
+    color: var(--panel-text);
     padding: 0px;
     text-align: left;
     flex: 1;
-    /* Each item takes equal space */
 }
 
 .smoothing-flyout {
@@ -152,8 +156,8 @@ div.controlscolumn#strokeStatsPanel {
     top: 100%;
     left: 0;
     margin-top: 5px;
-    background-color: #f7f7f7;
-    border: 1px solid #e4e4e4;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--panel-border);
     padding: 10px;
     min-width: 200px;
     z-index: 1000;

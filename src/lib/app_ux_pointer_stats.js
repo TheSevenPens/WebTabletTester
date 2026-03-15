@@ -2,6 +2,7 @@ import { format1Digit4Decimals, format4Digits1Decimal } from './utils/numerics.j
 import { paintCurrentDabSettings } from './paint_data.js';
 import { buttonToString } from './app_pointer.js';
 import { pointerLiveStats } from './stores.js';
+import { POINTER_LIVE_STATS_DEFAULT } from './initial_state.js';
 
 export function updateUxPointerStats(ptrRec) {
     pointerLiveStats.update(stats => {
@@ -33,19 +34,5 @@ export function updateUxPointerStats(ptrRec) {
 
 
 export function clearUxPointerStats() {
-    pointerLiveStats.set({
-        buttons: "-",
-        buttonString: "-",
-        canvasPosXProcessed: "\u00a0---.-",
-        canvasPosYProcessed: "\u00a0---.-",
-        size: "-",
-        pressureProcessed: "-.----",
-        barrelRotation: "-",
-        tiltXProcessed: "\u00a0\u00a0\u00a0-.-",
-        tiltYProcessed: "\u00a0\u00a0\u00a0-.-",
-        tiltAltitudeProcessed: "\u00a0\u00a0--.-",
-        tiltAzimuthProcessed: "\u00a0\u00a0--.-",
-        velocity: "\u00a0---.-",
-        direction: "\u00a0---.-"
-    });
+    pointerLiveStats.set({ ...POINTER_LIVE_STATS_DEFAULT });
 }

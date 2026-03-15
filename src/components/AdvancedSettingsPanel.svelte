@@ -6,6 +6,9 @@
     } from "../lib/stores.js";
     import { paintSettings as legacyPaintSettings } from "../lib/paint_data.js";
     import { processingSettings as legacyProcessingSettings } from "../lib/paint_data.js";
+    import { syncPaintSettingsToLegacy, syncProcessingSettingsToLegacy } from "../lib/syncStoresToLegacy.js";
+    import { resetAllProcessingToDefault, setProcessingAndNotify } from "../lib/processing_helpers.js";
+    import { PRESSURE_QUANT_OPTIONS } from "../lib/constants.js";
     import SliderWithNumber from "./SliderWithNumber.svelte";
     import CurveGraph from "./CurveGraph.svelte";
 
@@ -14,48 +17,14 @@
     function resetAdvancedSettings() {
         $paintSettings.eraseOnStrokeStart = false;
         $uiState.showStrokeStats = false;
-
-        $processingSettings.posXSmoother.setSmoothingAmount(0.0);
-        $processingSettings.posYSmoother.setSmoothingAmount(0.0);
-        $processingSettings.pressureSmoother.setSmoothingAmount(0.0);
-        $processingSettings.tiltXSmoother.setSmoothingAmount(0.0);
-        $processingSettings.tiltYSmoother.setSmoothingAmount(0.0);
-        $processingSettings.tiltAzimuthSmoother.setSmoothingAmount(0.0);
-        $processingSettings.tiltAltitudeSmoother.setSmoothingAmount(0.0);
-        $processingSettings.pressureCurveAmount.setCurveAmount(0.0);
-        $processingSettings.pressureQuant = 0;
-
-        // Force Svelte store update
+        resetAllProcessingToDefault($processingSettings);
         $processingSettings = $processingSettings;
         $paintSettings = $paintSettings;
         $uiState = $uiState;
     }
 
-    $: {
-        legacyPaintSettings.eraseOnStrokeStart =
-            $paintSettings.eraseOnStrokeStart;
-        legacyProcessingSettings.posXSmoother.setSmoothingAmount(
-            $processingSettings.posXSmoother.amount,
-        );
-        legacyProcessingSettings.posYSmoother.setSmoothingAmount(
-            $processingSettings.posYSmoother.amount,
-        );
-        legacyProcessingSettings.pressureSmoother.setSmoothingAmount(
-            $processingSettings.pressureSmoother.amount,
-        );
-        legacyProcessingSettings.tiltXSmoother.setSmoothingAmount(
-            $processingSettings.tiltXSmoother.amount,
-        );
-        legacyProcessingSettings.tiltYSmoother.setSmoothingAmount(
-            $processingSettings.tiltYSmoother.amount,
-        );
-        legacyProcessingSettings.pressureCurveAmount.setCurveAmount(
-            $processingSettings.pressureCurveAmount.amount,
-        );
-        legacyProcessingSettings.pressureQuant = parseInt(
-            $processingSettings.pressureQuant.toString() || "0",
-        );
-    }
+    $: syncPaintSettingsToLegacy($paintSettings, legacyPaintSettings);
+    $: syncProcessingSettingsToLegacy($processingSettings, legacyProcessingSettings);
 </script>
 
 <div class="controlscolumn" id="advancedColumn" style="position: relative;">
@@ -94,13 +63,10 @@
                 label="Position smoothing:"
                 value={$processingSettings.posXSmoother.amount}
                 on:input={(e) => {
-                    $processingSettings.posXSmoother.setSmoothingAmount(
-                        e.detail.value,
-                    );
-                    $processingSettings.posYSmoother.setSmoothingAmount(
-                        e.detail.value,
-                    );
-                    $processingSettings = $processingSettings;
+                    $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
+                        p.posXSmoother.setSmoothingAmount(e.detail.value);
+                        p.posYSmoother.setSmoothingAmount(e.detail.value);
+                    });
                 }}
             />
             <br />
@@ -110,10 +76,9 @@
                 label="Pressure smoothing:"
                 value={$processingSettings.pressureSmoother.amount}
                 on:input={(e) => {
-                    $processingSettings.pressureSmoother.setSmoothingAmount(
-                        e.detail.value,
-                    );
-                    $processingSettings = $processingSettings;
+                    $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
+                        p.pressureSmoother.setSmoothingAmount(e.detail.value);
+                    });
                 }}
             />
             <br />
@@ -123,13 +88,10 @@
                 label="Tilt smoothing:"
                 value={$processingSettings.tiltXSmoother.amount}
                 on:input={(e) => {
-                    $processingSettings.tiltXSmoother.setSmoothingAmount(
-                        e.detail.value,
-                    );
-                    $processingSettings.tiltYSmoother.setSmoothingAmount(
-                        e.detail.value,
-                    );
-                    $processingSettings = $processingSettings;
+                    $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
+                        p.tiltXSmoother.setSmoothingAmount(e.detail.value);
+                        p.tiltYSmoother.setSmoothingAmount(e.detail.value);
+                    });
                 }}
             />
             <br />
@@ -138,18 +100,9 @@
                 id="pressureQuantSelect"
                 bind:value={$processingSettings.pressureQuant}
             >
-                <option value={0} selected>OFF</option>
-                <option value={4}>4</option>
-                <option value={8}>8</option>
-                <option value={16}>16</option>
-                <option value={32}>32</option>
-                <option value={64}>64</option>
-                <option value={128}>128</option>
-                <option value={256}>256</option>
-                <option value={1024}>1024</option>
-                <option value={2048}>2048</option>
-                <option value={4096}>4096</option>
-                <option value={8192}>8192</option>
+                {#each PRESSURE_QUANT_OPTIONS as { value, label }}
+                    <option value={value}>{label}</option>
+                {/each}
             </select>
             <br />
 
@@ -164,10 +117,9 @@
                         list="pressureCurveTickmarks"
                         value={$processingSettings.pressureCurveAmount.amount}
                         on:input={(e) => {
-                            $processingSettings.pressureCurveAmount.setCurveAmount(
-                                e.detail.value,
-                            );
-                            $processingSettings = $processingSettings;
+                            $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
+                                p.pressureCurveAmount.setCurveAmount(e.detail.value);
+                            });
                         }}
                     />
                     <datalist id="pressureCurveTickmarks">

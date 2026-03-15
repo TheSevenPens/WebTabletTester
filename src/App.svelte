@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from "svelte";
     import { clearCanvas } from "./lib/utils/draw.js";
     import FormatSettingsPanel from "./components/FormatSettingsPanel.svelte";
     import PointerStatsPanel from "./components/PointerStatsPanel.svelte";
@@ -13,16 +12,18 @@
     /** @type {HTMLCanvasElement} */
     let mainCanvas;
     let canvasAreaRef;
+
+    function clearMainCanvas() {
+        if (mainCanvas) {
+            clearCanvas(mainCanvas.getContext("2d"), mainCanvas, $appSettings.canvasColor);
+        }
+    }
 </script>
 
 <svelte:window
     on:keydown={(e) => {
         if (e.key === "Delete" || e.key === "Backspace") {
-            clearCanvas(
-                mainCanvas.getContext("2d"),
-                mainCanvas,
-                $appSettings.canvasColor,
-            );
+            clearMainCanvas();
         }
     }}
 />
@@ -47,12 +48,7 @@
                 <br />
                 <button
                     type="button"
-                    on:click={() =>
-                        clearCanvas(
-                            mainCanvas.getContext("2d"),
-                            mainCanvas,
-                            $appSettings.canvasColor,
-                        )}>CLEAR</button
+                    on:click={clearMainCanvas}>CLEAR</button
                 >
                 <button
                     type="button"

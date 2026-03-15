@@ -11,24 +11,28 @@ export function format1Digit4Decimals(num) {
 }
 
 
-export function roundTo4DecimalPlaces(v)
-{
-  return Math.round(v * 10000) / 10000;
+/**
+ * Round to n decimal places. Use this for arbitrary precision; use roundTo1DecimalPlaces etc. for convenience.
+ */
+export function roundToNDecimalPlaces(v, n) {
+    const factor = 10 ** n;
+    return Math.round(v * factor) / factor;
 }
 
-export function roundTo3DecimalPlaces(v) 
-{
-  return Math.round(v * 1000) / 1000;
+export function roundTo4DecimalPlaces(v) {
+    return roundToNDecimalPlaces(v, 4);
 }
 
-export function roundTo2DecimalPlaces(v) 
-{
-  return Math.round(v * 100) / 100;
+export function roundTo3DecimalPlaces(v) {
+    return roundToNDecimalPlaces(v, 3);
 }
 
-export function roundTo1DecimalPlaces(v) 
-{
-  return Math.round(v * 10) / 10;
+export function roundTo2DecimalPlaces(v) {
+    return roundToNDecimalPlaces(v, 2);
+}
+
+export function roundTo1DecimalPlaces(v) {
+    return roundToNDecimalPlaces(v, 1);
 }
 
 export function radiansToDegrees(r)

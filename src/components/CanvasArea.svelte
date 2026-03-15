@@ -13,6 +13,7 @@
         onPointerLeave,
         defaultPtrEventHandlerDoNothing,
     } from "../lib/app_pointer.js";
+    import { clearCanvas } from "../lib/utils/draw.js";
 
     /** @type {HTMLCanvasElement} */
     export let canvas;
@@ -22,16 +23,17 @@
 
     const dispatch = createEventDispatcher();
 
+    function handlePointer(e) {
+        pointerEventHandler(e, canvas, $appSettings, $processingSettings, $paintState, $paintStrokeStats);
+    }
+
     onMount(() => {
         if (canvas.width < window.innerWidth) {
             canvas.width = window.innerWidth - 50;
         }
-
-        // Initialize with default color
         const ctx = canvas.getContext("2d");
         if (ctx) {
-            ctx.fillStyle = $appSettings.canvasColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            clearCanvas(ctx, canvas, $appSettings.canvasColor);
         }
     });
 
@@ -59,34 +61,10 @@
         id="myCanvas"
         height="800"
         style="border: 10px solid #d1d1d1"
-        on:pointerdown={(e) =>
-            pointerEventHandler(
-                e,
-                canvas,
-                $appSettings,
-                $processingSettings,
-                $paintState,
-                $paintStrokeStats,
-            )}
+        on:pointerdown={handlePointer}
         on:pointerup={onPointerUp}
-        on:pointercancel={(e) =>
-            pointerEventHandler(
-                e,
-                canvas,
-                $appSettings,
-                $processingSettings,
-                $paintState,
-                $paintStrokeStats,
-            )}
-        on:pointermove={(e) =>
-            pointerEventHandler(
-                e,
-                canvas,
-                $appSettings,
-                $processingSettings,
-                $paintState,
-                $paintStrokeStats,
-            )}
+        on:pointercancel={handlePointer}
+        on:pointermove={handlePointer}
         on:pointerover={defaultPtrEventHandlerDoNothing}
         on:pointerout={defaultPtrEventHandlerDoNothing}
         on:pointerenter={onPointerEnter}
