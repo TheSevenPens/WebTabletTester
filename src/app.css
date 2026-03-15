@@ -176,6 +176,11 @@ div.controlscolumn#strokeStatsPanel {
         width 0.2s ease;
 }
 
+.advanced-panel--right {
+    border-right: 1px solid var(--panel-border);
+    border-left: none;
+}
+
 .advanced-panel.minimized {
     flex: 0 0 var(--advanced-panel-minimized-width);
     width: var(--advanced-panel-minimized-width);
@@ -209,6 +214,11 @@ div.controlscolumn#strokeStatsPanel {
     transform: rotate(180deg);
     white-space: nowrap;
     font-size: 10px;
+}
+
+.advanced-panel--right.minimized .advanced-panel-title {
+    writing-mode: vertical-lr;
+    transform: none;
 }
 
 .advanced-panel-toggle {
@@ -298,6 +308,11 @@ div.controlscolumn#strokeStatsPanel {
 
 .advanced-panel-minimized-label:hover {
     background-color: #eee;
+}
+
+.advanced-panel-minimized-label--right {
+    writing-mode: vertical-lr;
+    transform: none;
 }
 
 #canvasColumn {

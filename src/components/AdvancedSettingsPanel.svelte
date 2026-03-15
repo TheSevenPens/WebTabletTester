@@ -12,8 +12,6 @@
     import SmoothingSettings from './SmoothingSettings.svelte';
     import QuantizationSettings from './QuantizationSettings.svelte';
     import CurveSettings from './CurveSettings.svelte';
-    import BackgroundSettings from './BackgroundSettings.svelte';
-    import ConfigSettings from './ConfigSettings.svelte';
 
     const minimized = writable(true);
     function toggleMinimized() {
@@ -52,8 +50,6 @@
             <SmoothingSettings />
             <QuantizationSettings />
             <CurveSettings />
-            <BackgroundSettings />
-            <ConfigSettings />
 
             <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
                 <button type="button" onclick={resetAdvancedSettings}>RESET</button>

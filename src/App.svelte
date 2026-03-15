@@ -7,6 +7,7 @@
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
     import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
+    import RightSettingsPanel from './components/RightSettingsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
@@ -55,5 +56,7 @@
         <div class="controlscolumn" id="canvasColumn">
             <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
         </div>
+
+        <RightSettingsPanel />
     </div>
 </div>
