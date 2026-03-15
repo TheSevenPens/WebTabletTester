@@ -4,6 +4,7 @@
     import InfoPanel from './components/InfoPanel.svelte';
     import DocPanel from './components/DocPanel.svelte';
     import FormatSettingsPanel from './components/FormatSettingsPanel.svelte';
+    import ButtonsPanel from './components/ButtonsPanel.svelte';
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
     import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
@@ -34,6 +35,7 @@
             <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
             <FormatSettingsPanel />
             <ViewPanel />
+            <ButtonsPanel />
             <PointerStatsPanel />
 
             <SensorsPanel />
