@@ -9,6 +9,7 @@ import type { PaintSettings, ProcessingSettings } from './types';
  * Copy paint settings from store value into legacy object for paint_data consumers.
  */
 export function syncPaintSettingsToLegacy(storeValue: PaintSettings, legacy: any): void {
+    legacy.brushType = storeValue.brushType;
     legacy.brushSize = storeValue.brushSize;
     legacy.brushSizeControl = storeValue.brushSizeControl;
     legacy.brushColorControl = storeValue.brushColorControl;

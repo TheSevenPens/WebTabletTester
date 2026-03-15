@@ -99,9 +99,6 @@ export function getDabColor(ptrRec: PointerRecord, appSettings: any): string {
     else if (paintSettings.brushColorControl === "BARRELROTATION") {
         dabColor = getCETColor(ptrRec.barrelRotation);
     }
-    else if (paintSettings.brushColorControl === "ERASER") {
-        dabColor = appSettings.canvasColor;
-    }
     else if (paintSettings.brushColorControl === "RED") {
         // CANVAS COLOR TO COLOR
         dabColor = "rgba(250, 0, 0, 1.0)";
@@ -157,7 +154,7 @@ export function paintDab(ptrRec: PointerRecord, canvasEl: HTMLCanvasElement, app
             if (ptrRec.pressureRaw > 0 && appCanvasContext) {
                 const shouldErase =
                     ptrRec.buttons === pointerButtonCode.eraser ||
-                    paintSettings.brushColorControl === 'ERASER';
+                    paintSettings.brushType === 'ERASER';
 
                 if (shouldErase) {
                     appCanvasContext.save();
