@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
-import { roundTo1DecimalPlaces } from './utils/numerics.js';
-import { MS_PER_SECOND } from './constants.js';
-import { OrderedRange } from './utils/ranges.js';
+import { roundTo1DecimalPlaces } from './utils/numerics';
+import { MS_PER_SECOND } from './constants';
+import { OrderedRange } from './utils/ranges';
 import {
     STYLUS_PEN_COLOR,
     INITIAL_PAINT_SETTINGS,
@@ -10,7 +10,7 @@ import {
     INITIAL_PAINT_STATE,
     INITIAL_PAINT_STROKE_STATS,
     POINTER_LIVE_STATS_DEFAULT,
-} from './initial_state.js';
+} from './initial_state';
 
 // Re-export for consumers that expect it from stores
 export const settingStylusPenColor = STYLUS_PEN_COLOR;

@@ -1,37 +1,24 @@
-import { lerpPoint } from '../utils/interpolation.js';
-import { CURVE_GRAPH_STROKE } from '../constants.js';
+import { lerpPoint } from '../utils/interpolation';
+import { CURVE_GRAPH_STROKE } from '../constants';
+import type { CurveLike } from '../types';
+import type { Position } from '../utils/geometry';
 
 /**
  * Get 2D context for a canvas. Returns null if canvas is missing or context is unavailable.
- * @param {HTMLCanvasElement | null | undefined} canvas
- * @returns {CanvasRenderingContext2D | null}
  */
-export function getCanvas2DContext(canvas) {
+export function getCanvas2DContext(canvas: HTMLCanvasElement | null | undefined): CanvasRenderingContext2D | null {
   if (!canvas || typeof canvas.getContext !== 'function') return null;
   const ctx = canvas.getContext('2d');
   return ctx;
 }
 
-/**
- * @param {CanvasRenderingContext2D | null} canvasContext
- * @param {HTMLCanvasElement} canvasEl
- * @param {string} canvasColor
- */
-export function clearCanvas(canvasContext, canvasEl, canvasColor) {
+export function clearCanvas(canvasContext: CanvasRenderingContext2D | null, canvasEl: HTMLCanvasElement, canvasColor: string): void {
   if (!canvasContext) return;
   canvasContext.fillStyle = canvasColor;
   canvasContext.fillRect(0, 0, canvasEl.width, canvasEl.height);
 }
 
-/**
- * @param {CanvasRenderingContext2D | null} canvasContext
- * @param {{ x: number; y: number }} fromPos
- * @param {{ x: number; y: number }} toPos
- * @param {number} width
- * @param {string} color
- * @param {string} linecap
- */
-export function drawLine(canvasContext, fromPos, toPos, width, color, linecap) {
+export function drawLine(canvasContext: CanvasRenderingContext2D | null, fromPos: { x: number, y: number }, toPos: { x: number, y: number }, width: number, color: string, linecap: CanvasLineCap): void {
   if (!canvasContext) return;
   canvasContext.lineWidth = width;
   canvasContext.strokeStyle = color;
@@ -44,12 +31,7 @@ export function drawLine(canvasContext, fromPos, toPos, width, color, linecap) {
   canvasContext.stroke();
 }
 
-/**
- * @param {CanvasRenderingContext2D | null} canvasContext
- * @param {HTMLCanvasElement} canvasEl
- * @param {{ apply: (val: number) => number }} pressureCurveAmount
- */
-export function drawPressureCurve(canvasContext, canvasEl, pressureCurveAmount) {
+export function drawPressureCurve(canvasContext: CanvasRenderingContext2D | null, canvasEl: HTMLCanvasElement, pressureCurveAmount: CurveLike): void {
   if (!canvasContext) return;
   canvasContext.clearRect(0, 0, canvasEl.width, canvasEl.height);
   canvasContext.beginPath();
@@ -73,4 +55,3 @@ export function drawPressureCurve(canvasContext, canvasEl, pressureCurveAmount) 
   canvasContext.lineWidth = 1;
   canvasContext.stroke();
 }
-

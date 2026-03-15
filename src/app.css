@@ -30,7 +30,7 @@
 }
 
 * {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -55,7 +55,7 @@ p {
 }
 
 .monospace {
-    font-family: "Consolas", "Monaco", "Courier New", Courier, monospace;
+    font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace;
 }
 
 div {
@@ -155,7 +155,9 @@ div.controlscolumn#strokeStatsPanel {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: min-width 0.2s ease, width 0.2s ease;
+    transition:
+        min-width 0.2s ease,
+        width 0.2s ease;
 }
 
 .advanced-panel.minimized {
@@ -257,7 +259,6 @@ div.controlscolumn#strokeStatsPanel {
     display: flex;
     flex-direction: column;
 }
-
 
 .basiccontainer {
     display: flex;

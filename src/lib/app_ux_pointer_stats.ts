@@ -1,12 +1,13 @@
-import { format1Digit4Decimals, format4Digits1Decimal } from './utils/numerics.js';
-import { paintCurrentDabSettings } from './paint_data.js';
-import { buttonToString } from './app_pointer.js';
-import { pointerLiveStats } from './stores.js';
-import { POINTER_LIVE_STATS_DEFAULT } from './initial_state.js';
+import { format1Digit4Decimals, format4Digits1Decimal } from './utils/numerics';
+import { paintCurrentDabSettings } from './paint_data';
+import { buttonToString } from './app_pointer';
+import { pointerLiveStats } from './stores';
+import { POINTER_LIVE_STATS_DEFAULT } from './initial_state';
+import type { PointerRecord } from './pointer_record';
 
-export function updateUxPointerStats(ptrRec) {
+export function updateUxPointerStats(ptrRec: PointerRecord): void {
     pointerLiveStats.update(stats => {
-        stats.buttons = ptrRec.buttons;
+        stats.buttons = ptrRec.buttons.toString();
         stats.buttonString = buttonToString(ptrRec.buttons);
         stats.pressureProcessed = format1Digit4Decimals(ptrRec.pressureProcessed);
         stats.tiltXProcessed = format4Digits1Decimal(ptrRec.tiltXProcessed);
@@ -32,7 +33,6 @@ export function updateUxPointerStats(ptrRec) {
     });
 }
 
-
-export function clearUxPointerStats() {
+export function clearUxPointerStats(): void {
     pointerLiveStats.set({ ...POINTER_LIVE_STATS_DEFAULT });
 }

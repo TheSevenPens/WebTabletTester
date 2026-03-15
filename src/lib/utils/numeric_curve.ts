@@ -1,22 +1,24 @@
 export class NumericCurve {
-  constructor(initialValue = 0.0) {
+  amount!: number;
+
+  constructor(initialValue: number = 0.0) {
     this.setCurveAmount(initialValue);
   }
 
 
-  setCurveAmount(value) {
+  setCurveAmount(value: number): void {
     this.amount = value;
   }
 
-  resetSettings() {
+  resetSettings(): void {
     this.setCurveAmount(0.0);
   }
 
-  resetState() {
+  resetState(): void {
     // do nothing
   }
 
-  apply(input) {
+  apply(input: number): number {
     var output = input;
     const z = -1.0 * this.amount;
     if (z === 0.0) {
@@ -33,4 +35,3 @@ export class NumericCurve {
   }
 
 }
-

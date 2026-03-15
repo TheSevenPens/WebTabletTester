@@ -1,5 +1,5 @@
-import { paintStrokeStats as legacyStrokeStats } from './paint_data.js';
-import { paintStrokeStats, uiState } from './stores.js';
+import { paintStrokeStats as legacyStrokeStats } from './paint_data';
+import { paintStrokeStats, uiState } from './stores';
 import { get } from 'svelte/store';
 
 /** Sync legacy stroke stats into the store. Rate is computed via derived store paintStrokeStatsWithRate. */

@@ -1,15 +1,17 @@
-import { BRUSHSIZE_RANGE, paintCurrentDabSettings, paintSettings, paintState, paintStrokeStats, processingSettings, settingStylusPenColor } from './paint_data.js';
-import { clampToRange } from './utils/ranges.js';
-import { lerp } from './utils/interpolation.js';
-import { clearCanvas, drawLine, getCanvas2DContext } from './utils/draw.js';
-import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './utils/color.js';
-import { Position } from './utils/geometry.js';
-import { roundTo3DecimalPlaces } from './utils/numerics.js';
-import { pointerButtonCode, pointerConstants } from './app_pointer.js';
-import { HUE_RANGE, MIN_TILT_SIZE_OFFSET } from './constants.js';
+import { BRUSHSIZE_RANGE, paintCurrentDabSettings, paintSettings, paintState, paintStrokeStats, processingSettings, settingStylusPenColor } from './paint_data';
+import { clampToRange } from './utils/ranges';
+import { lerp } from './utils/interpolation';
+import { clearCanvas, drawLine, getCanvas2DContext } from './utils/draw';
+import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './utils/color';
+import { Position } from './utils/geometry';
+import { roundTo3DecimalPlaces } from './utils/numerics';
+import { pointerButtonCode, pointerConstants } from './app_pointer';
+import { HUE_RANGE, MIN_TILT_SIZE_OFFSET } from './constants';
+import type { PointerRecord } from './pointer_record';
+import type { PaintSettings } from './types';
 
 
-export function paintStrokeStart(settings, canvasEl, appSettings) {
+export function paintStrokeStart(settings: PaintSettings, canvasEl: HTMLCanvasElement, appSettings: any): void {
     if (settings.eraseOnStrokeStart) {
         const ctx = getCanvas2DContext(canvasEl);
         if (ctx) clearCanvas(ctx, canvasEl, appSettings.canvasColor);
@@ -17,17 +19,17 @@ export function paintStrokeStart(settings, canvasEl, appSettings) {
     paintState.isDrawing = true;
     paintStrokeStats.ptreventCount = 0;
     paintStrokeStats.startTime = performance.now();
-    processingSettings.posXSmoother.resetState();
-    processingSettings.posYSmoother.resetState();
-    processingSettings.pressureSmoother.resetState();
-    processingSettings.tiltXSmoother.resetState();
-    processingSettings.tiltYSmoother.resetState();
-    processingSettings.tiltAzimuthSmoother.resetState();
-    processingSettings.tiltAltitudeSmoother.resetState();
-    processingSettings.velocitySmoother.resetState();
+    processingSettings.posXSmoother.resetState!();
+    processingSettings.posYSmoother.resetState!();
+    processingSettings.pressureSmoother.resetState!();
+    processingSettings.tiltXSmoother.resetState!();
+    processingSettings.tiltYSmoother.resetState!();
+    processingSettings.tiltAzimuthSmoother.resetState!();
+    processingSettings.tiltAltitudeSmoother.resetState!();
+    processingSettings.velocitySmoother.resetState!();
 }
 
-export function paintStrokeStop() {
+export function paintStrokeStop(): void {
     paintState.isDrawing = false;
     paintStrokeStats.strokeCount = paintStrokeStats.strokeCount + 1;
     paintStrokeStats.endTime = performance.now();
@@ -37,10 +39,8 @@ export function paintStrokeStop() {
 
 /**
  * Compute dab size from pointer record and current paint settings (brush size control, min size).
- * @param {import('./pointer_record.js').PointerRecord} ptrRec
- * @returns {number}
  */
-export function getDabSize(ptrRec) {
+export function getDabSize(ptrRec: PointerRecord): number {
     let newSize = paintSettings.brushSize;
 
     // HANDLE DAB SIZE
@@ -70,11 +70,8 @@ export function getDabSize(ptrRec) {
 
 /**
  * Compute dab color from pointer record and app settings (brush color control, eraser, etc.).
- * @param {import('./pointer_record.js').PointerRecord} ptrRec
- * @param {{ canvasColor: string }} appSettings
- * @returns {string} CSS color string
  */
-export function getDabColor(ptrRec, appSettings) {
+export function getDabColor(ptrRec: PointerRecord, appSettings: any): string {
     let dabColor = settingStylusPenColor;
 
     if (ptrRec.buttons === pointerButtonCode.eraser) {
@@ -113,7 +110,7 @@ export function getDabColor(ptrRec, appSettings) {
     return dabColor;
 }
 
-export function updateDabSettings(ptrRec, appSettings) {
+export function updateDabSettings(ptrRec: PointerRecord, appSettings: any): void {
     // SIZE
     const newSize = getDabSize(ptrRec);
     paintCurrentDabSettings.brushSize = newSize;
@@ -124,23 +121,19 @@ export function updateDabSettings(ptrRec, appSettings) {
 
 /**
  * Handle one pointer event: start stroke, or continue stroke (draw segment), or no-op.
- * @param {import('./pointer_record.js').PointerRecord} ptrRec
- * @param {HTMLCanvasElement} canvasEl
- * @param {{ canvasColor: string }} appSettings
- * @returns {void}
  */
-export function paintDab(ptrRec, canvasEl, appSettings) {
+export function paintDab(ptrRec: PointerRecord, canvasEl: HTMLCanvasElement, appSettings: any): void {
     const appCanvasContext = getCanvas2DContext(canvasEl);
     if (ptrRec.pressureRaw <= 0) {
         // If No pressure input
         // - reset any smoothing
-        processingSettings.posXSmoother.resetState();
-        processingSettings.posYSmoother.resetState();
-        processingSettings.pressureSmoother.resetState();
-        processingSettings.tiltXSmoother.resetState();
-        processingSettings.tiltYSmoother.resetState();
-        processingSettings.tiltAzimuthSmoother.resetState();
-        processingSettings.tiltAltitudeSmoother.resetState();
+        processingSettings.posXSmoother.resetState!();
+        processingSettings.posYSmoother.resetState!();
+        processingSettings.pressureSmoother.resetState!();
+        processingSettings.tiltXSmoother.resetState!();
+        processingSettings.tiltYSmoother.resetState!();
+        processingSettings.tiltAzimuthSmoother.resetState!();
+        processingSettings.tiltAltitudeSmoother.resetState!();
 
     }
 
@@ -167,7 +160,7 @@ export function paintDab(ptrRec, canvasEl, appSettings) {
                     currentPos,
                     paintCurrentDabSettings.brushSize,
                     paintCurrentDabSettings.brushColor,
-                    paintSettings.linecap);
+                    paintSettings.linecap as CanvasLineCap);
             }
 
             paintState.canvasPosOld = currentPos;
@@ -175,4 +168,3 @@ export function paintDab(ptrRec, canvasEl, appSettings) {
     }
 
 }
-

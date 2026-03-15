@@ -3,7 +3,10 @@
 //
 export class Position
 {
-    constructor(x, y) 
+    x: number;
+    y: number;
+
+    constructor(x: number, y: number) 
     {
         this.x = x;
         this.y = y;
@@ -15,7 +18,10 @@ export class Position
 //
 export class Size
 {
-    constructor(w, h) 
+    width: number;
+    height: number;
+
+    constructor(w: number, h: number) 
     {
         this.width = w;
         this.height = h;

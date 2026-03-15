@@ -1,11 +1,11 @@
-import { settingStylusPenColor, PRESSURE_RANGE, BRUSHSIZE_RANGE } from './stores.js';
+import { settingStylusPenColor, PRESSURE_RANGE, BRUSHSIZE_RANGE } from './stores';
 import {
     INITIAL_PAINT_SETTINGS,
     createInitialProcessingSettings,
     INITIAL_PAINT_CURRENT_DAB_SETTINGS,
     INITIAL_PAINT_STATE,
     INITIAL_PAINT_STROKE_STATS,
-} from './initial_state.js';
+} from './initial_state';
 
 export { settingStylusPenColor, PRESSURE_RANGE, BRUSHSIZE_RANGE };
 

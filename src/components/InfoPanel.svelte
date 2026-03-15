@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     /** @type {() => void} */
     let { onClear = () => {}, onSave = () => {} } = $props();
 </script>

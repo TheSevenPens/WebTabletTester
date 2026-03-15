@@ -2,8 +2,8 @@
  * Single source of truth for initial/default state.
  * Used by stores.js and paint_data.js so structure is defined once.
  */
-import { NumericSmoother } from './utils/numeric_smoother.js';
-import { NumericCurve } from './utils/numeric_curve.js';
+import { NumericSmoother } from './utils/numeric_smoother';
+import { NumericCurve } from './utils/numeric_curve';
 
 export const STYLUS_PEN_COLOR = 'black';
 

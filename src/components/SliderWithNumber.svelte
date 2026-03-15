@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     /** Controlled slider: parent owns value and provides onInput(newValue) callback. Svelte 5 $props. */
     let {
         label = '',

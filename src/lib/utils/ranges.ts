@@ -3,7 +3,10 @@
 //
 export class OrderedRange
 {
-    constructor(min,max)
+    Min: number;
+    Max: number;
+
+    constructor(min: number, max: number)
     {
         this.Min = min;
         this.Max = max;
@@ -13,7 +16,7 @@ export class OrderedRange
 /////////////////////////////////////////////////////////////////////////
 // clamp 
 //
-export function clamp(v, lower, upper) 
+export function clamp(v: number, lower: number, upper: number): number 
 {
     return Math.min(Math.max(v, lower), upper);
 }
@@ -21,7 +24,7 @@ export function clamp(v, lower, upper)
 /////////////////////////////////////////////////////////////////////////
 // clamp to range
 //
-export function clampToRange(v, r) 
+export function clampToRange(v: number, r: OrderedRange): number 
 {
     return clamp(v, r.Min, r.Max);
 }

@@ -1,6 +1,6 @@
-<script>
-    import { paintStrokeStatsWithRate } from "../lib/stores.js";
-    import StatsRow from "./StatsRow.svelte";
+<script lang="ts">
+    import { paintStrokeStatsWithRate } from '../lib/stores';
+    import StatsRow from './StatsRow.svelte';
 </script>
 
 <div class="controlscolumn" id="strokeStatsPanel">

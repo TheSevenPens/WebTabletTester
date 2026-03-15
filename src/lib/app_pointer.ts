@@ -1,10 +1,11 @@
-import { clearUxPointerStats, updateUxPointerStats } from './app_ux_pointer_stats.js';
-import { updateUxStrokeStats } from './app_ux_stroke_stats.js';
-import { Position } from './utils/geometry.js';
-import { quantize } from './utils/numerics.js';
-import { paintDab, paintStrokeStop } from './paint.js';
-import { PointerRecord } from './pointer_record.js';
-import { paintStrokeStats as legacyStrokeStats } from './paint_data.js';
+import { clearUxPointerStats, updateUxPointerStats } from './app_ux_pointer_stats';
+import { updateUxStrokeStats } from './app_ux_stroke_stats';
+import { Position } from './utils/geometry';
+import { quantize } from './utils/numerics';
+import { paintDab, paintStrokeStop } from './paint';
+import { PointerRecord } from './pointer_record';
+import { paintStrokeStats as legacyStrokeStats } from './paint_data';
+import type { ProcessingSettings, PaintState, PaintStrokeStats } from './types';
 
 
 export const pointerButtonCode = {
@@ -31,11 +32,11 @@ const buttonNames = new Map([
     [pointerButtonCode.eraser, "eraser"],
 ]);
 
-export function buttonToString(button) {
+export function buttonToString(button: number): string {
     return buttonNames.get(button) ?? "unknown";
 }
 
-export function isTargetPointerEvent(ptrEvent) {
+export function isTargetPointerEvent(ptrEvent: PointerEvent): boolean {
     return (
         ptrEvent.pointerType === "mouse" ||
         ptrEvent.pointerType === "pen" ||
@@ -43,14 +44,14 @@ export function isTargetPointerEvent(ptrEvent) {
     );
 }
 
-export function defaultPtrEventHandlerDoNothing(_ptrEvent) {
+export function defaultPtrEventHandlerDoNothing(_ptrEvent: PointerEvent): void {
     // do nothing
 }
 
 /////////////////////////////////////////////////////////////////////////
 // Handle drawing for HTML5 Pointer Events. Thin orchestrator: filter → build record → apply.
 //
-export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingSettings, paintState, _paintStrokeStats) {
+export function pointerEventHandler(ptrEvent: PointerEvent, canvasEl: HTMLCanvasElement, appSettings: any, processingSettings: ProcessingSettings, paintState: PaintState, _paintStrokeStats: PaintStrokeStats): void {
     if (!isTargetPointerEvent(ptrEvent)) return;
 
     const canvasRect = canvasEl.getBoundingClientRect();
@@ -61,47 +62,39 @@ export function pointerEventHandler(ptrEvent, canvasEl, appSettings, processingS
 
 /**
  * Update live stats, perform paint, and persist state for next event.
- * @param {import('./pointer_record.js').PointerRecord} ptrRec
- * @param {HTMLCanvasElement} canvasEl
- * @param {{ canvasColor: string }} appSettings
- * @param {import('./types.js').PaintState} paintState
- * @returns {void}
  */
-export function applyPointerEvent(ptrRec, canvasEl, appSettings, paintState) {
+export function applyPointerEvent(ptrRec: PointerRecord, canvasEl: HTMLCanvasElement, appSettings: any, paintState: PaintState): void {
     updateUxPointerStats(ptrRec);
     paintDab(ptrRec, canvasEl, appSettings);
     paintState.canvasPosOldAllEvents = new Position(ptrRec.canvasPosXProcessed, ptrRec.canvasPosYProcessed);
     paintState.timeOld = ptrRec.time;
 }
 
-export function onPointerUp(_ptrEvent) {
+export function onPointerUp(_ptrEvent: PointerEvent): void {
     paintStrokeStop();
     updateUxStrokeStats();
 }
 
-export function onPointerEnter(_ptrEvent) {
+export function onPointerEnter(_ptrEvent: PointerEvent): void {
     document.body.style.cursor = "crosshair";
 }
 
-export function onPointerLeave(_ptrEvent) {
+export function onPointerLeave(_ptrEvent: PointerEvent): void {
     document.body.style.cursor = "default";
     clearUxPointerStats();
 }
 
 // Deprecated: HTML element binding is handled locally via CanvasArea.svelte event properties
 
-export function getPtrRec(canvasRect, ptrEvent, processingSettings, paintState) {
+export function getPtrRec(canvasRect: DOMRect, ptrEvent: PointerEvent, processingSettings: ProcessingSettings, paintState: PaintState): PointerRecord {
     legacyStrokeStats.ptreventCount = legacyStrokeStats.ptreventCount + 1;
     return new PointerRecord(canvasRect, ptrEvent, processingSettings, paintState);
 }
 
 /**
  * Apply quantization, curve, and smoothing to raw pressure.
- * @param {number} inputPressure - Raw pressure in [0, 1]
- * @param {import('./types.js').ProcessingSettings} processingSettings
- * @returns {number} Processed pressure in [0, 1]
  */
-export function processPressure(inputPressure, processingSettings) {
+export function processPressure(inputPressure: number, processingSettings: ProcessingSettings): number {
     let outputPressure = inputPressure;
     // FIRST QUANTIZE
     if (processingSettings.pressureQuant > 0) {

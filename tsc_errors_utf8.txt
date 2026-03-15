@@ -1,0 +1,166 @@
+﻿src/lib/actions/keydown.ts(7,25): error TS7006: Parameter '_node' implicitly has an 'any' type.
+src/lib/actions/keydown.ts(7,32): error TS7006: Parameter 'handlers' implicitly has an 'any' type.
+src/lib/actions/keydown.ts(8,22): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/lib/actions/keydown.ts(19,16): error TS7006: Parameter 'newHandlers' implicitly has an 'any' type.
+src/lib/app_pointer.ts(34,32): error TS7006: Parameter 'button' implicitly has an 'any' type.
+src/lib/app_pointer.ts(38,38): error TS7006: Parameter 'ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(46,49): error TS7006: Parameter '_ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,37): error TS7006: Parameter 'ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,47): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,57): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,70): error TS7006: Parameter 'processingSettings' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,90): error TS7006: Parameter 'paintState' implicitly has an 'any' type.
+src/lib/app_pointer.ts(53,102): error TS7006: Parameter '_paintStrokeStats' implicitly has an 'any' type.
+src/lib/app_pointer.ts(70,35): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/app_pointer.ts(70,43): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/app_pointer.ts(70,53): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/app_pointer.ts(70,66): error TS7006: Parameter 'paintState' implicitly has an 'any' type.
+src/lib/app_pointer.ts(77,29): error TS7006: Parameter '_ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(82,32): error TS7006: Parameter '_ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(86,32): error TS7006: Parameter '_ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(93,27): error TS7006: Parameter 'canvasRect' implicitly has an 'any' type.
+src/lib/app_pointer.ts(93,39): error TS7006: Parameter 'ptrEvent' implicitly has an 'any' type.
+src/lib/app_pointer.ts(93,49): error TS7006: Parameter 'processingSettings' implicitly has an 'any' type.
+src/lib/app_pointer.ts(93,69): error TS7006: Parameter 'paintState' implicitly has an 'any' type.
+src/lib/app_pointer.ts(104,33): error TS7006: Parameter 'inputPressure' implicitly has an 'any' type.
+src/lib/app_pointer.ts(104,48): error TS7006: Parameter 'processingSettings' implicitly has an 'any' type.
+src/lib/app_ux_pointer_stats.ts(7,38): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/paint.ts(12,34): error TS7006: Parameter 'settings' implicitly has an 'any' type.
+src/lib/paint.ts(12,44): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/paint.ts(12,54): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/paint.ts(43,28): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/paint.ts(77,29): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/paint.ts(77,37): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/paint.ts(116,35): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/paint.ts(116,43): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/paint.ts(132,26): error TS7006: Parameter 'ptrRec' implicitly has an 'any' type.
+src/lib/paint.ts(132,34): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/paint.ts(132,44): error TS7006: Parameter 'appSettings' implicitly has an 'any' type.
+src/lib/paint.ts(153,13): error TS2739: Type 'Position' is missing the following properties from type '{ x: number; y: number; }': x, y
+src/lib/paint.ts(173,13): error TS2739: Type 'Position' is missing the following properties from type '{ x: number; y: number; }': x, y
+src/lib/pointer_record.ts(8,17): error TS7006: Parameter 'canvasRect' implicitly has an 'any' type.
+src/lib/pointer_record.ts(8,29): error TS7006: Parameter 'ptrEvent' implicitly has an 'any' type.
+src/lib/pointer_record.ts(8,39): error TS7006: Parameter 'processingSettings' implicitly has an 'any' type.
+src/lib/pointer_record.ts(8,59): error TS7006: Parameter 'paintState' implicitly has an 'any' type.
+src/lib/pointer_record.ts(16,14): error TS2339: Property 'type' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(17,14): error TS2339: Property 'buttons' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(18,14): error TS2339: Property 'pointerType' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(20,14): error TS2339: Property 'screenPosX' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(21,14): error TS2339: Property 'screenPosY' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(23,14): error TS2339: Property 'canvasPosXRaw' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(24,14): error TS2339: Property 'canvasPosYRaw' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(26,14): error TS2339: Property 'canvasPosXProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(27,14): error TS2339: Property 'canvasPosYProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(29,14): error TS2339: Property 'pressureRaw' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(30,14): error TS2339: Property 'pressureProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(32,14): error TS2339: Property 'tiltX' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(33,14): error TS2339: Property 'tiltY' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(35,14): error TS2339: Property 'tiltAzimuth' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(36,14): error TS2339: Property 'tiltAltitude' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(38,14): error TS2339: Property 'tiltXProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(39,14): error TS2339: Property 'tiltYProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(41,14): error TS2339: Property 'tiltAzimuthProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(42,14): error TS2339: Property 'tiltAltitudeProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(44,14): error TS2339: Property 'barrelRotation' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(46,14): error TS2339: Property 'time' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(48,14): error TS2339: Property 'velocity' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(49,14): error TS2339: Property 'direction' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(52,29): error TS2339: Property 'canvasPosXProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(53,29): error TS2339: Property 'canvasPosYProcessed' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(56,34): error TS2339: Property 'time' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(67,26): error TS2339: Property 'velocity' does not exist on type 'PointerRecord'.
+src/lib/pointer_record.ts(68,26): error TS2339: Property 'direction' does not exist on type 'PointerRecord'.
+src/lib/processing_helpers.ts(12,45): error TS7006: Parameter 'processing' implicitly has an 'any' type.
+src/lib/processing_helpers.ts(30,40): error TS7006: Parameter 'processing' implicitly has an 'any' type.
+src/lib/processing_helpers.ts(30,52): error TS7006: Parameter 'updateFn' implicitly has an 'any' type.
+src/lib/syncStoresToLegacy.ts(12,43): error TS7006: Parameter 'storeValue' implicitly has an 'any' type.
+src/lib/syncStoresToLegacy.ts(12,55): error TS7006: Parameter 'legacy' implicitly has an 'any' type.
+src/lib/syncStoresToLegacy.ts(26,48): error TS7006: Parameter 'storeValue' implicitly has an 'any' type.
+src/lib/syncStoresToLegacy.ts(26,60): error TS7006: Parameter 'legacy' implicitly has an 'any' type.
+src/lib/utils/color.ts(4,15): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/lib/utils/color.ts(4,18): error TS7006: Parameter 'g' implicitly has an 'any' type.
+src/lib/utils/color.ts(4,21): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/lib/utils/color.ts(5,10): error TS2339: Property 'r' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(6,10): error TS2339: Property 'g' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(7,10): error TS2339: Property 'b' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(10,22): error TS7006: Parameter 'color1' implicitly has an 'any' type.
+src/lib/utils/color.ts(10,30): error TS7006: Parameter 'color2' implicitly has an 'any' type.
+src/lib/utils/color.ts(10,38): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/lib/utils/color.ts(20,31): error TS2339: Property 'r' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(21,31): error TS2339: Property 'g' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(22,31): error TS2339: Property 'b' does not exist on type 'RGBColor'.
+src/lib/utils/color.ts(37,30): error TS7006: Parameter 'angle' implicitly has an 'any' type.
+src/lib/utils/color.ts(37,37): error TS7006: Parameter 'colorStops' implicitly has an 'any' type.
+src/lib/utils/color.ts(37,49): error TS7006: Parameter 'angleStops' implicitly has an 'any' type.
+src/lib/utils/color.ts(59,29): error TS7006: Parameter 'twist' implicitly has an 'any' type.
+src/lib/utils/draw.ts(9,36): error TS7006: Parameter 'canvas' implicitly has an 'any' type.
+src/lib/utils/draw.ts(20,29): error TS7006: Parameter 'canvasContext' implicitly has an 'any' type.
+src/lib/utils/draw.ts(20,44): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/utils/draw.ts(20,54): error TS7006: Parameter 'canvasColor' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,26): error TS7006: Parameter 'canvasContext' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,41): error TS7006: Parameter 'fromPos' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,50): error TS7006: Parameter 'toPos' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,57): error TS7006: Parameter 'width' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,64): error TS7006: Parameter 'color' implicitly has an 'any' type.
+src/lib/utils/draw.ts(34,71): error TS7006: Parameter 'linecap' implicitly has an 'any' type.
+src/lib/utils/draw.ts(52,35): error TS7006: Parameter 'canvasContext' implicitly has an 'any' type.
+src/lib/utils/draw.ts(52,50): error TS7006: Parameter 'canvasEl' implicitly has an 'any' type.
+src/lib/utils/draw.ts(52,60): error TS7006: Parameter 'pressureCurveAmount' implicitly has an 'any' type.
+src/lib/utils/geometry.ts(6,17): error TS7006: Parameter 'x' implicitly has an 'any' type.
+src/lib/utils/geometry.ts(6,20): error TS7006: Parameter 'y' implicitly has an 'any' type.
+src/lib/utils/geometry.ts(8,14): error TS2339: Property 'x' does not exist on type 'Position'.
+src/lib/utils/geometry.ts(9,14): error TS2339: Property 'y' does not exist on type 'Position'.
+src/lib/utils/geometry.ts(18,17): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/lib/utils/geometry.ts(18,20): error TS7006: Parameter 'h' implicitly has an 'any' type.
+src/lib/utils/geometry.ts(20,14): error TS2339: Property 'width' does not exist on type 'Size'.
+src/lib/utils/geometry.ts(21,14): error TS2339: Property 'height' does not exist on type 'Size'.
+src/lib/utils/interpolation.ts(4,22): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(4,25): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(4,28): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(13,27): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(13,30): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(13,33): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/lib/utils/interpolation.ts(24,30): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/lib/utils/numeric_curve.ts(7,18): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/lib/utils/numeric_curve.ts(8,10): error TS2339: Property 'amount' does not exist on type 'NumericCurve'.
+src/lib/utils/numeric_curve.ts(19,9): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/lib/utils/numeric_curve.ts(21,27): error TS2339: Property 'amount' does not exist on type 'NumericCurve'.
+src/lib/utils/numeric_smoother.ts(2,15): error TS7006: Parameter 'amount' implicitly has an 'any' type.
+src/lib/utils/numeric_smoother.ts(9,22): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/lib/utils/numeric_smoother.ts(11,10): error TS2339: Property 'amount' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(21,10): error TS2339: Property 'oldSmoothed' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(24,9): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/lib/utils/numeric_smoother.ts(27,14): error TS2339: Property 'oldSmoothed' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(29,18): error TS2339: Property 'amount' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(31,36): error TS2339: Property 'amount' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(32,64): error TS2339: Property 'oldSmoothed' does not exist on type 'NumericSmoother'.
+src/lib/utils/numeric_smoother.ts(35,10): error TS2339: Property 'oldSmoothed' does not exist on type 'NumericSmoother'.
+src/lib/utils/numerics.ts(4,39): error TS7006: Parameter 'num' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(9,39): error TS7006: Parameter 'num' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(20,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(20,42): error TS7006: Parameter 'n' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(25,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(29,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(33,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(37,39): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(41,34): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(53,26): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(53,33): error TS7006: Parameter 'levels' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(64,35): error TS7006: Parameter 'input' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(76,37): error TS7006: Parameter 'tiltX' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(76,43): error TS7006: Parameter 'tiltY' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(87,38): error TS7006: Parameter 'tiltX' implicitly has an 'any' type.
+src/lib/utils/numerics.ts(87,45): error TS7006: Parameter 'tiltY' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(6,17): error TS7006: Parameter 'min' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(6,21): error TS7006: Parameter 'max' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(8,14): error TS2339: Property 'Min' does not exist on type 'OrderedRange'.
+src/lib/utils/ranges.ts(9,14): error TS2339: Property 'Max' does not exist on type 'OrderedRange'.
+src/lib/utils/ranges.ts(16,23): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(16,26): error TS7006: Parameter 'lower' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(16,33): error TS7006: Parameter 'upper' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(24,30): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/lib/utils/ranges.ts(24,33): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/main.ts(4,24): error TS2307: Cannot find module './assets/7P Logo Core.svg?url' or its corresponding type declarations.
+src/main.ts(7,3): error TS2322: Type 'HTMLElement | null' is not assignable to type 'Document | Element | ShadowRoot'.
+  Type 'null' is not assignable to type 'Document | Element | ShadowRoot'.
+src/main.ts(11,16): error TS2339: Property 'href' does not exist on type 'Element'.

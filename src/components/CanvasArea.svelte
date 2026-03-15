@@ -1,19 +1,19 @@
-<script>
-    import { onMount, createEventDispatcher } from "svelte";
+<script lang="ts">
+    import { onMount, createEventDispatcher } from 'svelte';
     import {
         appSettings,
         processingSettings,
         paintState,
         paintStrokeStats,
-    } from "../lib/stores.js";
+    } from '../lib/stores';
     import {
         pointerEventHandler,
         onPointerUp,
         onPointerEnter,
         onPointerLeave,
         defaultPtrEventHandlerDoNothing,
-    } from "../lib/app_pointer.js";
-    import { clearCanvas, getCanvas2DContext } from "../lib/utils/draw.js";
+    } from '../lib/app_pointer';
+    import { clearCanvas, getCanvas2DContext } from '../lib/utils/draw';
 
     /** @type {HTMLCanvasElement} */
     export let canvas;
@@ -24,7 +24,14 @@
     const dispatch = createEventDispatcher();
 
     function handlePointer(e) {
-        pointerEventHandler(e, canvas, $appSettings, $processingSettings, $paintState, $paintStrokeStats);
+        pointerEventHandler(
+            e,
+            canvas,
+            $appSettings,
+            $processingSettings,
+            $paintState,
+            $paintStrokeStats
+        );
     }
 
     onMount(() => {
@@ -39,12 +46,10 @@
         if (!canvas || !downloadLink) return;
 
         const now = new Date();
-        const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
+        const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
         const filename = `${$appSettings.downloadFilename}_${timestamp}.png`;
 
-        const url = canvas
-            .toDataURL("image/png")
-            .replace("image/png", "image/octet-stream");
+        const url = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
 
         downloadLink.download = filename;
         downloadLink.href = url;
@@ -74,4 +79,4 @@
 </div>
 
 <!-- Hidden download link for saving the canvas -->
-<a bind:this={downloadLink} href={"#"} style="display:none;">download</a>
+<a bind:this={downloadLink} href={'#'} style="display:none;">download</a>

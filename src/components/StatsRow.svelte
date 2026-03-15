@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     /** Svelte 5 $props. */
     let { label, value = '', suffix = '' } = $props();
 </script>

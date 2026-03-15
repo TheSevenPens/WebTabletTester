@@ -3,13 +3,12 @@
  * so paint.js and other libs keep working. Remove when everything reads from stores.
  */
 
+import type { PaintSettings, ProcessingSettings } from './types';
+
 /**
  * Copy paint settings from store value into legacy object for paint_data consumers.
- * @param {import('./types.js').PaintSettings} storeValue
- * @param {Record<string, unknown>} legacy
- * @returns {void}
  */
-export function syncPaintSettingsToLegacy(storeValue, legacy) {
+export function syncPaintSettingsToLegacy(storeValue: PaintSettings, legacy: any): void {
     legacy.brushSize = storeValue.brushSize;
     legacy.brushSizeControl = storeValue.brushSizeControl;
     legacy.brushColorControl = storeValue.brushColorControl;
@@ -19,11 +18,8 @@ export function syncPaintSettingsToLegacy(storeValue, legacy) {
 
 /**
  * Sync processing settings (smoother amounts, pressure quant) from store to legacy object.
- * @param {import('./types.js').ProcessingSettings} storeValue
- * @param {Record<string, unknown>} legacy
- * @returns {void}
  */
-export function syncProcessingSettingsToLegacy(storeValue, legacy) {
+export function syncProcessingSettingsToLegacy(storeValue: ProcessingSettings, legacy: any): void {
     legacy.posXSmoother.setSmoothingAmount(storeValue.posXSmoother.amount);
     legacy.posYSmoother.setSmoothingAmount(storeValue.posYSmoother.amount);
     legacy.pressureSmoother.setSmoothingAmount(storeValue.pressureSmoother.amount);

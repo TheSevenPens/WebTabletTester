@@ -1,27 +1,30 @@
 export class NumericSmoother {
-  constructor(amount) {
+  amount!: number;
+  oldSmoothed: number | null = null;
+
+  constructor(amount: number) {
     this.resetSettings();
     this.resetState();
     this.setSmoothingAmount(amount);
   }
 
 
-  setSmoothingAmount(value)
+  setSmoothingAmount(value: number): void
   {
     this.amount = value;
   }
 
-  resetSettings() 
+  resetSettings(): void
   {
     this.setSmoothingAmount(0.0);
   }
 
-  resetState() 
+  resetState(): void 
   {
     this.oldSmoothed = null;
   }
 
-  apply(input) 
+  apply(input: number): number
   {
     var output = input;
     if (this.oldSmoothed != null )
