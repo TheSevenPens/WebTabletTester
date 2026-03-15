@@ -29,6 +29,11 @@ export const BRUSH_TYPE_OPTIONS = [
     { value: 'ERASER', label: 'Eraser' },
 ];
 
+export const RENDER_SAMPLING_OPTIONS = [
+    { value: 'NEAREST', label: 'Nearest neighbor' },
+    { value: 'SMOOTH', label: 'Smooth' },
+];
+
 export const SIZE_CONTROL_OPTIONS = [
     { value: 'USER', label: "Don't scale" },
     { value: 'PRESSURE', label: 'Pressure' },

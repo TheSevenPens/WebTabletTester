@@ -163,6 +163,10 @@
         const outputContext = getCanvas2DContext(canvas);
         if (!outputContext) return;
 
+        const useNearestSampling = $appSettings.renderSampling !== 'SMOOTH';
+        outputContext.imageSmoothingEnabled = !useNearestSampling;
+        outputContext.imageSmoothingQuality = 'high';
+
         outputContext.clearRect(0, 0, canvas.width, canvas.height);
 
         if (backgroundLayerCanvas) {
@@ -358,6 +362,8 @@
             bind:this={canvas}
             id="myCanvas"
             class="drawing-canvas"
+            class:nearest-sampling={$appSettings.renderSampling !== 'SMOOTH'}
+            class:smooth-sampling={$appSettings.renderSampling === 'SMOOTH'}
             onpointerdown={handlePointer}
             onpointerup={handlePointerUpEvent}
             onpointercancel={handlePointer}
@@ -407,5 +413,14 @@
         display: block;
         background-color: transparent;
         touch-action: none;
+    }
+
+    .drawing-canvas.nearest-sampling {
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    .drawing-canvas.smooth-sampling {
+        image-rendering: auto;
     }
 </style>
