@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .claude/*
+
+# Local scratch / diagnostic text files
+check*.txt
+tsc_errors*.txt
