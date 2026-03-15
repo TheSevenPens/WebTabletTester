@@ -15,6 +15,7 @@
         defaultPtrEventHandlerDoNothing,
     } from '../lib/app_pointer';
     import { clearCanvas, getCanvas2DContext } from '../lib/utils/draw';
+    import { DEFAULT_CANVAS_PAN_X, DEFAULT_CANVAS_PAN_Y } from '../lib/constants';
 
     /** @type {HTMLCanvasElement} */
     export let canvas: HTMLCanvasElement;
@@ -138,9 +139,9 @@
         canvas.width = $canvasViewport.width;
         canvas.height = $canvasViewport.height;
         
-        // Center it roughly
-        $canvasViewport.panX = (window.innerWidth - ($canvasViewport.width / dpr)) / 2;
-        $canvasViewport.panY = 50; 
+        // Start near the top-left so the drawing area is easier to reach quickly.
+        $canvasViewport.panX = DEFAULT_CANVAS_PAN_X;
+        $canvasViewport.panY = DEFAULT_CANVAS_PAN_Y;
 
         const ctx = getCanvas2DContext(canvas);
         if (ctx) clearCanvas(ctx, canvas, $appSettings.canvasColor);
