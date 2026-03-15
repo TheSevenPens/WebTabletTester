@@ -24,6 +24,7 @@
 
     /** @type {HTMLAnchorElement} */
     let downloadLink: HTMLAnchorElement;
+    let viewportElement: HTMLDivElement | undefined;
 
     let backgroundLayerCanvas: HTMLCanvasElement | null = null;
     let foregroundLayerCanvas: HTMLCanvasElement | null = null;
@@ -149,6 +150,13 @@
 
     }
 
+    function updateViewportDimensions() {
+        if (!viewportElement) return;
+        const rect = viewportElement.getBoundingClientRect();
+        $canvasViewport.viewportWidth = rect.width;
+        $canvasViewport.viewportHeight = rect.height;
+    }
+
     function composeLayers() {
         if (!canvas) return;
 
@@ -240,9 +248,17 @@
             return () => window.removeEventListener('resize', updateDpr);
         }
 
+        const resizeObserver = new ResizeObserver(() => {
+            updateViewportDimensions();
+        });
+        if (viewportElement) {
+            resizeObserver.observe(viewportElement);
+        }
+
         // Initialize our fixed canvas
         canvas.width = $canvasViewport.width;
         canvas.height = $canvasViewport.height;
+        updateViewportDimensions();
 
         backgroundLayerCanvas = document.createElement('canvas');
         backgroundLayerCanvas.width = $canvasViewport.width;
@@ -265,7 +281,10 @@
         clearForeground();
         composeLayers();
 
-        return () => window.removeEventListener('resize', updateDpr);
+        return () => {
+            window.removeEventListener('resize', updateDpr);
+            resizeObserver.disconnect();
+        };
     });
 
     export function saveCanvas() {
@@ -288,6 +307,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div 
+    bind:this={viewportElement}
     class="canvas-viewport" 
     class:panning-mode={isSpacebarDown || isPanning}
     oncontextmenu={(e) => e.preventDefault()}

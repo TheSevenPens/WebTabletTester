@@ -64,5 +64,7 @@ export const canvasViewport = writable({
     height: 1080,
     zoom: 1.0,
     panX: 0,
-    panY: 0
+    panY: 0,
+    viewportWidth: 0,
+    viewportHeight: 0
 });

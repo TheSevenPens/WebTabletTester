@@ -12,13 +12,13 @@
 
 <div class="advanced-panel advanced-panel--right" class:minimized={$minimized}>
     <div class="advanced-panel-header">
-        <span class="advanced-panel-title">RIGHT</span>
+        <span class="advanced-panel-title">TOOLS</span>
         <button
             type="button"
             class="advanced-panel-toggle"
             onclick={toggleMinimized}
-            title={$minimized ? 'Restore Right panel' : 'Minimize Right panel'}
-            aria-label={$minimized ? 'Restore Right panel' : 'Minimize Right panel'}
+            title={$minimized ? 'Restore Tools panel' : 'Minimize Tools panel'}
+            aria-label={$minimized ? 'Restore Tools panel' : 'Minimize Tools panel'}
         >
             {$minimized ? '◀' : '▶'}
         </button>
@@ -34,9 +34,9 @@
             type="button"
             class="advanced-panel-minimized-label advanced-panel-minimized-label--right"
             onclick={toggleMinimized}
-            title="Restore Right panel"
+            title="Restore Tools panel"
         >
-            <span>Right</span>
+            <span>Tools</span>
         </button>
     {/if}
 </div>

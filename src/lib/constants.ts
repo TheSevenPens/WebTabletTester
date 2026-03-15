@@ -12,7 +12,7 @@ export const MS_PER_SECOND = 1000;
 /** When pen is vertical (tilt altitude), dab size scale offset so size stays small. */
 export const MIN_TILT_SIZE_OFFSET = 0.05;
 
-/** Stroke color for the pressure curve preview in AdvancedSettingsPanel. */
+/** Stroke color for the pressure curve preview in ProcessingSettingsPanel. */
 export const CURVE_GRAPH_STROKE = 'rgb(150,180,255)';
 
 export const BRUSH_SIZES = [

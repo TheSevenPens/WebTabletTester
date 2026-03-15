@@ -6,8 +6,8 @@
     import ButtonsPanel from './components/ButtonsPanel.svelte';
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
-    import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
-    import RightSettingsPanel from './components/RightSettingsPanel.svelte';
+    import ProcessingSettingsPanel from './components/ProcessingSettingsPanel.svelte';
+    import ToolsPanel from './components/ToolsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
@@ -49,14 +49,14 @@
         </div>
     </div>
 
-    <!-- Bottom row: Advanced panel + Canvas -->
+    <!-- Bottom row: Processing panel + Canvas -->
     <div class="bottom-row">
-        <AdvancedSettingsPanel />
+        <ProcessingSettingsPanel />
 
         <div class="controlscolumn" id="canvasColumn">
             <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
         </div>
 
-        <RightSettingsPanel />
+        <ToolsPanel />
     </div>
 </div>
