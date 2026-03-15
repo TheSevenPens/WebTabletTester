@@ -8,7 +8,7 @@
     <h4 class="advanced-panel-section-title">Smoothing</h4>
     <SliderWithNumber
         id="positionSmoothingSlider"
-        label="Position smoothing:"
+        label="Position:"
         max="0.999"
         step="0.001"
         value={$processingSettings.posXSmoother.amount}
@@ -23,7 +23,7 @@
 
     <SliderWithNumber
         id="tiltSmoothingSlider"
-        label="Tilt smoothing:"
+        label="Tilt:"
         max="0.999"
         step="0.001"
         value={$processingSettings.tiltXSmoother.amount}
@@ -38,7 +38,7 @@
 
     <SliderWithNumber
         id="pressureSmoothingSlider"
-        label="Pressure smoothing:"
+        label="Pressure:"
         max="0.999"
         step="0.001"
         value={$processingSettings.pressureSmoother.amount}

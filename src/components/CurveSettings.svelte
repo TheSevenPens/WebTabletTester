@@ -2,21 +2,12 @@
     import { processingSettings } from '../lib/stores';
     import { setProcessingAndNotify } from '../lib/processing_helpers';
     import type { ProcessingSettings } from '../lib/types';
-    import { PRESSURE_QUANT_OPTIONS } from '../lib/constants';
     import SliderWithNumber from './SliderWithNumber.svelte';
     import CurveGraph from './CurveGraph.svelte';
 </script>
 
 <section class="advanced-panel-section">
-    <h4 class="advanced-panel-section-title">Pressure</h4>
-
-    <label for="pressureQuantSelect">Pressure quantization: </label>
-    <select id="pressureQuantSelect" bind:value={$processingSettings.pressureQuant}>
-        {#each PRESSURE_QUANT_OPTIONS as { value, label }}
-            <option {value}>{label}</option>
-        {/each}
-    </select>
-    <br />
+    <h4 class="advanced-panel-section-title">Curves</h4>
 
     <div>
         <SliderWithNumber

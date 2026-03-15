@@ -10,7 +10,8 @@
     import { resetAllProcessingToDefault } from '../lib/processing_helpers';
     
     import SmoothingSettings from './SmoothingSettings.svelte';
-    import PressureSettings from './PressureSettings.svelte';
+    import QuantizationSettings from './QuantizationSettings.svelte';
+    import CurveSettings from './CurveSettings.svelte';
     import ConfigSettings from './ConfigSettings.svelte';
 
     const minimized = writable(true);
@@ -48,7 +49,8 @@
     {#if !$minimized}
         <div class="advanced-panel-content">
             <SmoothingSettings />
-            <PressureSettings />
+            <QuantizationSettings />
+            <CurveSettings />
             <ConfigSettings />
 
             <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
