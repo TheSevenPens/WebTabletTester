@@ -19,11 +19,21 @@
         | {
               saveCanvas: () => void;
               clearForeground: () => void;
+                            copyForegroundToClipboard: () => Promise<void>;
+                            copyWithBackgroundToClipboard: () => Promise<void>;
           }
         | null = null;
 
     function clearMainCanvas() {
         canvasAreaRef?.clearForeground();
+    }
+
+    function copyForegroundToClipboard() {
+        void canvasAreaRef?.copyForegroundToClipboard();
+    }
+
+    function copyWithBackgroundToClipboard() {
+        void canvasAreaRef?.copyWithBackgroundToClipboard();
     }
 
     const clearKeys = { Delete: clearMainCanvas, Backspace: clearMainCanvas };
@@ -35,7 +45,12 @@
     <div class="top-row">
         <div class="controlscontainer">
             <InfoPanel />
-            <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
+            <DocPanel
+                onClear={clearMainCanvas}
+                onCopy={copyForegroundToClipboard}
+                onCopyWithBackground={copyWithBackgroundToClipboard}
+                onSave={() => canvasAreaRef?.saveCanvas()}
+            />
             <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />

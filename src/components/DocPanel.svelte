@@ -5,8 +5,15 @@
     interface Props {
         onClear?: () => void;
         onSave?: () => void;
+        onCopy?: () => void;
+        onCopyWithBackground?: () => void;
     }
-    let { onClear = () => {}, onSave = () => {} }: Props = $props();
+    let {
+        onClear = () => {},
+        onSave = () => {},
+        onCopy = () => {},
+        onCopyWithBackground = () => {},
+    }: Props = $props();
 </script>
 
 <div class="controlscolumn" id="docColumn">
@@ -18,6 +25,8 @@
     />
     <div style="margin-top: 5px;">
         <button type="button" onclick={onClear}>CLEAR</button>
+        <button type="button" onclick={onCopy}>COPY</button>
+        <button type="button" onclick={onCopyWithBackground}>COPY w/ BK</button>
         <button type="button" onclick={onSave}>SAVE</button>
     </div>
 </div>

@@ -301,6 +301,44 @@
         downloadLink.click();
     }
 
+    async function writeCanvasToClipboard(sourceCanvas: HTMLCanvasElement): Promise<void> {
+        if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+            return;
+        }
+
+        const blob = await new Promise<Blob | null>((resolve) => {
+            sourceCanvas.toBlob((result) => resolve(result), 'image/png');
+        });
+        if (!blob) {
+            return;
+        }
+
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'image/png': blob,
+            }),
+        ]);
+    }
+
+    export async function copyForegroundToClipboard(): Promise<void> {
+        if (!foregroundLayerCanvas) return;
+        try {
+            await writeCanvasToClipboard(foregroundLayerCanvas);
+        } catch (err) {
+            console.error('Failed to copy foreground layer to clipboard', err);
+        }
+    }
+
+    export async function copyWithBackgroundToClipboard(): Promise<void> {
+        if (!canvas) return;
+        composeLayers();
+        try {
+            await writeCanvasToClipboard(canvas);
+        } catch (err) {
+            console.error('Failed to copy composited canvas to clipboard', err);
+        }
+    }
+
 </script>
 
 <svelte:window onkeydown={handleKeyDown} onkeyup={handleKeyUp} />
