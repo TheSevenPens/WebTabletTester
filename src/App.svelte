@@ -1,6 +1,7 @@
 <script>
     import { clearCanvas, getCanvas2DContext } from "./lib/utils/draw.js";
     import { keydown } from "./lib/actions/keydown.js";
+    import InfoPanel from "./components/InfoPanel.svelte";
     import FormatSettingsPanel from "./components/FormatSettingsPanel.svelte";
     import PointerStatsPanel from "./components/PointerStatsPanel.svelte";
     import SensorsPanel from "./components/SensorsPanel.svelte";
@@ -26,31 +27,10 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="parent" oncontextmenu={(e) => e.preventDefault()} use:keydown={clearKeys}>
     <div class="controlscontainer">
-        <div class="controlscolumn" id="headerColumn">
-            <h3>SevenPens <br /> Tablet Tester <br /> v0.910</h3>
-            <p>
-                <a
-                    href="https://thesevenpens.github.io/HtmlTabletTester/"
-                    target="_blank"
-                    rel="noopener noreferrer">DOCS</a
-                >
-                |
-                <a
-                    href="https://github.com/TheSevenPens/HtmlTabletTester"
-                    target="_blank"
-                    rel="noopener noreferrer">CODE</a
-                >
-                <br />
-                <button
-                    type="button"
-                    onclick={clearMainCanvas}>CLEAR</button
-                >
-                <button
-                    type="button"
-                    onclick={() => canvasAreaRef.saveCanvas()}>SAVE</button
-                >
-            </p>
-        </div>
+        <InfoPanel
+            onClear={clearMainCanvas}
+            onSave={() => canvasAreaRef?.saveCanvas()}
+        />
         <FormatSettingsPanel />
 
         <PointerStatsPanel />
