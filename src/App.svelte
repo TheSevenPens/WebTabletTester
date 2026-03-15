@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { clearCanvas, getCanvas2DContext } from './lib/utils/draw';
     import { keydown } from './lib/actions/keydown';
     import InfoPanel from './components/InfoPanel.svelte';
     import DocPanel from './components/DocPanel.svelte';
@@ -11,16 +10,19 @@
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
-    import { uiState, appSettings } from './lib/stores';
+    import { uiState } from './lib/stores';
     import './app.css';
 
-    /** @type {HTMLCanvasElement} */
-    let mainCanvas;
-    let canvasAreaRef;
+    let mainCanvas: HTMLCanvasElement | undefined;
+    let canvasAreaRef:
+        | {
+              saveCanvas: () => void;
+              clearForeground: () => void;
+          }
+        | null = null;
 
     function clearMainCanvas() {
-        const ctx = getCanvas2DContext(mainCanvas);
-        if (ctx && mainCanvas) clearCanvas(ctx, mainCanvas, $appSettings.canvasColor);
+        canvasAreaRef?.clearForeground();
     }
 
     const clearKeys = { Delete: clearMainCanvas, Backspace: clearMainCanvas };

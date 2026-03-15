@@ -51,13 +51,21 @@ export function defaultPtrEventHandlerDoNothing(_ptrEvent: PointerEvent): void {
 /////////////////////////////////////////////////////////////////////////
 // Handle drawing for HTML5 Pointer Events. Thin orchestrator: filter → build record → apply.
 //
-export function pointerEventHandler(ptrEvent: PointerEvent, canvasEl: HTMLCanvasElement, appSettings: any, processingSettings: ProcessingSettings, paintState: PaintState, _paintStrokeStats: PaintStrokeStats): void {
+export function pointerEventHandler(
+    ptrEvent: PointerEvent,
+    inputCanvasEl: HTMLCanvasElement,
+    drawCanvasEl: HTMLCanvasElement,
+    appSettings: any,
+    processingSettings: ProcessingSettings,
+    paintState: PaintState,
+    _paintStrokeStats: PaintStrokeStats
+): void {
     if (!isTargetPointerEvent(ptrEvent)) return;
 
-    const canvasRect = canvasEl.getBoundingClientRect();
+    const canvasRect = inputCanvasEl.getBoundingClientRect();
     const ptrRec = getPtrRec(canvasRect, ptrEvent, processingSettings, paintState);
 
-    applyPointerEvent(ptrRec, canvasEl, appSettings, paintState);
+    applyPointerEvent(ptrRec, drawCanvasEl, appSettings, paintState);
 }
 
 /**

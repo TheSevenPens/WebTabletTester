@@ -1,5 +1,6 @@
 <script lang="ts">
     import { canvasViewport } from '../lib/stores';
+    import { DEFAULT_CANVAS_PAN_X, DEFAULT_CANVAS_PAN_Y } from '../lib/constants';
     import StatsRow from './StatsRow.svelte';
 
     function zoomIn() {
@@ -13,10 +14,9 @@
     }
 
     function resetZoomAndPan() {
-        const dpr = window.devicePixelRatio || 1;
         $canvasViewport.zoom = 1.0;
-        $canvasViewport.panX = (window.innerWidth - ($canvasViewport.width / dpr)) / 2;
-        $canvasViewport.panY = 50;
+        $canvasViewport.panX = DEFAULT_CANVAS_PAN_X;
+        $canvasViewport.panY = DEFAULT_CANVAS_PAN_Y;
     }
 
     function setZoomFromInput(value: string) {

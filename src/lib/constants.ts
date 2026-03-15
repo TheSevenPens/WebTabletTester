@@ -74,3 +74,7 @@ export const PRESSURE_QUANT_OPTIONS = [
     { value: 4096, label: '4096' },
     { value: 8192, label: '8192' },
 ];
+
+/** Default canvas viewport offset from top-left of viewport in CSS pixels. */
+export const DEFAULT_CANVAS_PAN_X = 16;
+export const DEFAULT_CANVAS_PAN_Y = 16;

@@ -1,7 +1,7 @@
 import { BRUSHSIZE_RANGE, paintCurrentDabSettings, paintSettings, paintState, paintStrokeStats, processingSettings, settingStylusPenColor } from './paint_data';
 import { clampToRange } from './utils/ranges';
 import { lerp } from './utils/interpolation';
-import { clearCanvas, drawLine, getCanvas2DContext } from './utils/draw';
+import { clearCanvasToTransparent, drawLine, getCanvas2DContext } from './utils/draw';
 import { angleToColor, azimuthAngleStops, azimuthColorStops, getCETColor } from './utils/color';
 import { Position } from './utils/geometry';
 import { roundTo3DecimalPlaces } from './utils/numerics';
@@ -14,7 +14,7 @@ import type { PaintSettings } from './types';
 export function paintStrokeStart(settings: PaintSettings, canvasEl: HTMLCanvasElement, appSettings: any): void {
     if (settings.eraseOnStrokeStart) {
         const ctx = getCanvas2DContext(canvasEl);
-        if (ctx) clearCanvas(ctx, canvasEl, appSettings.canvasColor);
+        if (ctx) clearCanvasToTransparent(ctx, canvasEl);
     }
     paintState.isDrawing = true;
     paintStrokeStats.ptreventCount = 0;
@@ -155,12 +155,32 @@ export function paintDab(ptrRec: PointerRecord, canvasEl: HTMLCanvasElement, app
 
 
             if (ptrRec.pressureRaw > 0 && appCanvasContext) {
-                drawLine(appCanvasContext,
-                    paintState.canvasPosOld,
-                    currentPos,
-                    paintCurrentDabSettings.brushSize,
-                    paintCurrentDabSettings.brushColor,
-                    paintSettings.linecap as CanvasLineCap);
+                const shouldErase =
+                    ptrRec.buttons === pointerButtonCode.eraser ||
+                    paintSettings.brushColorControl === 'ERASER';
+
+                if (shouldErase) {
+                    appCanvasContext.save();
+                    appCanvasContext.globalCompositeOperation = 'destination-out';
+                    drawLine(
+                        appCanvasContext,
+                        paintState.canvasPosOld,
+                        currentPos,
+                        paintCurrentDabSettings.brushSize,
+                        'rgba(0,0,0,1.0)',
+                        paintSettings.linecap as CanvasLineCap
+                    );
+                    appCanvasContext.restore();
+                } else {
+                    drawLine(
+                        appCanvasContext,
+                        paintState.canvasPosOld,
+                        currentPos,
+                        paintCurrentDabSettings.brushSize,
+                        paintCurrentDabSettings.brushColor,
+                        paintSettings.linecap as CanvasLineCap
+                    );
+                }
             }
 
             paintState.canvasPosOld = currentPos;

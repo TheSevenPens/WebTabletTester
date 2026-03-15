@@ -247,6 +247,37 @@ div.controlscolumn#strokeStatsPanel {
     border-bottom: 1px solid var(--panel-border);
 }
 
+.advanced-panel-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.advanced-panel-section-header .advanced-panel-section-title {
+    flex: 1;
+    margin: 0;
+}
+
+.advanced-panel-section-toggle {
+    border: 1px solid var(--panel-border);
+    background: transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 2px 5px;
+    min-width: 20px;
+}
+
+.advanced-panel-section-toggle:hover {
+    background-color: #eee;
+}
+
+.advanced-panel-section-body {
+    margin-top: 6px;
+}
+
 .advanced-panel-minimized-label {
     padding: 8px 4px;
     writing-mode: vertical-rl;

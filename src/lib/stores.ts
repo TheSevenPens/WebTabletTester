@@ -20,7 +20,10 @@ export const BRUSHSIZE_RANGE = new OrderedRange(0.1, 300.0);
 
 // Global App Settings
 export const appSettings = writable({
-    canvasColor: "rgba(230, 230, 250, 1.0)",
+    canvasColor: "#e6e6fa",
+    showGrid: false,
+    gridSize: 100,
+    gridColor: "#b8b8d0",
     downloadFilename: "TabletTester_Untitled",
 });
 
