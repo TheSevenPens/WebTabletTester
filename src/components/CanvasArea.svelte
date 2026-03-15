@@ -107,7 +107,8 @@
 
         // Calculate zoom around pointer location
         // The pointer position relative to the container
-        const rect = canvas.parentElement!.getBoundingClientRect();
+        const container = e.currentTarget as HTMLElement;
+        const rect = container.getBoundingClientRect();
         
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
