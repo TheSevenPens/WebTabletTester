@@ -10,8 +10,10 @@ export interface PaintSettings {
 
 export interface SmootherLike {
   amount: number;
+  oldSmoothed: number | null;
   setSmoothingAmount: (v: number) => void;
   apply: (v: number) => number;
+  resetSettings: () => void;
   resetState?: () => void;
 }
 

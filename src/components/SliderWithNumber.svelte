@@ -1,5 +1,16 @@
 <script lang="ts">
     /** Controlled slider: parent owns value and provides onInput(newValue) callback. Svelte 5 $props. */
+    interface Props {
+        label?: string;
+        id?: string;
+        min?: string;
+        max?: string;
+        step?: string;
+        value?: number;
+        onInput?: (newValue: number) => void;
+        list?: string;
+    }
+
     let {
         label = '',
         id = '',
@@ -9,9 +20,9 @@
         value = 0.0,
         onInput = () => {},
         list = '',
-    } = $props();
+    }: Props = $props();
 
-    function handleInput(event) {
+    function handleInput(event: Event & { currentTarget: EventTarget & HTMLInputElement }) {
         const newValue = parseFloat(event.currentTarget.value);
         onInput(newValue);
     }
