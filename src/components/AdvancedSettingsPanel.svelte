@@ -7,10 +7,7 @@
         syncPaintSettingsToLegacy,
         syncProcessingSettingsToLegacy,
     } from '../lib/syncStoresToLegacy';
-    import {
-        resetAllProcessingToDefault,
-        setProcessingAndNotify,
-    } from '../lib/processing_helpers';
+    import { resetAllProcessingToDefault, setProcessingAndNotify } from '../lib/processing_helpers';
     import { PRESSURE_QUANT_OPTIONS } from '../lib/constants';
     import SliderWithNumber from './SliderWithNumber.svelte';
     import CurveGraph from './CurveGraph.svelte';
@@ -149,7 +146,7 @@
                     Show stroke stats
                 </label>
             </section>
-            
+
             <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
                 <button type="button" onclick={resetAdvancedSettings}>RESET</button>
             </div>

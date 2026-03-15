@@ -8,6 +8,6 @@
     <br />
     <StatsRow label="X" value={$pointerLiveStats.canvasPosXProcessed} />
     <StatsRow label="Y" value={$pointerLiveStats.canvasPosYProcessed} />
-    <StatsRow label="Velocity" value={$pointerLiveStats.velocity} suffix=" px/s" />
-    <StatsRow label="Direction" value={$pointerLiveStats.direction} />
+    <StatsRow label="Vel" value={$pointerLiveStats.velocity} />
+    <StatsRow label="Dir" value={$pointerLiveStats.direction} />
 </div>
