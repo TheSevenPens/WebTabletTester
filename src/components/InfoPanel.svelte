@@ -3,10 +3,10 @@
     const appTitleLine2 = 'Tablet Tester';
     const appVersion = 'v2.01beta';
 
-    const docsUrl = 'https://thesevenpens.github.io/HtmlTabletTester/';
+    const docsUrl = 'https://docs.sevenpens.com/drawtab/resources/sevenpens-tablet-tester';
     const docsLabel = 'DOCS';
 
-    const codeUrl = 'https://github.com/TheSevenPens/HtmlTabletTester';
+    const codeUrl = 'https://github.com/TheSevenPens/WebTabletTester';
     const codeLabel = 'CODE';
 </script>
 
