@@ -50,7 +50,7 @@
     {#if !$minimized}
         <div class="advanced-panel-content">
             <section class="advanced-panel-section">
-                <h4 class="advanced-panel-section-title">Processing</h4>
+                <h4 class="advanced-panel-section-title">Smoothing</h4>
                 <SliderWithNumber
                     id="positionSmoothingSlider"
                     label="Position smoothing:"
@@ -59,6 +59,21 @@
                         $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
                             p.posXSmoother.setSmoothingAmount(v);
                             p.posYSmoother.setSmoothingAmount(v);
+                        });
+                    }}
+                />
+                <br />
+
+                <br />
+
+                <SliderWithNumber
+                    id="tiltSmoothingSlider"
+                    label="Tilt smoothing:"
+                    value={$processingSettings.tiltXSmoother.amount}
+                    onInput={(v) => {
+                        $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
+                            p.tiltXSmoother.setSmoothingAmount(v);
+                            p.tiltYSmoother.setSmoothingAmount(v);
                         });
                     }}
                 />
@@ -75,19 +90,11 @@
                     }}
                 />
                 <br />
+            </section>
 
-                <SliderWithNumber
-                    id="tiltSmoothingSlider"
-                    label="Tilt smoothing:"
-                    value={$processingSettings.tiltXSmoother.amount}
-                    onInput={(v) => {
-                        $processingSettings = setProcessingAndNotify($processingSettings, (p) => {
-                            p.tiltXSmoother.setSmoothingAmount(v);
-                            p.tiltYSmoother.setSmoothingAmount(v);
-                        });
-                    }}
-                />
-                <br />
+            <section class="advanced-panel-section">
+                <h4 class="advanced-panel-section-title">Pressure</h4>
+
                 <label for="pressureQuantSelect">Pressure quantization: </label>
                 <select id="pressureQuantSelect" bind:value={$processingSettings.pressureQuant}>
                     {#each PRESSURE_QUANT_OPTIONS as { value, label }}
@@ -128,8 +135,6 @@
                         />
                     </div>
                 </div>
-                <br />
-                <button type="button" onclick={resetAdvancedSettings}>RESET</button>
             </section>
 
             <section class="advanced-panel-section">
@@ -144,6 +149,10 @@
                     Show stroke stats
                 </label>
             </section>
+            
+            <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                <button type="button" onclick={resetAdvancedSettings}>RESET</button>
+            </div>
         </div>
     {:else}
         <button
