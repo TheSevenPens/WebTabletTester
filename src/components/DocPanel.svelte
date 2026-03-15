@@ -9,7 +9,7 @@
     let { onClear = () => {}, onSave = () => {} }: Props = $props();
 </script>
 
-<div class="controlscolumn">
+<div class="controlscolumn" id="docColumn">
     <span style="font-weight: bold">DOCUMENT</span>
     <br />
     <StatsRow

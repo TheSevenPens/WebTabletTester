@@ -131,9 +131,24 @@ div.controlscolumn#headerColumn {
     width: var(--column-width-header);
 }
 
+div.controlscolumn#docColumn {
+    flex: 0 0 120px;
+    width: 120px;
+}
+
 div.controlscolumn#strokeFormatColumn {
     flex: 0 0 var(--column-width-format);
     width: var(--column-width-format);
+}
+
+div.controlscolumn#buttonsColumn {
+    flex: 0 0 120px;
+    width: 120px;
+}
+
+div.controlscolumn#viewColumnInfo {
+    flex: 0 0 150px;
+    width: 150px;
 }
 
 div.controlscolumn#pointerColumn,
