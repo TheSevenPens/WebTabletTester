@@ -222,7 +222,7 @@
         transform-origin: 0 0;
         will-change: transform;
         /* Shadow for fixed document look */
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.15);
+        box-shadow: 0px 8px 40px rgba(0,0,0,0.6);
     }
 
     .drawing-canvas {
