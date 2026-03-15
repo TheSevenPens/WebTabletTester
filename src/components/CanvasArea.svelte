@@ -32,9 +32,29 @@
     // Device Pixel Ratio binding
     let dpr = 1;
 
+    // Keyboard state
+    let isSpacebarDown = false;
+
+    function handleKeyDown(e: KeyboardEvent) {
+        if (e.code === 'Space' && !e.repeat) {
+            // Only prevent default if we're not typing in an input field
+            const target = e.target as HTMLElement;
+            if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                isSpacebarDown = true;
+            }
+        }
+    }
+
+    function handleKeyUp(e: KeyboardEvent) {
+        if (e.code === 'Space') {
+            isSpacebarDown = false;
+        }
+    }
+
     function handlePointer(e: PointerEvent) {
-        // Intercept middle mouse button for panning
-        if (e.buttons === 4 || isPanning) {
+        // Intercept middle mouse button OR spacebar for panning
+        if (e.buttons === 4 || isSpacebarDown || isPanning) {
             handlePan(e);
             return;
         }
@@ -50,7 +70,7 @@
     }
 
     function handlePan(e: PointerEvent) {
-        if (e.type === 'pointerdown' && e.buttons === 4) {
+        if (e.type === 'pointerdown' && (e.buttons === 4 || isSpacebarDown)) {
             isPanning = true;
             lastPanX = e.clientX;
             lastPanY = e.clientY;
@@ -143,9 +163,12 @@
 
 </script>
 
+<svelte:window onkeydown={handleKeyDown} onkeyup={handleKeyUp} />
+
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div 
     class="canvas-viewport" 
+    class:panning-mode={isSpacebarDown || isPanning}
     oncontextmenu={(e) => e.preventDefault()}
     onwheel={handleWheel}
 >
@@ -183,6 +206,14 @@
         background-color: #888;
         cursor: Default;
         touch-action: none; /* Disable browser zooming/panning via touch */
+    }
+
+    .canvas-viewport.panning-mode {
+        cursor: grab;
+    }
+
+    .canvas-viewport.panning-mode:active {
+        cursor: grabbing;
     }
 
     .canvas-transform-wrapper {
