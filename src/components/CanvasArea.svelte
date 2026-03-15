@@ -29,6 +29,9 @@
     let lastPanX = 0;
     let lastPanY = 0;
 
+    // Device Pixel Ratio binding
+    let dpr = 1;
+
     function handlePointer(e: PointerEvent) {
         // Intercept middle mouse button for panning
         if (e.buttons === 4 || isPanning) {
@@ -89,30 +92,39 @@
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
+        const currentRenderScale = $canvasViewport.zoom / dpr;
+        const newRenderScale = newZoom / dpr;
+
         // Where is the mouse currently relative to the raw canvas size (scaled inversely)
-        const unscaledX = (mouseX - $canvasViewport.panX) / $canvasViewport.zoom;
-        const unscaledY = (mouseY - $canvasViewport.panY) / $canvasViewport.zoom;
+        const unscaledX = (mouseX - $canvasViewport.panX) / currentRenderScale;
+        const unscaledY = (mouseY - $canvasViewport.panY) / currentRenderScale;
 
         // Apply new zoom
         $canvasViewport.zoom = newZoom;
 
         // Adjust pan to keep the unscaled point under the mouse
-        $canvasViewport.panX = mouseX - unscaledX * $canvasViewport.zoom;
-        $canvasViewport.panY = mouseY - unscaledY * $canvasViewport.zoom;
+        $canvasViewport.panX = mouseX - unscaledX * newRenderScale;
+        $canvasViewport.panY = mouseY - unscaledY * newRenderScale;
 
     }
 
     onMount(() => {
+        dpr = window.devicePixelRatio || 1;
+        const updateDpr = () => { dpr = window.devicePixelRatio || 1; };
+        window.addEventListener('resize', updateDpr);
+
         // Initialize our fixed canvas
         canvas.width = $canvasViewport.width;
         canvas.height = $canvasViewport.height;
         
         // Center it roughly
-        $canvasViewport.panX = (window.innerWidth - $canvasViewport.width) / 2;
+        $canvasViewport.panX = (window.innerWidth - ($canvasViewport.width / dpr)) / 2;
         $canvasViewport.panY = 50; 
 
         const ctx = getCanvas2DContext(canvas);
         if (ctx) clearCanvas(ctx, canvas, $appSettings.canvasColor);
+
+        return () => window.removeEventListener('resize', updateDpr);
     });
 
     export function saveCanvas() {
@@ -139,7 +151,7 @@
 >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-    <div class="canvas-transform-wrapper" style="transform: translate({$canvasViewport.panX}px, {$canvasViewport.panY}px) scale({$canvasViewport.zoom});">
+    <div class="canvas-transform-wrapper" style="transform: translate({Math.round($canvasViewport.panX)}px, {Math.round($canvasViewport.panY)}px) scale({$canvasViewport.zoom / dpr});">
         <canvas
             bind:this={canvas}
             id="myCanvas"

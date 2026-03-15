@@ -13,8 +13,9 @@
     }
 
     function resetZoomAndPan() {
+        const dpr = window.devicePixelRatio || 1;
         $canvasViewport.zoom = 1.0;
-        $canvasViewport.panX = (window.innerWidth - $canvasViewport.width) / 2;
+        $canvasViewport.panX = (window.innerWidth - ($canvasViewport.width / dpr)) / 2;
         $canvasViewport.panY = 50;
     }
 
@@ -28,16 +29,21 @@
     function applyZoomAtCenter(newZoom: number) {
         newZoom = Math.max(0.1, Math.min(newZoom, 10.0));
 
+        const dpr = window.devicePixelRatio || 1;
+
         // Use the center of the screen as the relative zoom point
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
 
-        const unscaledX = (centerX - $canvasViewport.panX) / $canvasViewport.zoom;
-        const unscaledY = (centerY - $canvasViewport.panY) / $canvasViewport.zoom;
+        const currentRenderScale = $canvasViewport.zoom / dpr;
+        const newRenderScale = newZoom / dpr;
+
+        const unscaledX = (centerX - $canvasViewport.panX) / currentRenderScale;
+        const unscaledY = (centerY - $canvasViewport.panY) / currentRenderScale;
 
         $canvasViewport.zoom = newZoom;
-        $canvasViewport.panX = centerX - unscaledX * $canvasViewport.zoom;
-        $canvasViewport.panY = centerY - unscaledY * $canvasViewport.zoom;
+        $canvasViewport.panX = centerX - unscaledX * newRenderScale;
+        $canvasViewport.panY = centerY - unscaledY * newRenderScale;
     }
 
 </script>
