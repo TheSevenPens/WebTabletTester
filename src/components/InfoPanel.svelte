@@ -1,7 +1,7 @@
 <script lang="ts">
     const appTitleLine1 = 'SevenPens';
     const appTitleLine2 = 'Tablet Tester';
-    const appVersion = 'v2.0beta';
+    const appVersion = 'v2.01beta';
 
     const docsUrl = 'https://thesevenpens.github.io/HtmlTabletTester/';
     const docsLabel = 'DOCS';
