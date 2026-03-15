@@ -24,7 +24,7 @@
 
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="parent" on:contextmenu|preventDefault use:keydown={clearKeys}>
+<div class="parent" oncontextmenu={(e) => e.preventDefault()} use:keydown={clearKeys}>
     <div class="controlscontainer">
         <div class="controlscolumn" id="headerColumn">
             <h3>SevenPens <br /> Tablet Tester <br /> v0.910</h3>

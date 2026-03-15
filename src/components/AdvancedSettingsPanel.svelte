@@ -1,4 +1,5 @@
 <script>
+    import { writable } from "svelte/store";
     import {
         uiState,
         processingSettings,
@@ -12,7 +13,10 @@
     import SliderWithNumber from "./SliderWithNumber.svelte";
     import CurveGraph from "./CurveGraph.svelte";
 
-    let showSmoothing = $state(false);
+    const showSmoothing = writable(false);
+    function toggleShowSmoothing() {
+        showSmoothing.update((v) => !v);
+    }
 
     function resetAdvancedSettings() {
         $paintSettings.eraseOnStrokeStart = false;
@@ -50,13 +54,13 @@
     <button
         type="button"
         id="smoothingButton"
-        onclick={() => (showSmoothing = !showSmoothing)}
+        onclick={toggleShowSmoothing}
     >
-        {showSmoothing ? "HIDE PROCESSING" : "SHOW PROCESSING"}
+        {$showSmoothing ? "HIDE PROCESSING" : "SHOW PROCESSING"}
     </button>
 
     <!-- Smoothing Flyout Element -->
-    {#if showSmoothing}
+    {#if $showSmoothing}
         <div id="smoothingFlyout" class="smoothing-flyout">
             <SliderWithNumber
                 id="positionSmoothingSlider"

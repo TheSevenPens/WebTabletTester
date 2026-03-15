@@ -53,22 +53,22 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="canvasDiv" on:contextmenu|preventDefault>
+<div class="canvasDiv" oncontextmenu={(e) => e.preventDefault()}>
     <canvas
         bind:this={canvas}
         id="myCanvas"
         height="800"
         style="border: 10px solid #d1d1d1"
-        on:pointerdown={handlePointer}
-        on:pointerup={onPointerUp}
-        on:pointercancel={handlePointer}
-        on:pointermove={handlePointer}
-        on:pointerover={defaultPtrEventHandlerDoNothing}
-        on:pointerout={defaultPtrEventHandlerDoNothing}
-        on:pointerenter={onPointerEnter}
-        on:pointerleave={onPointerLeave}
-        on:gotpointercapture={defaultPtrEventHandlerDoNothing}
-        on:lostpointercapture={defaultPtrEventHandlerDoNothing}
+        onpointerdown={handlePointer}
+        onpointerup={onPointerUp}
+        onpointercancel={handlePointer}
+        onpointermove={handlePointer}
+        onpointerover={defaultPtrEventHandlerDoNothing}
+        onpointerout={defaultPtrEventHandlerDoNothing}
+        onpointerenter={onPointerEnter}
+        onpointerleave={onPointerLeave}
+        ongotpointercapture={defaultPtrEventHandlerDoNothing}
+        onlostpointercapture={defaultPtrEventHandlerDoNothing}
     >
     </canvas>
 </div>
