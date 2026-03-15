@@ -180,7 +180,7 @@
         width: 100vw;
         height: 100vh; /* Actually this should ideally match outer constraints. For now give it large flex size. */
         overflow: hidden;
-        background-color: #f0f0f0;
+        background-color: #888;
         cursor: Default;
         touch-action: none; /* Disable browser zooming/panning via touch */
     }
