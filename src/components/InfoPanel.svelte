@@ -1,6 +1,4 @@
 <script lang="ts">
-    /** @type {() => void} */
-    let { onClear = () => {}, onSave = () => {} } = $props();
 </script>
 
 <div class="controlscolumn" id="headerColumn">
@@ -17,8 +15,5 @@
             target="_blank"
             rel="noopener noreferrer">CODE</a
         >
-        <br />
-        <button type="button" onclick={onClear}>CLEAR</button>
-        <button type="button" onclick={onSave}>SAVE</button>
     </p>
 </div>

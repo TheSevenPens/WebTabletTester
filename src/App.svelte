@@ -2,13 +2,14 @@
     import { clearCanvas, getCanvas2DContext } from './lib/utils/draw';
     import { keydown } from './lib/actions/keydown';
     import InfoPanel from './components/InfoPanel.svelte';
+    import DocPanel from './components/DocPanel.svelte';
     import FormatSettingsPanel from './components/FormatSettingsPanel.svelte';
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
     import AdvancedSettingsPanel from './components/AdvancedSettingsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
-    import CanvasInfoPanel from './components/CanvasInfoPanel.svelte';
+    import ViewPanel from './components/ViewPanel.svelte';
     import { uiState, appSettings } from './lib/stores';
     import './app.css';
 
@@ -29,9 +30,10 @@
     <!-- Top row: Info, Format, Canvas, Pointer, Sensors, (Stroke stats) -->
     <div class="top-row">
         <div class="controlscontainer">
-            <InfoPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
+            <InfoPanel />
+            <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
             <FormatSettingsPanel />
-            <CanvasInfoPanel />
+            <ViewPanel />
             <PointerStatsPanel />
 
             <SensorsPanel />

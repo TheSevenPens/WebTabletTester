@@ -15,7 +15,7 @@
     import SliderWithNumber from './SliderWithNumber.svelte';
     import CurveGraph from './CurveGraph.svelte';
 
-    const minimized = writable(false);
+    const minimized = writable(true);
     function toggleMinimized() {
         minimized.update((v) => !v);
     }

@@ -48,13 +48,9 @@
 
 </script>
 
-<div class="controlscolumn" id="canvasColumnInfo">
-    <span style="font-weight: bold">CANVAS</span>
+<div class="controlscolumn" id="viewColumnInfo">
+    <span style="font-weight: bold">VIEW</span>
     <br />
-    <StatsRow
-        label="Size"
-        value={`${$canvasViewport.width}x${$canvasViewport.height} px`}
-    />
     <div class="basiccontainer" style="padding-top: 1px;">
         <div class="basiccolumn" style="text-align: left;">Zoom</div>
         <div class="basiccolumn" style="text-align: right;">
