@@ -7,7 +7,7 @@
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
     import ProcessingSettingsPanel from './components/ProcessingSettingsPanel.svelte';
-    import ToolsPanel from './components/ToolsPanel.svelte';
+    import OptionsPanel from './components/OptionsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
@@ -19,11 +19,21 @@
         | {
               saveCanvas: () => void;
               clearForeground: () => void;
+                            copyForegroundToClipboard: () => Promise<void>;
+                            copyWithBackgroundToClipboard: () => Promise<void>;
           }
         | null = null;
 
     function clearMainCanvas() {
         canvasAreaRef?.clearForeground();
+    }
+
+    function copyForegroundToClipboard() {
+        void canvasAreaRef?.copyForegroundToClipboard();
+    }
+
+    function copyWithBackgroundToClipboard() {
+        void canvasAreaRef?.copyWithBackgroundToClipboard();
     }
 
     const clearKeys = { Delete: clearMainCanvas, Backspace: clearMainCanvas };
@@ -35,7 +45,12 @@
     <div class="top-row">
         <div class="controlscontainer">
             <InfoPanel />
-            <DocPanel onClear={clearMainCanvas} onSave={() => canvasAreaRef?.saveCanvas()} />
+            <DocPanel
+                onClear={clearMainCanvas}
+                onCopy={copyForegroundToClipboard}
+                onCopyWithBackground={copyWithBackgroundToClipboard}
+                onSave={() => canvasAreaRef?.saveCanvas()}
+            />
             <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />
@@ -57,6 +72,6 @@
             <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
         </div>
 
-        <ToolsPanel />
+        <OptionsPanel />
     </div>
 </div>

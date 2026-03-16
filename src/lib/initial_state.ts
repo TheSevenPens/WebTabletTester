@@ -8,6 +8,7 @@ import { NumericCurve } from './utils/numeric_curve';
 export const STYLUS_PEN_COLOR = 'black';
 
 export const INITIAL_PAINT_SETTINGS = {
+    brushType: 'MARKER',
     brushSize: 50,
     brushSizeControl: 'PRESSURE',
     brushColorControl: 'DEFAULT',

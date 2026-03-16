@@ -163,6 +163,10 @@
         const outputContext = getCanvas2DContext(canvas);
         if (!outputContext) return;
 
+        const useNearestSampling = $appSettings.renderSampling !== 'SMOOTH';
+        outputContext.imageSmoothingEnabled = !useNearestSampling;
+        outputContext.imageSmoothingQuality = 'high';
+
         outputContext.clearRect(0, 0, canvas.width, canvas.height);
 
         if (backgroundLayerCanvas) {
@@ -301,6 +305,44 @@
         downloadLink.click();
     }
 
+    async function writeCanvasToClipboard(sourceCanvas: HTMLCanvasElement): Promise<void> {
+        if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+            return;
+        }
+
+        const blob = await new Promise<Blob | null>((resolve) => {
+            sourceCanvas.toBlob((result) => resolve(result), 'image/png');
+        });
+        if (!blob) {
+            return;
+        }
+
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'image/png': blob,
+            }),
+        ]);
+    }
+
+    export async function copyForegroundToClipboard(): Promise<void> {
+        if (!foregroundLayerCanvas) return;
+        try {
+            await writeCanvasToClipboard(foregroundLayerCanvas);
+        } catch (err) {
+            console.error('Failed to copy foreground layer to clipboard', err);
+        }
+    }
+
+    export async function copyWithBackgroundToClipboard(): Promise<void> {
+        if (!canvas) return;
+        composeLayers();
+        try {
+            await writeCanvasToClipboard(canvas);
+        } catch (err) {
+            console.error('Failed to copy composited canvas to clipboard', err);
+        }
+    }
+
 </script>
 
 <svelte:window onkeydown={handleKeyDown} onkeyup={handleKeyUp} />
@@ -320,6 +362,8 @@
             bind:this={canvas}
             id="myCanvas"
             class="drawing-canvas"
+            class:nearest-sampling={$appSettings.renderSampling !== 'SMOOTH'}
+            class:smooth-sampling={$appSettings.renderSampling === 'SMOOTH'}
             onpointerdown={handlePointer}
             onpointerup={handlePointerUpEvent}
             onpointercancel={handlePointer}
@@ -369,5 +413,14 @@
         display: block;
         background-color: transparent;
         touch-action: none;
+    }
+
+    .drawing-canvas.nearest-sampling {
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+    }
+
+    .drawing-canvas.smooth-sampling {
+        image-rendering: auto;
     }
 </style>

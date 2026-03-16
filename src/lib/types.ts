@@ -1,4 +1,5 @@
 export interface PaintSettings {
+  brushType: string;
   brushSize: number;
   brushSizeControl: string;
   brushColorControl: string;

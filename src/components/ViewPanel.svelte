@@ -23,7 +23,8 @@
         const dpr = window.devicePixelRatio || 1;
         const viewportWidth = $canvasViewport.viewportWidth || window.innerWidth;
         const viewportHeight = $canvasViewport.viewportHeight || window.innerHeight;
-        const fitPadding = 24;
+        const fitPaddingX = DEFAULT_CANVAS_PAN_X;
+        const fitPaddingY = DEFAULT_CANVAS_PAN_Y;
 
         const baseCanvasWidth = $canvasViewport.width / dpr;
         const baseCanvasHeight = $canvasViewport.height / dpr;
@@ -31,8 +32,8 @@
             return;
         }
 
-        const availableWidth = Math.max(1, viewportWidth - fitPadding * 2);
-        const availableHeight = Math.max(1, viewportHeight - fitPadding * 2);
+        const availableWidth = Math.max(1, viewportWidth - fitPaddingX * 2);
+        const availableHeight = Math.max(1, viewportHeight - fitPaddingY * 2);
 
         const fitZoom = Math.max(
             0.1,
@@ -42,11 +43,9 @@
             )
         );
 
-        const renderScale = fitZoom / dpr;
-
         $canvasViewport.zoom = fitZoom;
-        $canvasViewport.panX = (viewportWidth - $canvasViewport.width * renderScale) / 2;
-        $canvasViewport.panY = (viewportHeight - $canvasViewport.height * renderScale) / 2;
+        $canvasViewport.panX = DEFAULT_CANVAS_PAN_X;
+        $canvasViewport.panY = DEFAULT_CANVAS_PAN_Y;
     }
 
     function setZoomFromInput(value: string) {

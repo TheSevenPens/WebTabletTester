@@ -2,6 +2,7 @@
     import { writable } from 'svelte/store';
     import BackgroundSettings from './BackgroundSettings.svelte';
     import GridSettings from './GridSettings.svelte';
+    import RenderingSettings from './RenderingSettings.svelte';
     import ConfigSettings from './ConfigSettings.svelte';
 
     const minimized = writable(true);
@@ -13,13 +14,13 @@
 
 <div class="advanced-panel advanced-panel--right" class:minimized={$minimized}>
     <div class="advanced-panel-header">
-        <span class="advanced-panel-title">TOOLS</span>
+        <span class="advanced-panel-title">OPTIONS</span>
         <button
             type="button"
             class="advanced-panel-toggle"
             onclick={toggleMinimized}
-            title={$minimized ? 'Restore Tools panel' : 'Minimize Tools panel'}
-            aria-label={$minimized ? 'Restore Tools panel' : 'Minimize Tools panel'}
+            title={$minimized ? 'Restore Options panel' : 'Minimize Options panel'}
+            aria-label={$minimized ? 'Restore Options panel' : 'Minimize Options panel'}
         >
             {$minimized ? '◀' : '▶'}
         </button>
@@ -29,6 +30,7 @@
         <div class="advanced-panel-content">
             <BackgroundSettings />
             <GridSettings />
+            <RenderingSettings />
             <ConfigSettings />
         </div>
     {:else}
@@ -36,9 +38,9 @@
             type="button"
             class="advanced-panel-minimized-label advanced-panel-minimized-label--right"
             onclick={toggleMinimized}
-            title="Restore Tools panel"
+            title="Restore Options panel"
         >
-            <span>Tools</span>
+            <span>Options</span>
         </button>
     {/if}
 </div>

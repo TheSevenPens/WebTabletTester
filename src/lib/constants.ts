@@ -24,6 +24,16 @@ export const BRUSH_SIZES = [
     { value: 300, label: '300px' },
 ];
 
+export const BRUSH_TYPE_OPTIONS = [
+    { value: 'MARKER', label: 'Marker' },
+    { value: 'ERASER', label: 'Eraser' },
+];
+
+export const RENDER_SAMPLING_OPTIONS = [
+    { value: 'NEAREST', label: 'Nearest neighbor' },
+    { value: 'SMOOTH', label: 'Smooth' },
+];
+
 export const SIZE_CONTROL_OPTIONS = [
     { value: 'USER', label: "Don't scale" },
     { value: 'PRESSURE', label: 'Pressure' },
@@ -42,7 +52,6 @@ export const COLOR_CONTROL_OPTIONS = [
     { value: 'TILTAZ', label: 'Tilt Azimuth' },
     { value: 'TILTALT', label: 'Tilt Altitude' },
     { value: 'BARRELROTATION', label: 'Barrel rotation' },
-    { value: 'ERASER', label: 'Eraser' },
 ];
 
 export const MIN_STROKE_SIZES = [

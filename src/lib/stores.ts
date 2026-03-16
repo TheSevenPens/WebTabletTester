@@ -24,6 +24,7 @@ export const appSettings = writable({
     showGrid: false,
     gridSize: 100,
     gridColor: "#b8b8d0",
+    renderSampling: 'NEAREST',
     downloadFilename: "TabletTester_Untitled",
 });
 
