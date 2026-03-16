@@ -7,7 +7,7 @@
     import PointerStatsPanel from './components/PointerStatsPanel.svelte';
     import SensorsPanel from './components/SensorsPanel.svelte';
     import ProcessingSettingsPanel from './components/ProcessingSettingsPanel.svelte';
-    import ToolsPanel from './components/ToolsPanel.svelte';
+    import OptionsPanel from './components/OptionsPanel.svelte';
     import StrokeStatsPanel from './components/StrokeStatsPanel.svelte';
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
@@ -72,6 +72,6 @@
             <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
         </div>
 
-        <ToolsPanel />
+        <OptionsPanel />
     </div>
 </div>
