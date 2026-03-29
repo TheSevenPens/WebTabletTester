@@ -38,13 +38,6 @@
         <label
             ><input
                 type="checkbox"
-                checked={(getButtonsVal($pointerLiveStats.buttons) & 32) !== 0}
-                disabled
-            /> 32-Era</label
-        >
-        <label
-            ><input
-                type="checkbox"
                 checked={(getButtonsVal($pointerLiveStats.buttons) & 8) !== 0}
                 disabled
             /> 8-X1/Back</label
@@ -55,6 +48,13 @@
                 checked={(getButtonsVal($pointerLiveStats.buttons) & 16) !== 0}
                 disabled
             /> 16-X2/Fwd</label
+        >
+        <label
+            ><input
+                type="checkbox"
+                checked={(getButtonsVal($pointerLiveStats.buttons) & 32) !== 0}
+                disabled
+            /> 32-Era</label
         >
     </div>
 </div>
