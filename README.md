@@ -6,7 +6,7 @@ A browser-based tool for inspecting pen, mouse, and touch input. Draw on a 1920Ã
 
 ## Development
 
-Use Node.js **24.x** (also declared in `.nvmrc` and `package.json`) and npm.
+Use Node.js **22.12 or newer** and npm. CI and the deployment workflow use the version in `.nvmrc` (24); `package.json` declares `engines.node >=22.12.0`.
 
 ```sh
 npm ci

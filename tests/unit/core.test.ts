@@ -9,7 +9,8 @@ import { NumericSmoother } from '../../src/lib/utils/numeric_smoother';
 import { applyPressureCurve } from '../../src/lib/utils/numeric_curve';
 import { lerp } from '../../src/lib/utils/interpolation';
 import { quantize, sampleRate } from '../../src/lib/utils/numerics';
-import { StrokeEngine } from '../../src/lib/stroke_engine';
+import { StrokeEngine, hoverProcessing } from '../../src/lib/stroke_engine';
+import { timestampForFilename } from '../../src/lib/canvas_export';
 import { evaluateBrush } from '../../src/lib/paint';
 import { fitViewport, screenToDocument, zoomAt } from '../../src/lib/viewport';
 import { createFrameScheduler } from '../../src/lib/frame_scheduler';
@@ -169,6 +170,29 @@ describe('stroke lifecycle regression coverage', () => {
         expect(engine.statistics).toMatchObject({ strokeCount: 0, cancelledStrokeCount: 1 });
     });
 
+    it('reports raw hover readings but smooths inside a stroke', () => {
+        const { engine, settings } = setup();
+        settings.processing = {
+            ...settings.processing,
+            positionSmoothing: 0.5,
+            tiltSmoothing: 0.5,
+        };
+        engine.move(raw({ x: 10, tiltX: 0, pressure: 0, buttons: 0 }), settings);
+        const hover = engine.move(
+            raw({ x: 100, tiltX: 40, pressure: 0, buttons: 0, time: 10 }),
+            settings
+        );
+        expect(hover).toMatchObject({ x: 100, tiltX: 40 });
+        expect(hoverProcessing(settings.processing)).toMatchObject({
+            positionSmoothing: 0,
+            pressureSmoothing: 0,
+            tiltSmoothing: 0,
+            velocitySmoothing: settings.processing.velocitySmoothing,
+        });
+        engine.begin(raw({ x: 10, time: 20 }), settings);
+        expect(engine.move(raw({ x: 100, time: 30 }), settings)?.x).toBe(55);
+    });
+
     it('does not count stray up or hover samples as stroke samples', () => {
         const { engine, settings } = setup();
         engine.end(raw(), settings);
@@ -244,6 +268,11 @@ describe('brush and viewport contracts', () => {
             dpr: 2,
         });
         expect(result).toMatchObject({ zoom: 1, panX: 16, panY: 16 });
+    });
+
+    it('names exports with a local YYYYMMDD_HHMMSS timestamp', () => {
+        expect(timestampForFilename(new Date(2026, 8, 28, 7, 5, 9))).toBe('20260928_070509');
+        expect(timestampForFilename(new Date(2026, 11, 31, 23, 59, 59))).toBe('20261231_235959');
     });
 
     it('counts intervals for sample rates', () => {

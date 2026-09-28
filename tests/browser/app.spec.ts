@@ -209,6 +209,30 @@ test('a stroke released outside the canvas is finalized once', async ({ page }) 
     expect(await pixel(page, 350, 350)).toEqual([230, 230, 250, 255]);
 });
 
+test('focus leaving the canvas mid-stroke does not cancel the captured stroke', async ({
+    page,
+}) => {
+    const position = await point(page);
+    await page.mouse.move(position.x, position.y);
+    await page.mouse.down();
+    await page.mouse.move(position.x + 40, position.y);
+    // A second finger tapping a control, or Tab, moves focus while the pointer stays captured.
+    // Real blur events do not bubble; Playwright defaults bubbles to true, which would reach window.
+    await page.locator(canvasSelector).dispatchEvent('blur', { bubbles: false });
+    await page.mouse.move(position.x + 80, position.y);
+    await page.mouse.up();
+    // The start dab stays and the stroke completes; a cancel would count it as cancelled instead.
+    await expect.poll(() => pixel(page, 80, 80)).toEqual([0, 0, 0, 255]);
+    await showStats(page);
+    const panel = page.getByRole('region', { name: 'Stroke statistics' });
+    await expect(panel.locator('.stat-row').filter({ hasText: 'Completed' })).toHaveText(
+        'Completed1'
+    );
+    await expect(panel.locator('.stat-row').filter({ hasText: 'Cancelled' })).toHaveText(
+        'Cancelled0'
+    );
+});
+
 for (const termination of ['pointercancel', 'lostpointercapture', 'blur'] as const) {
     test(`${termination} cancels the active stroke without counting a completed stroke`, async ({
         page,
@@ -280,7 +304,7 @@ test('save exports the full document as a PNG', async ({ page }) => {
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'SAVE', exact: true }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toMatch(/^TabletTester_Untitled_.*\.png$/);
+    expect(download.suggestedFilename()).toMatch(/^TabletTester_Untitled_\d{8}_\d{6}\.png$/);
     const path = await download.path();
     if (!path) throw new Error('Missing downloaded PNG');
     const bytes = await readFile(path);

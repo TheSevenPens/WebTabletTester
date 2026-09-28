@@ -195,7 +195,15 @@ export function createCanvasController(
         setPanMode();
     };
     window.addEventListener('blur', blur, { signal });
-    canvas.addEventListener('blur', blur, { signal });
+    // Focus leaving the canvas (a second finger tapping a button, Tab) must not end a captured
+    // stroke or pan; pointer events keep arriving through capture. Only reset idle key state.
+    canvas.addEventListener(
+        'blur',
+        () => {
+            if (interaction.mode === 'idle') blur();
+        },
+        { signal }
+    );
     surface.addEventListener(
         'wheel',
         (event) => {

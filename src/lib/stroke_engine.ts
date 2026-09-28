@@ -2,6 +2,7 @@ import type {
     Brush,
     EngineSettings,
     ProcessedSample,
+    ProcessingSettings,
     RawSample,
     StrokeRenderer,
     StrokeStats,
@@ -9,6 +10,14 @@ import type {
 import { createStrokeStats } from './initial_state';
 import { SampleProcessor } from './processing';
 import { evaluateBrush } from './paint';
+
+/**
+ * Live readings while hovering show what the hardware reports, so position, pressure, and tilt
+ * smoothing are bypassed outside a stroke. Velocity smoothing still applies, as it did before.
+ */
+export function hoverProcessing(processing: Readonly<ProcessingSettings>): ProcessingSettings {
+    return { ...processing, positionSmoothing: 0, pressureSmoothing: 0, tiltSmoothing: 0 };
+}
 
 /** One instance per document. No DOM, stores, clocks, or global mutable state. */
 export class StrokeEngine {
@@ -45,7 +54,9 @@ export class StrokeEngine {
 
     move(raw: RawSample, settings: EngineSettings): ProcessedSample | null {
         if (this.activeId !== null && this.activeId !== raw.pointerId) return null;
-        if (this.activeId === null) return this.processor.process(raw, settings.processing);
+        if (this.activeId === null) {
+            return this.processor.process(raw, hoverProcessing(settings.processing));
+        }
         const sample = this.accept(raw, settings);
         const brush = evaluateBrush(sample, settings.paint);
         if (this.previous && raw.pressure > 0) this.renderer.segment(this.previous, sample, brush);
