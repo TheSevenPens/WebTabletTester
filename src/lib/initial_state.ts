@@ -1,72 +1,59 @@
-/**
- * Single source of truth for initial/default state.
- * Used by stores.js and paint_data.js so structure is defined once.
- */
-import { NumericSmoother } from './utils/numeric_smoother';
-import { NumericCurve } from './utils/numeric_curve';
+import type {
+    AppSettings,
+    PaintSettings,
+    ProcessingSettings,
+    StrokeStats,
+    Viewport,
+} from './types';
+import { DEFAULT_CANVAS_PAN_X, DEFAULT_CANVAS_PAN_Y } from './constants';
 
-export const STYLUS_PEN_COLOR = 'black';
-
-export const INITIAL_PAINT_SETTINGS = {
-    brushType: 'MARKER',
-    brushSize: 50,
-    brushSizeControl: 'PRESSURE',
-    brushColorControl: 'DEFAULT',
-    eraserSize: 30,
-    linecap: 'round',
-    minStrokeSize: 1.0,
-    eraseOnStrokeStart: false,
-};
-
-export function createInitialProcessingSettings() {
+export function createPaintSettings(): PaintSettings {
     return {
-        posXSmoother: new NumericSmoother(0.0),
-        posYSmoother: new NumericSmoother(0.0),
-        pressureSmoother: new NumericSmoother(0.0),
-        pressureCurveAmount: new NumericCurve(0.0),
-        tiltXSmoother: new NumericSmoother(0.0),
-        tiltYSmoother: new NumericSmoother(0.0),
-        tiltAzimuthSmoother: new NumericSmoother(0.0),
-        tiltAltitudeSmoother: new NumericSmoother(0.0),
-        velocitySmoother: new NumericSmoother(0.9),
-        pressureQuant: 0,
-        pressureQuantizationLevels: 0,
+        brushType: 'MARKER',
+        brushSize: 50,
+        brushSizeControl: 'PRESSURE',
+        brushColorControl: 'DEFAULT',
+        linecap: 'round',
+        minStrokeSize: 1,
+        eraseOnStrokeStart: false,
     };
 }
 
-export const INITIAL_PAINT_CURRENT_DAB_SETTINGS = {
-    brushSize: 1,
-    brushColor: STYLUS_PEN_COLOR,
-};
+export function createProcessingSettings(): ProcessingSettings {
+    return {
+        positionSmoothing: 0,
+        pressureSmoothing: 0,
+        tiltSmoothing: 0,
+        velocitySmoothing: 0.9,
+        pressureCurve: 0,
+        pressureQuant: 0,
+    };
+}
 
-export const INITIAL_PAINT_STATE = {
-    canvasPosOldAllEvents: { x: 0, y: 0 },
-    canvasPosOld: { x: 0, y: 0 },
-    isDrawing: false,
-    timeOld: null,
-};
+export function createAppSettings(): AppSettings {
+    return {
+        canvasColor: '#e6e6fa',
+        showGrid: false,
+        gridSize: 100,
+        gridColor: '#b8b8d0',
+        renderSampling: 'NEAREST',
+        downloadFilename: 'TabletTester_Untitled',
+    };
+}
 
-export const INITIAL_PAINT_STROKE_STATS = {
-    strokeCount: 0,
-    ptreventCount: 0,
-    startTime: 0,
-    endTime: 0,
-    duration: 0,
-    rate: 0,
-};
+export function createStrokeStats(): StrokeStats {
+    return { strokeCount: 0, cancelledStrokeCount: 0, sampleCount: 0, duration: 0 };
+}
 
-export const POINTER_LIVE_STATS_DEFAULT = {
-    buttons: '-',
-    buttonString: '-',
-    pressureProcessed: '-.----',
-    tiltXProcessed: '\u00a0\u00a0\u00a0-.-',
-    tiltYProcessed: '\u00a0\u00a0\u00a0-.-',
-    tiltAzimuthProcessed: '\u00a0\u00a0--.-',
-    tiltAltitudeProcessed: '\u00a0\u00a0--.-',
-    canvasPosXProcessed: '\u00a0---.-',
-    canvasPosYProcessed: '\u00a0---.-',
-    barrelRotation: '-',
-    velocity: '\u00a0---.-',
-    direction: '\u00a0---.-',
-    size: '-',
-};
+export function createViewport(): Viewport {
+    return {
+        width: 1920,
+        height: 1080,
+        zoom: 1,
+        panX: DEFAULT_CANVAS_PAN_X,
+        panY: DEFAULT_CANVAS_PAN_Y,
+        viewportWidth: 0,
+        viewportHeight: 0,
+        dpr: 1,
+    };
+}

@@ -3,12 +3,12 @@
     import StatsRow from './StatsRow.svelte';
 </script>
 
-<div class="controlscolumn" id="sensorsColumn">
-    <span style="font-weight: bold">SENSORS</span> <br />
-    <StatsRow label="Pressure" value={$pointerLiveStats.pressureProcessed} />
-    <StatsRow label="TiltX" value={$pointerLiveStats.tiltXProcessed} />
-    <StatsRow label="TiltY" value={$pointerLiveStats.tiltYProcessed} />
-    <StatsRow label="TiltAzi" value={$pointerLiveStats.tiltAzimuthProcessed} />
-    <StatsRow label="TiltAlt" value={$pointerLiveStats.tiltAltitudeProcessed} />
-    <StatsRow label="Rotation" value={$pointerLiveStats.barrelRotation} />
-</div>
+<section class="controlscolumn" aria-label="Sensors">
+    <h2>SENSORS</h2>
+    <StatsRow label="Pressure" value={$pointerLiveStats?.pressure} digits={4} />
+    <StatsRow label="Tilt X" value={$pointerLiveStats?.tiltX} suffix="°" />
+    <StatsRow label="Tilt Y" value={$pointerLiveStats?.tiltY} suffix="°" />
+    <StatsRow label="Azimuth" value={$pointerLiveStats?.azimuth} suffix="°" />
+    <StatsRow label="Altitude" value={$pointerLiveStats?.altitude} suffix="°" />
+    <StatsRow label="Rotation" value={$pointerLiveStats?.twist} suffix="°" />
+</section>

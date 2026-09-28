@@ -1,32 +1,27 @@
 <script lang="ts">
-    import { canvasViewport } from '../lib/stores';
+    import { canvasViewport, exportStatus } from '../lib/stores';
     import StatsRow from './StatsRow.svelte';
-
     interface Props {
-        onClear?: () => void;
-        onSave?: () => void;
-        onCopy?: () => void;
-        onCopyWithBackground?: () => void;
+        onClear: () => void;
+        onSave: () => void;
+        onCopy: () => void;
+        onCopyWithBackground: () => void;
     }
-    let {
-        onClear = () => {},
-        onSave = () => {},
-        onCopy = () => {},
-        onCopyWithBackground = () => {},
-    }: Props = $props();
+    let { onClear, onSave, onCopy, onCopyWithBackground }: Props = $props();
 </script>
 
-<div class="controlscolumn" id="docColumn">
-    <span style="font-weight: bold">DOCUMENT</span>
-    <br />
+<section class="controlscolumn document-panel" aria-label="Document">
+    <h2>DOCUMENT</h2>
     <StatsRow
         label="Size"
-        value={`${$canvasViewport.width}x${$canvasViewport.height} px`}
+        value={`${$canvasViewport.width}×${$canvasViewport.height}`}
+        suffix=" px"
     />
-    <div style="margin-top: 5px;">
-        <button type="button" onclick={onClear}>CLEAR</button>
-        <button type="button" onclick={onCopy}>COPY</button>
-        <button type="button" onclick={onCopyWithBackground}>COPY w/ BK</button>
-        <button type="button" onclick={onSave}>SAVE</button>
+    <div class="button-row">
+        <button onclick={onClear}>CLEAR</button><button onclick={onCopy}>COPY</button>
+        <button onclick={onCopyWithBackground}>COPY w/ BK</button><button onclick={onSave}
+            >SAVE</button
+        >
     </div>
-</div>
+    <p class="export-status" role="status">{$exportStatus}</p>
+</section>

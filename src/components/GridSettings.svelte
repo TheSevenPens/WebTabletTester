@@ -1,88 +1,30 @@
 <script lang="ts">
     import { appSettings } from '../lib/stores';
-
-    let collapsed = false;
-
-    function toggleCollapsed() {
-        collapsed = !collapsed;
-    }
-
-    function onShowGridChange(e: Event) {
-        const target = e.currentTarget as HTMLInputElement;
-        appSettings.update((settings) => ({
-            ...settings,
-            showGrid: target.checked,
-        }));
-    }
-
-    function onGridSizeInput(e: Event) {
-        const target = e.currentTarget as HTMLInputElement;
-        const parsed = Number.parseInt(target.value, 10);
-        if (Number.isNaN(parsed)) {
-            return;
-        }
-
-        const clamped = Math.max(5, parsed);
-        appSettings.update((settings) => ({
-            ...settings,
-            gridSize: clamped,
-        }));
-    }
-
-    function onGridColorInput(e: Event) {
-        const target = e.currentTarget as HTMLInputElement;
-        appSettings.update((settings) => ({
-            ...settings,
-            gridColor: target.value,
-        }));
+    import CollapsibleSection from './CollapsibleSection.svelte';
+    function setSize(event: Event & { currentTarget: HTMLInputElement }) {
+        const size = event.currentTarget.valueAsNumber;
+        if (Number.isFinite(size)) $appSettings.gridSize = Math.max(5, Math.round(size));
+        else event.currentTarget.value = String($appSettings.gridSize);
     }
 </script>
 
-<section class="advanced-panel-section">
-    <div class="advanced-panel-section-header">
-        <h4 class="advanced-panel-section-title">Grid</h4>
-        <button
-            type="button"
-            class="advanced-panel-section-toggle"
-            onclick={toggleCollapsed}
-            aria-expanded={!collapsed}
-            aria-label={collapsed ? 'Expand Grid section' : 'Collapse Grid section'}
-        >
-            {collapsed ? '▶' : '▼'}
-        </button>
-    </div>
-
-    {#if !collapsed}
-        <div class="advanced-panel-section-body">
-            <label>
-                <input
-                    type="checkbox"
-                    checked={$appSettings.showGrid}
-                    onchange={onShowGridChange}
-                />
-                Show grid
-            </label>
-            <br />
-            <label for="gridSizeInput">Grid size (px) </label>
-            <input
-                id="gridSizeInput"
-                type="number"
-                min="5"
-                step="1"
-                style="width: 65px;"
-                value={$appSettings.gridSize}
-                oninput={onGridSizeInput}
-                title="Grid cell size in pixels"
-            />
-            <br />
-            <label for="gridColorInput">Grid color </label>
-            <input
-                id="gridColorInput"
-                type="color"
-                value={$appSettings.gridColor}
-                oninput={onGridColorInput}
-                title="Background grid line color"
-            />
-        </div>
-    {/if}
-</section>
+<CollapsibleSection title="Grid">
+    <label class="check-row"
+        ><input type="checkbox" bind:checked={$appSettings.showGrid} />Show grid</label
+    >
+    <label class="control-row" for="gridSizeInput"
+        >Grid size (px)
+        <input
+            id="gridSizeInput"
+            type="number"
+            min="5"
+            step="1"
+            value={$appSettings.gridSize}
+            onchange={setSize}
+        />
+    </label>
+    <label class="control-row" for="gridColorInput"
+        >Grid color
+        <input id="gridColorInput" type="color" bind:value={$appSettings.gridColor} />
+    </label>
+</CollapsibleSection>

@@ -1,43 +1,24 @@
+import { clamp, finite, wrapDegrees } from './numerics';
+
+/** EMA: amount is the previous sample's weight; zero disables smoothing. */
 export class NumericSmoother {
-  amount!: number;
-  oldSmoothed: number | null = null;
+    private previous: number | null = null;
 
-  constructor(amount: number) {
-    this.resetSettings();
-    this.resetState();
-    this.setSmoothingAmount(amount);
-  }
-
-
-  setSmoothingAmount(value: number): void
-  {
-    this.amount = value;
-  }
-
-  resetSettings(): void
-  {
-    this.setSmoothingAmount(0.0);
-  }
-
-  resetState(): void 
-  {
-    this.oldSmoothed = null;
-  }
-
-  apply(input: number): number
-  {
-    var output = input;
-    if (this.oldSmoothed != null )
-    {
-        if (this.amount>0.0)
-        {
-            const alpha = 1.0-this.amount;
-            output = ( alpha * input ) + ((1.0 - alpha) * this.oldSmoothed);
-        }
+    reset(): void {
+        this.previous = null;
     }
-    this.oldSmoothed = output;
-    return output;
-  }
 
+    apply(input: number, amount: number, circular = false): number {
+        const value = finite(input);
+        const weight = clamp(finite(amount), 0, 0.999);
+        let output = value;
+        if (this.previous !== null) {
+            const delta = circular
+                ? wrapDegrees(value - this.previous + 180) - 180
+                : value - this.previous;
+            output = this.previous + delta * (1 - weight);
+        }
+        this.previous = circular ? wrapDegrees(output) : output;
+        return this.previous;
+    }
 }
-

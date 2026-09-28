@@ -1,166 +1,80 @@
 # Architecture
 
-WebTabletTester is a real-time pen tablet input testing application built with Svelte 5, TypeScript, and Vite. It captures pointer events from tablet hardware, applies configurable signal processing, and renders strokes on a layered HTML5 canvas while displaying live sensor statistics.
+WebTabletTester separates serializable settings, transient input state, rendering, and Svelte presentation. There is no legacy state mirror or UI-owned synchronization layer.
 
-## Tech Stack
+## Ownership and data flow
 
-- **Framework**: Svelte 5 (reactive UI)
-- **Language**: TypeScript
-- **Build Tool**: Vite
-- **Rendering**: HTML5 Canvas (2D context)
-- **Deployment**: GitHub Pages
-
-## High-Level Layout
-
-```
- Top Row: Control Panels (info, brush, view, stats)
-+---------------------------------------------------------+
-| Left Sidebar   |   Canvas Area      | Right Sidebar     |
-| (Processing)   |   (drawing surface) | (Options)         |
-+---------------------------------------------------------+
+```text
+PointerEvent → pointer_input (raw document-space samples)
+             → canvas_controller (capture, active pointer, draw/pan lifecycle)
+             → StrokeEngine → SampleProcessor → evaluateBrush → CanvasRenderer
+             → one scheduled frame: compose dirty layers + publish UI snapshots
 ```
 
-The app is organized into three horizontal zones: a top row of control panels, a center canvas flanked by collapsible sidebars for processing settings (left) and options (right).
+| Module                 | Responsibility                                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `types.ts`             | Settings, sample, brush, renderer, and viewport contracts                                       |
+| `initial_state.ts`     | Factories for fresh plain settings/default snapshots                                            |
+| `stores.ts`            | Authoritative user settings/viewport and UI projections of engine measurements                  |
+| `pointer_input.ts`     | Browser event adaptation, coalesced-sample fallback, finite-value normalization                 |
+| `stroke_engine.ts`     | One document's active drawing pointer, filter history, stroke counts, render commands           |
+| `processing.ts`        | Ordered sample processing and timestamp-based velocity                                          |
+| `paint.ts`             | Pure brush size/color/eraser evaluation from explicit settings and a processed sample           |
+| `viewport.ts`          | Pure zoom-at-point, fit, reset, and screen/document transforms                                  |
+| `canvas_controller.ts` | DOM event listeners, capture/release, idle/drawing/panning transitions, resize and blur cleanup |
+| `canvas_renderer.ts`   | Cached 2D contexts, foreground/background layers, brush drawing, dirty composition              |
+| `frame_scheduler.ts`   | At most one pending presentation frame; flush and disposal                                      |
+| `canvas_export.ts`     | PNG Blob creation, clipboard capability/error handling, download URL lifetime                   |
+| `shortcuts.ts`         | Focus/modifier/composition/repeat policy for canvas shortcuts                                   |
 
-## Component Map
+The engine imports no Svelte, DOM event APIs, or clocks. It takes settings and samples explicitly and draws through an injected renderer interface, so it can be tested without a browser. `CanvasArea` is the Svelte adapter: it subscribes to settings, creates/disposes one controller, and publishes numerical snapshots. Engine measurements flow one way into presentation stores; the engine never reads those snapshots back.
 
-### Root
+Processing settings contain numbers only. Each engine owns its smoother instances. A new stroke resets the active processor **before** its first sample; constructing a second engine creates independent history. Resetting processing does not alter brush or UI options.
 
-| Component | Role |
-|-----------|------|
-| `App.svelte` | Top-level layout. Arranges panels and canvas area. |
+## Pointer lifecycle
 
-### Top Row Panels
+The controller has idle, drawing, and panning states with one active pointer ID. A drawing/panning start captures that pointer. Foreign pointer moves/up/cancel events cannot alter the active interaction.
 
-| Component | Role |
-|-----------|------|
-| `InfoPanel` | App title, version, links to docs and GitHub. |
-| `DocPanel` | Canvas dimension display. Clear, copy-to-clipboard, and save-as-PNG actions. |
-| `BrushSettingsPanel` | Brush type (marker/eraser), size, size-control source, color-control source, min size. |
-| `ViewPanel` | Zoom level display and controls (-, fit, +). Pan/zoom state management. |
-| `ButtonsPanel` | Displays status of 6 hardware tablet buttons as disabled checkboxes. |
-| `PointerStatsPanel` | Live pointer X/Y coordinates, velocity, and direction. |
-| `SensorsPanel` | Live pressure, tilt X/Y, azimuth, altitude, and barrel rotation values. |
-| `StrokeStatsPanel` | Stroke count, pointer event count, duration, and event rate. Toggleable. |
+Drawing starts with a dab. Moves draw segments in order. Pointer-up processes the final endpoint. For mouse and touch, which always report zero pressure on release, the release point is drawn with the last contact brush. For pens the release segment is drawn only if the release sample still reports pressure; a zero-pressure release means the tip had already lifted, and no mark is placed where the hardware reported no contact. Up then reports released live status. Up is idempotent; a stray up never creates a stroke. Cancel, lost capture, window blur, and teardown stop interactions and reset transient state. Canvas blur alone (focus moving to a control while the pointer stays captured) does not end an interaction; it only resets idle key state. Cancelled strokes keep already-rendered marks and have a separate count.
 
-### Canvas Area
+Middle-button **bits** or Space + down start a pan. Space pressed during a drawing stroke does not switch its mode. Capture allows release outside the element. Keyboard shortcuts are handled on `window` and scoped by the event target rather than by canvas focus: modifier, composition, and repeated key events are ignored; Delete and Backspace clear unless an editable field (input, textarea, select, contenteditable) has focus; Space pans unless an interactive control (editable field, button, summary, link) has focus, so button keyboard activation is preserved.
 
-| Component | Role |
-|-----------|------|
-| `CanvasArea` | Main drawing surface. Manages pointer event capture, pan/zoom, layer composition, and clipboard export. Contains three HTML5 canvases: background, foreground, and composite output. |
+## Numerical contracts
 
-### Left Sidebar (Processing)
+- Coordinates are document pixels. The input adapter uses the canvas's explicit document dimensions and bounding rectangle, reversing pan/CSS scale and DPR. Events do not need a canvas `target`.
+- Timestamps are the browser event's monotonic milliseconds, not the time at which a handler happens to run.
+- Pressure is finite and clamped to [0,1]. Quantization (off or integer levels ≥2) maps to evenly spaced values including both endpoints.
+- Pressure order is quantization → power curve → EMA smoothing.
+- Curve amount is clamped to [-0.9,0.9]. Negative amount `a` uses exponent `1+a`; nonnegative amount uses `1/(1-a)`. Both pressure endpoints are preserved. Positive amounts sharpen; negative amounts soften.
+- EMA output is `(1-amount)*input + amount*previous`. Amount is clamped to [0,0.999]. The first input after reset passes through.
+- Azimuth smoothing follows the shortest angular arc, avoiding a jump across 359°/0°. Angles are degrees within the core; browser radians are converted at the input boundary.
+- Velocity is processed-position distance divided by event-time seconds, followed by its configured EMA. Equal timestamps yield zero velocity instead of division by zero.
+- `lerp(a,b,t)` returns `a` at 0 and `b` at 1. Pressure-to-hue runs 150° → 360°, preserving the previous application's direction.
+- Brush size is limited to [0.1,300] document pixels and the configured minimum. Signed X/Y tilt scaling retains the historical 60° calibration: negative tilt falls to the minimum size. This is a deliberate compatibility contract, not an absolute-tilt mapping.
+- Contact means the tip or eraser button bit for any pointer type, or a pen reporting pressure above 0. Wacom pens in Chromium report a held barrel switch as `buttons = 2` with no tip bit, so pressure is the authoritative contact signal for pens. Mice are excluded because they report pressure 0.5 for any button. Hardware eraser detection uses the eraser bit; foreground erasing uses `destination-out`.
 
-| Component | Role |
-|-----------|------|
-| `ProcessingSettingsPanel` | Collapsible container for processing sub-panels. |
-| `SmoothingSettings` | Controls for position, tilt, and pressure smoothing (exponential moving average). |
-| `QuantizationSettings` | Pressure quantization level selector for testing device resolution. |
-| `CurveSettings` | Pressure curve amount control with live curve preview graph. |
+## Measurements and presentation
 
-### Right Sidebar (Options)
+Raw samples remain attached to processed samples. Stores retain numbers; `StatsRow` formats them for display. Stroke statistics are collected regardless of panel visibility.
 
-| Component | Role |
-|-----------|------|
-| `OptionsPanel` | Collapsible container for option sub-panels. |
-| `BackgroundSettings` | Canvas background color picker. |
-| `GridSettings` | Grid visibility, size, and color. |
-| `RenderingSettings` | Canvas sampling mode (nearest neighbor vs smooth). |
-| `ConfigSettings` | Toggles: erase-on-stroke-start, show stroke stats. |
+Sample count includes the accepted down event, every accepted movement sample, and up. Duration is the nonnegative interval from down to the latest accepted sample. Rate uses `(count - 1) * 1000 / duration`, or zero for zero duration. Cancel/lost-capture events are lifecycle signals, not measurement samples. Completed and cancelled stroke counts are separate.
 
-### Shared UI Components
+For a movement event, process its coalesced list if nonempty; otherwise process the parent event. Never count both. Every input sample is processed immediately. Composition and UI publication are batched to one animation frame. Hover can update measurements without recompositing unchanged image layers. Hover samples bypass position, pressure, and tilt smoothing so live readings show what the hardware reports; velocity smoothing still applies. Smoothing takes effect from the first sample of a stroke. Export flushes pending work before creating a PNG.
 
-| Component | Role |
-|-----------|------|
-| `SliderWithNumber` | Dual input control (range slider + number field) with right-click context menu for reset/min/max. |
-| `CurveGraph` | Canvas-based preview of the pressure curve function. |
-| `StatsRow` | Generic label + value + suffix row used across stats panels. |
+## Canvas and viewport
 
-## Core Logic Modules
+The fixed document is 1920×1080. Background contains the fill/grid; foreground contains strokes; the visible canvas composites the two. Background redraw only happens when background settings change. Canvas contexts are cached; composition only runs when a layer is dirty.
 
-### `app_pointer.ts` - Event Orchestration
+At zoom 1, CSS scale is `1 / devicePixelRatio`; document pixels map to device pixels. Wheel zoom and toolbar zoom share the same anchor calculation. Fit and Reset retain 16px padding. Nearest/smooth display sampling is a CSS property of the visible canvas. Changes to document size are a future feature; the renderer is initialized with its document dimensions.
 
-Entry point for all pointer input. Receives raw pointer events from `CanvasArea`, creates a `PointerRecord`, applies processing, triggers painting, and updates stats. Manages stroke start/stop lifecycle.
+## UI components
 
-### `paint.ts` - Stroke Rendering
+`App` composes the toolbar, canvas, and sidebars. `CanvasArea` manages lifecycle and export status. Brush, View, Document, Buttons, Pointer, Sensors, and StrokeStats panels retain feature-specific logic. `SidebarPanel` and `CollapsibleSection` own repeated collapse markup/ARIA relationships. `SliderWithNumber` provides labeled range/number inputs and a native keyboard-operable actions disclosure. `CurveGraph` reacts to a primitive curve amount, avoiding mutable-object reactivity ambiguity.
 
-Computes brush size and color from sensor data and settings, then draws strokes via quadratic curve interpolation on the foreground canvas. Handles eraser mode through canvas composite operations (`destination-out`).
+Toolbar overflow is scrollable; sidebars and canvas remain reachable on narrow screens. Component styling uses shared layout classes and a small set of tokens rather than global ID selectors.
 
-### `pointer_record.ts` - Pointer Data Model
+## Extending the app
 
-Encapsulates a single pointer event. Extracts coordinates, pressure, tilt, and rotation from the browser's `PointerEvent`. Applies coordinate transforms (screen to canvas, accounting for CSS scale and DPR). Computes velocity and direction from inter-event deltas.
+Add new settings to plain typed configuration and its default factory. Add numerical behavior to the processor or pure brush evaluation functions, with unit tests for its units/endpoints/reset behavior. Keep DOM access in adapters/renderers. New input lifecycle branches require both engine regression coverage and a browser capture/termination test. Run `npm run verify` before submitting changes.
 
-### `stores.ts` - State Management
-
-Central reactive state via Svelte writable/derived stores:
-
-| Store | Contents |
-|-------|----------|
-| `appSettings` | Canvas color, grid config, render sampling mode |
-| `paintSettings` | Brush type, size, color control, eraser state |
-| `processingSettings` | Smoother and curve instances |
-| `paintCurrentDabSettings` | Computed brush size and color for current pointer event |
-| `paintState` | Drawing state (isDrawing, position tracking) |
-| `paintStrokeStats` | Stroke count, event count, duration |
-| `paintStrokeStatsWithRate` | Derived: adds computed events/sec |
-| `uiState` | UI toggles (showStrokeStats) |
-| `pointerLiveStats` | Formatted pointer data for display panels |
-| `canvasViewport` | Canvas dimensions, zoom, pan offsets |
-
-### `paint_data.ts` - Legacy State
-
-Plain object state used by `paint.ts` and `app_pointer.ts`. Synced from stores. Exists as a bridge from the earlier architecture.
-
-## Utility Classes
-
-### `NumericSmoother` (`utils/numeric_smoother.ts`)
-
-Exponential moving average filter. Formula: `output = (1 - alpha) * input + alpha * previous` where `alpha = 1 - amount`. Applied independently to position, tilt, and pressure channels. State resets on each stroke start.
-
-### `NumericCurve` (`utils/numeric_curve.ts`)
-
-Power function curve for pressure response shaping. Positive amount softens (lower pressures register higher), negative amount sharpens (requires more pressure). Maps input [0,1] to output [0,1].
-
-### `RGBColor` (`utils/color.ts`)
-
-Color interpolation. Supports angle-based color stop mapping (used for tilt azimuth to color) and pressure-to-hue interpolation via HSL.
-
-### `Position` / `Size` (`utils/geometry.ts`)
-
-Simple 2D vector and dimension classes used throughout for point and size operations.
-
-## Data Flow: Pointer Event to Pixel
-
-```
-Hardware tablet → Browser PointerEvent
-    ↓
-CanvasArea.svelte (event listener)
-    ↓
-pointerEventHandler()          [app_pointer.ts]
-    ├── new PointerRecord()    [pointer_record.ts]
-    │   └── apply smoothing, quantization, curve
-    ├── updateUxPointerStats() → pointerLiveStats store → stat panels
-    ├── paintDab()             [paint.ts]
-    │   ├── getDabSize()       (pressure/tilt → brush size)
-    │   ├── getDabColor()      (pressure/tilt/rotation → color)
-    │   └── drawLine()         (quadratic curve on foreground canvas)
-    └── composeLayers()        (background + foreground → display)
-```
-
-## Canvas Layer System
-
-The canvas uses a two-layer architecture:
-
-1. **Background layer** - Solid color fill plus optional grid. Never modified by drawing.
-2. **Foreground layer** - All user strokes. Cleared independently of background.
-3. **Composite output** - Background drawn first, foreground drawn on top. This is what the user sees and what gets exported.
-
-The canvas is fixed at 1920x1080 pixels. Pan and zoom are achieved via CSS transforms on the canvas container, not by modifying canvas content.
-
-## Key Interactions
-
-- **Pan**: Middle mouse button or spacebar + drag
-- **Zoom**: Mouse wheel (0.1x to 10x range)
-- **Erase**: Eraser brush type or hardware eraser button (button code 32)
-- **Clear**: Delete/Backspace key or Clear button
-- **Export**: Save as PNG, or copy foreground/composite to clipboard
+Independent brushes and saved presets can build on serializable settings without serializing filter history. Recording/playback can reuse raw samples and the injected renderer boundary.

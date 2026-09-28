@@ -1,43 +1,70 @@
-# Svelte + Vite
+# SevenPens Web Tablet Tester
 
-This template should help get you started developing with Svelte in Vite.
+A browser-based tool for inspecting pen, mouse, and touch input. Draw on a 1920×1080 document, inspect pressure/tilt/rotation and stroke statistics, and compare smoothing, quantization, and pressure curves.
 
-## Recommended IDE Setup
+[Open the app](https://thesevenpens.github.io/WebTabletTester/) · [Architecture](docs/ARCHITECTURE.md) · [Development ideas](docs/FUTURES.md) · [Foundation work](https://github.com/TheSevenPens/WebTabletTester/issues/17)
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## Development
 
-## Need an official Svelte framework?
+Use Node.js **24** (selected by `.nvmrc` and used in CI/deployment) and npm. The supported range is `^22.13.0 || ^24.0.0 || >=26.0.0`, matching the locked ESLint/Vitest requirements; Node 22.12 and the intervening odd-numbered releases are not supported by the complete toolchain.
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
-
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `checkJs` in the JS template?**
-
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```sh
+npm ci
+npx playwright install chromium
+npm run dev
 ```
+
+Open the local URL printed by Vite, including the `/WebTabletTester/` base path. The app uses Svelte 5, TypeScript, Vite, and Canvas 2D. Product version metadata comes from `package.json`.
+
+Text files use LF line endings in Git and in working copies. `.gitattributes` enforces this even when Windows Git uses `core.autocrlf=true`; `.editorconfig` and Prettier keep editor output consistent. No global Git setting change is needed.
+
+For an older checkout with CRLF files, run `npm run format` and inspect `git diff`. If tracked content also needs one-time index normalization, first commit or stash unrelated edits, then run `git add --renormalize .` and inspect `git diff --cached` before committing any normalization changes. The Git command stages tracked changes; it does not rewrite working files. A fresh clone already uses LF.
+
+## Verification
+
+```sh
+npm run verify
+```
+
+This runs ESLint for TypeScript/Svelte and its coverage self-check, Svelte and TypeScript checks, Prettier, Vitest unit tests, Chromium integration tests, and the production build. On Linux, use `npx playwright install --with-deps chromium` when installing the test browser.
+
+Individual commands:
+
+| Command                 | Purpose                                                                           |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| `npm run lint`          | Lint source, tests, and tool configuration                                        |
+| `npm run lint:selftest` | Verify that ESLint parses and checks both TypeScript and Svelte fixtures          |
+| `npm run check`         | Check Svelte components and TypeScript                                            |
+| `npm run format:check`  | Check formatting without changing files                                           |
+| `npm run format`        | Apply formatting                                                                  |
+| `npm test`              | Numerical, engine, viewport, input, and scheduler regression tests                |
+| `npm run test:browser`  | Drawing, capture/cancellation, keyboard, settings, export, and layout smoke tests |
+| `npm run build`         | Build `dist/`                                                                     |
+| `npm run preview`       | Serve the production build locally                                                |
+
+Pull requests run the complete verification suite. The GitHub Pages deployment workflow also verifies before uploading/deploying the build. A browser test that only passes on retry fails CI, so intermittent failures remain visible. Browser tests write traces for failures to `test-results/`. These generated files are ignored by Git.
+
+## Controls
+
+- Draw with the primary mouse button, pen tip, or touch; a tap creates a dab.
+- Choose Marker or Eraser in Brush. Hardware erasers are recognized through the eraser button bit. Pen strokes draw whenever the pen reports pressure, including with a barrel switch held.
+- Pan with the middle mouse button, or hold Space while dragging. Space preserves normal keyboard behavior when an editable field, button, link, or disclosure control has focus.
+- Zoom with the wheel over the drawing viewport, the percentage field, or the −/+/Fit/Reset controls.
+- Clear with the Clear button, or press Delete or Backspace. The keys are ignored while a text, number, select, or other editable field has focus, so editing settings never clears the document; they work after clicking toolbar buttons or the canvas.
+- Expand Processing or Options using their sidebar buttons. Section headings are keyboard-accessible collapse controls.
+- Each slider has a labeled numeric input and an actions disclosure for Reset/Minimum/Maximum.
+- Reset Processing resets only processing configuration.
+- Copy exports transparent foreground strokes. Copy w/ BK and Save include the background/grid. Copy requires browser clipboard support/permission in a secure context; failures are shown in the Document panel.
+- The toolbar and expanded sidebars scroll when space is limited.
+
+## Input and measurement expectations
+
+Samples use document pixels and the browser event timestamp. Pressure processing is **quantization → curve → smoothing**. Positive curve amounts sharpen pressure; negative amounts soften it. Settings are in-memory and reset when the page reloads.
+
+Stroke statistics count accepted down/move/up **samples**, including coalesced movement samples where supported. Rate is `(samples - 1) × 1000 / durationMs`. It measures the received sample intervals; it is **not a claim about the tablet's hardware polling rate**. Completed and cancelled strokes are reported separately. Statistics are collected whether the panel is visible or hidden.
+
+The browser/OS/driver controls which pressure, tilt, and rotation values are available. Missing orientation angles are derived from tilt; mouse/touch values may reflect browser defaults. Only one drawing or pan interaction is active at a time; other pointers cannot modify that stroke.
+
+Automated tests use Chromium and synthetic input. Before a release, manually check a physical pen (pressure, tilt, barrel/eraser), touch, and mouse, including release outside the canvas, focus loss, DPR/browser zoom changes, and clipboard permissions in the target browsers. Automated coverage does not replace device compatibility testing.
+
+See [architecture and numerical contracts](docs/ARCHITECTURE.md) and [profiling instructions/results](docs/PERFORMANCE.md) before changing the input pipeline.

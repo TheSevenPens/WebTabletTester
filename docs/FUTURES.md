@@ -2,29 +2,9 @@
 
 Ideas, improvements, and directions for WebTabletTester.
 
-## Architecture Improvements
+## Foundation
 
-### Remove Legacy State Duplication
-
-`paint_data.ts` duplicates state that already lives in Svelte stores. Migrate `paint.ts` and `app_pointer.ts` to read from stores directly and remove the sync layer. This eliminates a class of bugs where the two systems drift out of sync.
-
-### Add Tests
-
-No test coverage exists today. Add Vitest for unit tests covering:
-- `NumericSmoother` output correctness
-- `NumericCurve` edge cases (0, 1, negative amounts)
-- `PointerRecord` coordinate transforms
-- `getDabSize` / `getDabColor` mapping logic
-
-Add Playwright or similar for integration tests covering the drawing flow end to end.
-
-### Stricter TypeScript
-
-Tighten component prop types (currently loose `$props` usage in some components). Add explicit interfaces for store shapes. Enable stricter compiler options where practical.
-
-### Extract Constants
-
-Magic numbers like `1920x1080`, tilt limits (`maxTiltX: 60`), and brush size range `[0.1, 300]` are scattered across modules. Centralize into a config or constants file.
+The state, input lifecycle, typing, verification, and component cleanup is tracked in [#17](https://github.com/TheSevenPens/WebTabletTester/issues/17) and implemented in the current architecture. See [ARCHITECTURE.md](ARCHITECTURE.md) for module ownership and [README](../README.md) for checks. The items below are future product features, separate from that foundation work.
 
 ## Canvas and Rendering
 
@@ -46,7 +26,7 @@ For large canvases or high-DPI displays, a WebGL rendering path could improve pe
 
 ### Interpolation Modes
 
-Currently strokes use quadratic curve interpolation. Offer linear, cubic, and Catmull-Rom as alternatives. Different interpolation visually reveals different tablet sampling characteristics.
+Currently strokes connect processed samples with straight segments. Offer quadratic, cubic, and Catmull-Rom interpolation as alternatives. Different interpolation visually reveals different tablet sampling characteristics.
 
 ## Input and Device Features
 
@@ -57,6 +37,7 @@ On first pointer contact, display detected device capabilities: max pressure lev
 ### Recording and Playback
 
 Record a sequence of pointer events (timestamps, coordinates, pressure, tilt) and replay them. Useful for:
+
 - Comparing the same stroke with different processing settings
 - Sharing test data between users
 - Automated regression testing of the rendering pipeline
@@ -68,6 +49,7 @@ Export stroke statistics and raw pointer data to CSV or JSON. Enables external a
 ### Guided Test Patterns
 
 Structured tests that prompt the user to perform specific actions:
+
 - Draw a stroke at maximum pressure
 - Draw a slow diagonal line (tests jitter)
 - Tap lightly (tests activation pressure threshold)
@@ -103,7 +85,7 @@ Add pinch-to-zoom and two-finger pan for use on tablet devices without a mouse. 
 
 ### Responsive Layout
 
-The current layout assumes a wide viewport. Add breakpoints or a simplified layout for narrower screens and mobile devices.
+The current layout keeps controls reachable through scrolling on narrow screens. Consider a simplified mobile layout or additional breakpoints that give more space to the drawing surface.
 
 ### Brush Presets
 

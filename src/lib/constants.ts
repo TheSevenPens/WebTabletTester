@@ -2,12 +2,16 @@
  * Shared option lists for selects and other UI constants.
  * Also numeric/theme constants used across lib (paint, pointer, draw).
  */
+import type { BrushType, ColorControl, RenderSampling, SizeControl } from './types';
+
+/** A select option whose value is checked against the setting's literal union. */
+export interface Option<T> {
+    value: T;
+    label: string;
+}
 
 /** HSL hue range for pressure/tilt-to-color mapping (min, max in degrees). */
 export const HUE_RANGE = { min: 150, max: 360 };
-
-/** Milliseconds per second for rate calculations. */
-export const MS_PER_SECOND = 1000;
 
 /** When pen is vertical (tilt altitude), dab size scale offset so size stays small. */
 export const MIN_TILT_SIZE_OFFSET = 0.05;
@@ -22,17 +26,17 @@ export const BRUSH_SIZES = [
     { value: 50, label: '50px' },
     { value: 100, label: '100px' },
     { value: 300, label: '300px' },
-];
+] satisfies Option<number>[];
 
 export const BRUSH_TYPE_OPTIONS = [
     { value: 'MARKER', label: 'Marker' },
     { value: 'ERASER', label: 'Eraser' },
-];
+] satisfies Option<BrushType>[];
 
 export const RENDER_SAMPLING_OPTIONS = [
     { value: 'NEAREST', label: 'Nearest neighbor' },
     { value: 'SMOOTH', label: 'Smooth' },
-];
+] satisfies Option<RenderSampling>[];
 
 export const SIZE_CONTROL_OPTIONS = [
     { value: 'USER', label: "Don't scale" },
@@ -41,7 +45,7 @@ export const SIZE_CONTROL_OPTIONS = [
     { value: 'TILTY', label: 'Tilt Y' },
     { value: 'TILTAZ', label: 'Tilt Azimuth' },
     { value: 'TILTALT', label: 'Tilt Altitude' },
-];
+] satisfies Option<SizeControl>[];
 
 export const COLOR_CONTROL_OPTIONS = [
     { value: 'DEFAULT', label: 'Black' },
@@ -52,7 +56,7 @@ export const COLOR_CONTROL_OPTIONS = [
     { value: 'TILTAZ', label: 'Tilt Azimuth' },
     { value: 'TILTALT', label: 'Tilt Altitude' },
     { value: 'BARRELROTATION', label: 'Barrel rotation' },
-];
+] satisfies Option<ColorControl>[];
 
 export const MIN_STROKE_SIZES = [
     { value: 0.25, label: '0.25px' },
@@ -67,7 +71,7 @@ export const MIN_STROKE_SIZES = [
     { value: 8, label: '8px' },
     { value: 9, label: '9px' },
     { value: 10, label: '10px' },
-];
+] satisfies Option<number>[];
 
 export const PRESSURE_QUANT_OPTIONS = [
     { value: 0, label: 'OFF' },
@@ -82,7 +86,7 @@ export const PRESSURE_QUANT_OPTIONS = [
     { value: 2048, label: '2048' },
     { value: 4096, label: '4096' },
     { value: 8192, label: '8192' },
-];
+] satisfies Option<number>[];
 
 /** Default canvas viewport offset from top-left of viewport in CSS pixels. */
 export const DEFAULT_CANVAS_PAN_X = 16;

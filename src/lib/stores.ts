@@ -1,71 +1,23 @@
-import { writable, derived } from 'svelte/store';
-import type { ProcessingSettings } from './types';
-import { roundTo1DecimalPlaces } from './utils/numerics';
-import { MS_PER_SECOND } from './constants';
-import { OrderedRange } from './utils/ranges';
+import { derived, writable } from 'svelte/store';
 import {
-    STYLUS_PEN_COLOR,
-    INITIAL_PAINT_SETTINGS,
-    createInitialProcessingSettings,
-    INITIAL_PAINT_CURRENT_DAB_SETTINGS,
-    INITIAL_PAINT_STATE,
-    INITIAL_PAINT_STROKE_STATS,
-    POINTER_LIVE_STATS_DEFAULT,
+    createAppSettings,
+    createPaintSettings,
+    createProcessingSettings,
+    createStrokeStats,
+    createViewport,
 } from './initial_state';
+import type { ProcessedSample } from './types';
+import { sampleRate } from './utils/numerics';
 
-// Re-export for consumers that expect it from stores
-export const settingStylusPenColor = STYLUS_PEN_COLOR;
-export const PRESSURE_RANGE = new OrderedRange(0.0, 1.0);
-export const BRUSHSIZE_RANGE = new OrderedRange(0.1, 300.0);
-
-// Global App Settings
-export const appSettings = writable({
-    canvasColor: "#e6e6fa",
-    showGrid: false,
-    gridSize: 100,
-    gridColor: "#b8b8d0",
-    renderSampling: 'NEAREST',
-    downloadFilename: "TabletTester_Untitled",
-});
-
-// Paint Format Settings
-export const paintSettings = writable({ ...INITIAL_PAINT_SETTINGS });
-
-// Processing Math Handlers
-export const processingSettings = writable<ProcessingSettings>(createInitialProcessingSettings());
-
-// The current evaluated dab
-export const paintCurrentDabSettings = writable({ ...INITIAL_PAINT_CURRENT_DAB_SETTINGS });
-
-// Current Paint State
-export const paintState = writable({ ...INITIAL_PAINT_STATE });
-
-// Statistics (rate is derived, not stored)
-export const paintStrokeStats = writable({ ...INITIAL_PAINT_STROKE_STATS });
-
-/** Derived store: stroke stats with rate = events/sec computed from duration and ptreventCount. */
-export const paintStrokeStatsWithRate = derived(paintStrokeStats, ($s) => {
-    const rate = $s.duration > 0
-        ? roundTo1DecimalPlaces(($s.ptreventCount / $s.duration) * MS_PER_SECOND)
-        : 0;
-    return { ...$s, rate };
-});
-
-// UI View State
-export const uiState = writable({
-    showStrokeStats: false
-});
-
-// Live Pointer Record State
-export const pointerLiveStats = writable({ ...POINTER_LIVE_STATS_DEFAULT });
-
-// Canvas Viewport State
-export const canvasViewport = writable({
-    width: 1920,
-    height: 1080,
-    zoom: 1.0,
-    panX: 0,
-    panY: 0,
-    viewportWidth: 0,
-    viewportHeight: 0
-});
+export const appSettings = writable(createAppSettings());
+export const paintSettings = writable(createPaintSettings());
+export const processingSettings = writable(createProcessingSettings());
+export const canvasViewport = writable(createViewport());
+export const uiState = writable({ showStrokeStats: false });
+export const pointerLiveStats = writable<ProcessedSample | null>(null);
+export const paintStrokeStats = writable(createStrokeStats());
+export const paintStrokeStatsWithRate = derived(paintStrokeStats, (stats) => ({
+    ...stats,
+    rate: sampleRate(stats.sampleCount, stats.duration),
+}));
+export const exportStatus = writable('');

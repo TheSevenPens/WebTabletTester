@@ -1,18 +1,21 @@
 <script lang="ts">
-    import { drawPressureCurve, getCanvas2DContext } from '../lib/utils/draw';
-
-    /** @type {{ amount: number; apply: (v: number) => number } | undefined */
-    let { curveAmount, id = 'curveCanvas', width = 40, height = 40 } = $props();
-
-    /** @type {HTMLCanvasElement} */
-    let canvas;
-
+    import { drawPressureCurve } from '../lib/utils/draw';
+    interface Props {
+        amount: number;
+        width?: number;
+        height?: number;
+    }
+    let { amount, width = 80, height = 60 }: Props = $props();
+    let canvas = $state<HTMLCanvasElement>();
     $effect(() => {
-        if (canvas && curveAmount) {
-            const ctx = getCanvas2DContext(canvas);
-            if (ctx) drawPressureCurve(ctx, canvas, curveAmount);
-        }
+        if (canvas) drawPressureCurve(canvas, amount);
     });
 </script>
 
-<canvas bind:this={canvas} {id} {width} {height}></canvas>
+<canvas
+    bind:this={canvas}
+    {width}
+    {height}
+    class="curve-graph"
+    aria-label={`Pressure response curve, amount ${amount}`}
+></canvas>

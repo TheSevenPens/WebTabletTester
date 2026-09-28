@@ -1,37 +1,8 @@
-export class NumericCurve {
-  amount!: number;
+import { clamp, finite } from './numerics';
 
-  constructor(initialValue: number = 0.0) {
-    this.setCurveAmount(initialValue);
-  }
-
-
-  setCurveAmount(value: number): void {
-    this.amount = value;
-  }
-
-  resetSettings(): void {
-    this.setCurveAmount(0.0);
-  }
-
-  resetState(): void {
-    // do nothing
-  }
-
-  apply(input: number): number {
-    var output = input;
-    const z = -1.0 * this.amount;
-    if (z === 0.0) {
-      output = input;
-    }
-    else if (z > 0.0) {
-      output = Math.pow(input, 1.0 - z);
-    }
-    else if (z < 0.0) {
-      output = Math.pow(input, 1.0 / (1.0 + z));
-    }
-
-    return output;
-  }
-
+/** Positive amounts sharpen pressure; negative amounts soften it. */
+export function applyPressureCurve(input: number, amount: number): number {
+    const pressure = clamp(finite(input), 0, 1);
+    const curve = clamp(finite(amount), -0.9, 0.9);
+    return Math.pow(pressure, curve < 0 ? 1 + curve : 1 / (1 - curve));
 }

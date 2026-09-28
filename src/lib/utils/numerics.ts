@@ -1,90 +1,24 @@
-import { easeOutCubic, lerp } from './interpolation';
+export const clamp = (value: number, min: number, max: number): number =>
+    Math.min(max, Math.max(min, value));
 
-
-export function format4Digits1Decimal(num: number): string {
-    const nbsp = "\u00A0";
-    return num.toFixed(1).padStart(6, nbsp );
+export function finite(value: number, fallback = 0): number {
+    return Number.isFinite(value) ? value : fallback;
 }
 
-export function format1Digit4Decimals(num: number): string {
-    return num.toFixed(4);
-}
+export const radiansToDegrees = (radians: number): number => (radians * 180) / Math.PI;
+export const wrapDegrees = (degrees: number): number => ((degrees % 360) + 360) % 360;
 
-
-/**
- * Round to n decimal places. Use this for arbitrary precision; use roundTo1DecimalPlaces etc. for convenience.
- */
-export function roundToNDecimalPlaces(v: number, n: number): number {
-    const factor = 10 ** n;
-    return Math.round(v * factor) / factor;
-}
-
-export function roundTo4DecimalPlaces(v: number): number {
-    return roundToNDecimalPlaces(v, 4);
-}
-
-export function roundTo3DecimalPlaces(v: number): number {
-    return roundToNDecimalPlaces(v, 3);
-}
-
-export function roundTo2DecimalPlaces(v: number): number {
-    return roundToNDecimalPlaces(v, 2);
-}
-
-export function roundTo1DecimalPlaces(v: number): number {
-    return roundToNDecimalPlaces(v, 1);
-}
-
-export function radiansToDegrees(r: number): number
-{
-    return (r * (180 / Math.PI));
-}
-
-/**
- * Quantize value in [0, 1] to `levels` discrete steps.
- * @param {number} value - In [0, 1]
- * @param {number} levels - Integer >= 2
- * @returns {number}
- * @throws {Error} If value or levels are invalid
- */
-export function quantize(value: number, levels: number): number 
-{
-  if (typeof value !== 'number' || value < 0 || value > 1) {
-    throw new Error('Input value must be a number between 0.0 and 1.0 inclusive.');
-  }
-  if (!Number.isInteger(levels) || levels < 2) {
-    throw new Error('Number of quantization levels must be an integer greater than or equal to 2.');
-  }
-  return Math.round(value * (levels - 1)) / (levels - 1);
-}
-
-export function getSmoothingValue(input: number): number 
-{
-    // first map it with a curve
-    const output1 =  easeOutCubic( input );
-    // second restrict to a slightly smaller range 
-    const output2 = lerp( 0.985, 0.0, output1);
-    // round it so that we easier-to-read numbers for the user
-    const output3 = roundTo4DecimalPlaces(output2);
-
-    return output3;
-}
-
-export function tiltxyToTiltAzimuth(tiltX: number, tiltY: number): number
-{
-    var azimuth = tiltX || tiltY 
-                ? (Math.atan2(tiltY, tiltX) * 180 / Math.PI) 
-                : 0;
-    if (azimuth<0) {
-        azimuth = 360  + azimuth;
+export function quantize(value: number, levels: number): number {
+    if (!Number.isFinite(value) || value < 0 || value > 1) {
+        throw new RangeError('Pressure must be finite and within [0, 1].');
     }
-    return azimuth;
+    if (!Number.isInteger(levels) || levels < 2) {
+        throw new RangeError('Quantization levels must be an integer >= 2.');
+    }
+    return Math.round(value * (levels - 1)) / (levels - 1);
 }
 
-export function tiltxyToTiltAltitude(tiltX: number, tiltY: number): number
-{
-   const angle = tiltX  || tiltY 
-                ? (Math.sqrt( tiltX  * tiltX  + tiltY  * tiltY))
-                : 0;
-    return angle;
+/** Count intervals, not endpoints. Down/move/up samples are all included. */
+export function sampleRate(count: number, durationMs: number): number {
+    return durationMs > 0 ? (Math.max(0, count - 1) * 1000) / durationMs : 0;
 }
