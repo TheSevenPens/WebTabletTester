@@ -6,7 +6,7 @@ A browser-based tool for inspecting pen, mouse, and touch input. Draw on a 1920Ã
 
 ## Development
 
-Use Node.js **22.12 or newer** and npm. CI and the deployment workflow use the version in `.nvmrc` (24); `package.json` declares `engines.node >=22.12.0`.
+Use Node.js **24** (selected by `.nvmrc` and used in CI/deployment) and npm. The supported range is `^22.13.0 || ^24.0.0 || >=26.0.0`, matching the locked ESLint/Vitest requirements; Node 22.12 and the intervening odd-numbered releases are not supported by the complete toolchain.
 
 ```sh
 npm ci
@@ -48,7 +48,7 @@ Pull requests run the complete verification suite. The GitHub Pages deployment w
 
 - Draw with the primary mouse button, pen tip, or touch; a tap creates a dab.
 - Choose Marker or Eraser in Brush. Hardware erasers are recognized through the eraser button bit. Pen strokes draw whenever the pen reports pressure, including with a barrel switch held.
-- Pan with the middle mouse button, or focus the canvas and hold Space while dragging.
+- Pan with the middle mouse button, or hold Space while dragging. Space preserves normal keyboard behavior when an editable field, button, link, or disclosure control has focus.
 - Zoom with the wheel over the drawing viewport, the percentage field, or the âˆ’/+/Fit/Reset controls.
 - Clear with the Clear button, or press Delete or Backspace. The keys are ignored while a text, number, select, or other editable field has focus, so editing settings never clears the document; they work after clicking toolbar buttons or the canvas.
 - Expand Processing or Options using their sidebar buttons. Section headings are keyboard-accessible collapse controls.

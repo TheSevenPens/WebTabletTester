@@ -295,6 +295,8 @@ describe('input and frame boundaries', () => {
     it('treats a pen with pressure as contact even when only the barrel bit is set', () => {
         // Measured on a Wacom pen in Chromium: barrel switch held at contact gives buttons=2.
         expect(hasContact({ pointerType: 'pen', buttons: 2, pressure: 0.6 })).toBe(true);
+        expect(hasContact({ pointerType: 'pen', buttons: 3, pressure: 0.6 })).toBe(true);
+        expect(hasContact({ pointerType: 'pen', buttons: 34, pressure: 0.2 })).toBe(true);
         expect(hasContact({ pointerType: 'pen', buttons: 32, pressure: 0.2 })).toBe(true);
         expect(hasContact({ pointerType: 'pen', buttons: 0, pressure: 0 })).toBe(false);
         expect(hasContact({ pointerType: 'pen', buttons: 2, pressure: 0 })).toBe(false);
