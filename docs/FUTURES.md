@@ -26,7 +26,7 @@ For large canvases or high-DPI displays, a WebGL rendering path could improve pe
 
 ### Interpolation Modes
 
-Currently strokes use quadratic curve interpolation. Offer linear, cubic, and Catmull-Rom as alternatives. Different interpolation visually reveals different tablet sampling characteristics.
+Currently strokes connect processed samples with straight segments. Offer quadratic, cubic, and Catmull-Rom interpolation as alternatives. Different interpolation visually reveals different tablet sampling characteristics.
 
 ## Input and Device Features
 
@@ -85,7 +85,7 @@ Add pinch-to-zoom and two-finger pan for use on tablet devices without a mouse. 
 
 ### Responsive Layout
 
-The current layout assumes a wide viewport. Add breakpoints or a simplified layout for narrower screens and mobile devices.
+The current layout keeps controls reachable through scrolling on narrow screens. Consider a simplified mobile layout or additional breakpoints that give more space to the drawing surface.
 
 ### Brush Presets
 
