@@ -1,10 +1,7 @@
 <script lang="ts">
-    /** Svelte 5 $props. */
-    let { label, value = '', suffix = '' } = $props();
+    interface Props { label: string; value?: string | number | null; suffix?: string; digits?: number; }
+    let { label, value = null, suffix = '', digits = 1 }: Props = $props();
+    const formatted = $derived(typeof value === 'number' ? value.toFixed(digits) : value ?? '—');
 </script>
 
-<span>{label}:</span>
-<span>
-    <span class="monospace">{value}</span>{#if suffix}{suffix}{/if}
-</span>
-<br />
+<div class="stat-row"><span>{label}</span><span class="monospace">{formatted}{value !== null ? suffix : ''}</span></div>

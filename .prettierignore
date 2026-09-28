@@ -1,3 +1,7 @@
 dist/
 node_modules/
 *.min.js
+test-results/
+playwright-report/
+coverage/
+package-lock.json

@@ -6,9 +6,6 @@
 /** HSL hue range for pressure/tilt-to-color mapping (min, max in degrees). */
 export const HUE_RANGE = { min: 150, max: 360 };
 
-/** Milliseconds per second for rate calculations. */
-export const MS_PER_SECOND = 1000;
-
 /** When pen is vertical (tilt altitude), dab size scale offset so size stays small. */
 export const MIN_TILT_SIZE_OFFSET = 0.05;
 

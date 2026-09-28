@@ -2,29 +2,9 @@
 
 Ideas, improvements, and directions for WebTabletTester.
 
-## Architecture Improvements
+## Foundation
 
-### Remove Legacy State Duplication
-
-`paint_data.ts` duplicates state that already lives in Svelte stores. Migrate `paint.ts` and `app_pointer.ts` to read from stores directly and remove the sync layer. This eliminates a class of bugs where the two systems drift out of sync.
-
-### Add Tests
-
-No test coverage exists today. Add Vitest for unit tests covering:
-- `NumericSmoother` output correctness
-- `NumericCurve` edge cases (0, 1, negative amounts)
-- `PointerRecord` coordinate transforms
-- `getDabSize` / `getDabColor` mapping logic
-
-Add Playwright or similar for integration tests covering the drawing flow end to end.
-
-### Stricter TypeScript
-
-Tighten component prop types (currently loose `$props` usage in some components). Add explicit interfaces for store shapes. Enable stricter compiler options where practical.
-
-### Extract Constants
-
-Magic numbers like `1920x1080`, tilt limits (`maxTiltX: 60`), and brush size range `[0.1, 300]` are scattered across modules. Centralize into a config or constants file.
+The state, input lifecycle, typing, verification, and component cleanup is tracked in [#17](https://github.com/TheSevenPens/WebTabletTester/issues/17) and implemented in the current architecture. See [ARCHITECTURE.md](ARCHITECTURE.md) for module ownership and [README](../README.md) for checks. The items below are future product features, separate from that foundation work.
 
 ## Canvas and Rendering
 

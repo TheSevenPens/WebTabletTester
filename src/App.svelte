@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { keydown } from './lib/actions/keydown';
     import InfoPanel from './components/InfoPanel.svelte';
     import DocPanel from './components/DocPanel.svelte';
     import BrushSettingsPanel from './components/BrushSettingsPanel.svelte';
@@ -12,66 +11,34 @@
     import CanvasArea from './components/CanvasArea.svelte';
     import ViewPanel from './components/ViewPanel.svelte';
     import { uiState } from './lib/stores';
-    import './app.css';
 
-    let mainCanvas: HTMLCanvasElement | undefined;
-    let canvasAreaRef:
-        | {
-              saveCanvas: () => void;
-              clearForeground: () => void;
-                            copyForegroundToClipboard: () => Promise<void>;
-                            copyWithBackgroundToClipboard: () => Promise<void>;
-          }
-        | null = null;
-
-    function clearMainCanvas() {
-        canvasAreaRef?.clearForeground();
-    }
-
-    function copyForegroundToClipboard() {
-        void canvasAreaRef?.copyForegroundToClipboard();
-    }
-
-    function copyWithBackgroundToClipboard() {
-        void canvasAreaRef?.copyWithBackgroundToClipboard();
-    }
-
-    const clearKeys = { Delete: clearMainCanvas, Backspace: clearMainCanvas };
+    let canvasArea: {
+        clearForeground: () => void;
+        saveCanvas: () => Promise<void>;
+        copyForegroundToClipboard: () => Promise<void>;
+        copyWithBackgroundToClipboard: () => Promise<void>;
+    } | undefined;
 </script>
-
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="parent" oncontextmenu={(e) => e.preventDefault()} use:keydown={clearKeys}>
-    <!-- Top row: Info, Format, Canvas, Pointer, Sensors, (Stroke stats) -->
+<main class="parent">
     <div class="top-row">
         <div class="controlscontainer">
             <InfoPanel />
             <DocPanel
-                onClear={clearMainCanvas}
-                onCopy={copyForegroundToClipboard}
-                onCopyWithBackground={copyWithBackgroundToClipboard}
-                onSave={() => canvasAreaRef?.saveCanvas()}
-            />
+                onClear={() => canvasArea?.clearForeground()}
+                onCopy={() => { void canvasArea?.copyForegroundToClipboard(); }}
+                onCopyWithBackground={() => { void canvasArea?.copyWithBackgroundToClipboard(); }}
+                onSave={() => { void canvasArea?.saveCanvas(); }} />
             <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />
             <PointerStatsPanel />
-
             <SensorsPanel />
-
-            {#if $uiState.showStrokeStats}
-                <StrokeStatsPanel />
-            {/if}
+            {#if $uiState.showStrokeStats}<StrokeStatsPanel />{/if}
         </div>
     </div>
-
-    <!-- Bottom row: Processing panel + Canvas -->
     <div class="bottom-row">
         <ProcessingSettingsPanel />
-
-        <div class="controlscolumn" id="canvasColumn">
-            <CanvasArea bind:this={canvasAreaRef} bind:canvas={mainCanvas} />
-        </div>
-
+        <div class="canvas-column"><CanvasArea bind:this={canvasArea} /></div>
         <OptionsPanel />
     </div>
-</div>
+</main>

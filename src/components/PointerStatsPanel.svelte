@@ -2,12 +2,10 @@
     import { pointerLiveStats } from '../lib/stores';
     import StatsRow from './StatsRow.svelte';
 </script>
-
-<div class="controlscolumn" id="pointerColumn">
-    <span style="font-weight: bold">POINTER</span>
-    <br />
-    <StatsRow label="X" value={$pointerLiveStats.canvasPosXProcessed} />
-    <StatsRow label="Y" value={$pointerLiveStats.canvasPosYProcessed} />
-    <StatsRow label="Vel" value={$pointerLiveStats.velocity} />
-    <StatsRow label="Dir" value={$pointerLiveStats.direction} />
-</div>
+<section class="controlscolumn" aria-label="Pointer">
+    <h2>POINTER</h2>
+    <StatsRow label="X" value={$pointerLiveStats?.x} />
+    <StatsRow label="Y" value={$pointerLiveStats?.y} />
+    <StatsRow label="Velocity" value={$pointerLiveStats?.velocity} suffix=" px/s" />
+    <StatsRow label="Direction" value={$pointerLiveStats?.direction} suffix="°" />
+</section>

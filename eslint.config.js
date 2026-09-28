@@ -1,21 +1,20 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import ts from 'typescript-eslint';
+import svelte from 'eslint-plugin-svelte';
+import { defineConfig } from 'eslint/config';
 
-export default [
-  js.configs.recommended,
-  {
-    languageOptions: {
-      globals: { ...globals.browser },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
+export default defineConfig(
+    { ignores: ['dist/**', 'node_modules/**', 'playwright-report/**', 'test-results/**'] },
+    js.configs.recommended,
+    ts.configs.recommended,
+    svelte.configs.recommended,
+    {
+        languageOptions: { globals: { ...globals.browser, ...globals.node } },
+        rules: { '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
     },
-    rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    },
-  },
-  {
-    ignores: ['dist/', 'node_modules/', 'vite.config.js', 'svelte.config.js', 'eslint.config.js'],
-  },
-];
+    {
+        files: ['**/*.svelte'],
+        languageOptions: { parserOptions: { parser: ts.parser } },
+    }
+);

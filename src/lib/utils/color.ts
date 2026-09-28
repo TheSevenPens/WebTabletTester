@@ -1,4 +1,4 @@
-import { clampToRange, OrderedRange } from './ranges';
+import { clamp, finite, wrapDegrees } from './numerics';
 
 export class RGBColor {
   r: number;
@@ -39,7 +39,7 @@ export const azimuthColorStops: RGBColor[] = [
 export const azimuthAngleStops: number[] = [0, 90, 180, 270, 360];
 
 export function angleToColor(angle: number, colorStops: RGBColor[], angleStops: number[]): RGBColor {
-  const normalizedAngle = angle % 360;
+  const normalizedAngle = wrapDegrees(finite(angle));
   let lowerIdx = 0;
   let upperIdx = 1;
   let t = 0;
@@ -59,8 +59,7 @@ export function angleToColor(angle: number, colorStops: RGBColor[], angleStops: 
   return outputColor;
 }
 
-// simple fallback since cet color wasn't implemented previously
-export function getCETColor(twist: number): string {
-  const t = clampToRange(twist, new OrderedRange(0, 359)) / 359;
+export function rotationToColor(twist: number): string {
+  const t = clamp(finite(twist), 0, 359) / 359;
   return `hsl(${t * 360}, 100%, 50%)`;
 }
