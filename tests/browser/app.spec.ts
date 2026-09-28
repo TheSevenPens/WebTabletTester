@@ -17,10 +17,15 @@ async function tap(page: Page) {
 }
 
 async function pixel(page: Page, x: number, y: number) {
-    return page.locator(canvasSelector).evaluate((element, position) => {
-        const canvas = element as HTMLCanvasElement;
-        return Array.from(canvas.getContext('2d')!.getImageData(position.x, position.y, 1, 1).data);
-    }, { x, y });
+    return page.locator(canvasSelector).evaluate(
+        (element, position) => {
+            const canvas = element as HTMLCanvasElement;
+            return Array.from(
+                canvas.getContext('2d')!.getImageData(position.x, position.y, 1, 1).data
+            );
+        },
+        { x, y }
+    );
 }
 
 async function showStats(page: Page) {
@@ -57,7 +62,9 @@ test('tap, eraser, clear, and background changes preserve layer behavior', async
     await expect.poll(() => pixel(page, 80, 80)).toEqual([255, 255, 255, 255]);
 });
 
-test('editing a field does not clear the drawing, while a focused canvas shortcut does', async ({ page }) => {
+test('editing a field does not clear the drawing, while a focused canvas shortcut does', async ({
+    page,
+}) => {
     await tap(page);
     const zoom = page.getByRole('spinbutton', { name: 'Zoom %', exact: true });
     await zoom.focus();
@@ -109,7 +116,10 @@ test('a stroke released outside the canvas is finalized once', async ({ page }) 
     await page.mouse.move(5, 5);
     await page.mouse.up();
     await showStats(page);
-    const completed = page.getByRole('region', { name: 'Stroke statistics' }).locator('.stat-row').filter({ hasText: 'Completed' });
+    const completed = page
+        .getByRole('region', { name: 'Stroke statistics' })
+        .locator('.stat-row')
+        .filter({ hasText: 'Completed' });
     await expect(completed).toHaveText('Completed1');
     const next = await point(page, 350, 350);
     await page.mouse.move(next.x, next.y);
@@ -117,17 +127,27 @@ test('a stroke released outside the canvas is finalized once', async ({ page }) 
 });
 
 for (const termination of ['pointercancel', 'lostpointercapture', 'blur'] as const) {
-    test(`${termination} cancels the active stroke without counting a completed stroke`, async ({ page }) => {
+    test(`${termination} cancels the active stroke without counting a completed stroke`, async ({
+        page,
+    }) => {
         const position = await point(page);
         await page.mouse.move(position.x, position.y);
         await page.mouse.down();
-        if (termination === 'blur') await page.evaluate(() => window.dispatchEvent(new Event('blur')));
-        else await page.locator(canvasSelector).dispatchEvent(termination, { pointerId: 1, pointerType: 'mouse' });
+        if (termination === 'blur')
+            await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+        else
+            await page
+                .locator(canvasSelector)
+                .dispatchEvent(termination, { pointerId: 1, pointerType: 'mouse' });
         await page.mouse.up();
         await showStats(page);
         const panel = page.getByRole('region', { name: 'Stroke statistics' });
-        await expect(panel.locator('.stat-row').filter({ hasText: 'Cancelled' })).toHaveText('Cancelled1');
-        await expect(panel.locator('.stat-row').filter({ hasText: 'Completed' })).toHaveText('Completed0');
+        await expect(panel.locator('.stat-row').filter({ hasText: 'Cancelled' })).toHaveText(
+            'Cancelled1'
+        );
+        await expect(panel.locator('.stat-row').filter({ hasText: 'Completed' })).toHaveText(
+            'Completed0'
+        );
     });
 }
 
@@ -135,8 +155,12 @@ test('statistics are collected while hidden', async ({ page }) => {
     await tap(page);
     await showStats(page);
     const panel = page.getByRole('region', { name: 'Stroke statistics' });
-    await expect(panel.locator('.stat-row').filter({ hasText: 'Completed' })).toHaveText('Completed1');
-    await expect(panel.locator('.stat-row').filter({ hasText: 'Samples', hasNotText: 'Samples/sec' })).toHaveText('Samples2');
+    await expect(panel.locator('.stat-row').filter({ hasText: 'Completed' })).toHaveText(
+        'Completed1'
+    );
+    await expect(
+        panel.locator('.stat-row').filter({ hasText: 'Samples', hasNotText: 'Samples/sec' })
+    ).toHaveText('Samples2');
 });
 
 test('processing reset preserves options and the curve preview updates', async ({ page }) => {
@@ -148,7 +172,9 @@ test('processing reset preserves options and the curve preview updates', async (
     const input = page.getByRole('spinbutton', { name: 'Pressure curve' });
     await input.fill('0.5');
     await input.press('Tab');
-    await expect.poll(() => curve.evaluate((element) => (element as HTMLCanvasElement).toDataURL())).not.toBe(before);
+    await expect
+        .poll(() => curve.evaluate((element) => (element as HTMLCanvasElement).toDataURL()))
+        .not.toBe(before);
     await page.getByRole('button', { name: 'RESET PROCESSING' }).click();
     await expect(input).toHaveValue('0.00');
     await expect(page.getByLabel('Erase on stroke start')).toBeChecked();
@@ -182,12 +208,17 @@ test('save exports the full document as a PNG', async ({ page }) => {
 });
 
 test('copy reports unsupported or denied clipboard access', async ({ page }) => {
-    await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }));
+    await page.evaluate(() =>
+        Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined })
+    );
     await page.getByRole('button', { name: 'COPY', exact: true }).click();
     await expect(page.getByRole('status')).toContainText('Image copy is unavailable');
-    await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', {
-        configurable: true, value: { write: () => Promise.reject(new Error('Permission denied')) },
-    }));
+    await page.evaluate(() =>
+        Object.defineProperty(navigator, 'clipboard', {
+            configurable: true,
+            value: { write: () => Promise.reject(new Error('Permission denied')) },
+        })
+    );
     await page.getByRole('button', { name: 'COPY', exact: true }).click();
     await expect(page.getByRole('status')).toHaveText('Copy failed: Permission denied');
 });
@@ -199,7 +230,9 @@ test('narrow screens retain reachable toolbar and sidebar controls', async ({ pa
     await page.getByRole('button', { name: 'Expand Processing panel' }).click();
     await page.getByRole('spinbutton', { name: 'Pressure smoothing' }).scrollIntoViewIfNeeded();
     await expect(page.getByRole('spinbutton', { name: 'Pressure smoothing' })).toBeVisible();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth
+    );
     expect(overflow).toBe(false);
     await page.screenshot({ path: testInfo.outputPath('narrow.png') });
 });
@@ -220,23 +253,29 @@ test('Space drag pans and blur releases the pan key', async ({ page }) => {
 
 test('clipboard exports transparent foreground or an opaque composite', async ({ page }) => {
     await tap(page);
-    await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: {
-            write: async (items: ClipboardItem[]) => {
-                const blob = await items[0].getType('image/png');
-                const bitmap = await createImageBitmap(blob);
-                const image = document.createElement('canvas');
-                image.width = bitmap.width;
-                image.height = bitmap.height;
-                const ctx = image.getContext('2d')!;
-                ctx.drawImage(bitmap, 0, 0);
-                document.body.dataset.copiedAlpha = String(ctx.getImageData(400, 400, 1, 1).data[3]);
-                document.body.dataset.copiedStrokeAlpha = String(ctx.getImageData(80, 80, 1, 1).data[3]);
-                bitmap.close();
+    await page.evaluate(() =>
+        Object.defineProperty(navigator, 'clipboard', {
+            configurable: true,
+            value: {
+                write: async (items: ClipboardItem[]) => {
+                    const blob = await items[0].getType('image/png');
+                    const bitmap = await createImageBitmap(blob);
+                    const image = document.createElement('canvas');
+                    image.width = bitmap.width;
+                    image.height = bitmap.height;
+                    const ctx = image.getContext('2d')!;
+                    ctx.drawImage(bitmap, 0, 0);
+                    document.body.dataset.copiedAlpha = String(
+                        ctx.getImageData(400, 400, 1, 1).data[3]
+                    );
+                    document.body.dataset.copiedStrokeAlpha = String(
+                        ctx.getImageData(80, 80, 1, 1).data[3]
+                    );
+                    bitmap.close();
+                },
             },
-        },
-    }));
+        })
+    );
     await page.getByRole('button', { name: 'COPY', exact: true }).click();
     await expect(page.locator('body')).toHaveAttribute('data-copied-alpha', '0');
     await expect(page.locator('body')).toHaveAttribute('data-copied-stroke-alpha', '255');

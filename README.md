@@ -26,16 +26,16 @@ This runs ESLint for TypeScript/Svelte, Svelte and TypeScript checks, Prettier, 
 
 Individual commands:
 
-| Command | Purpose |
-| --- | --- |
-| `npm run lint` | Lint source, tests, and tool configuration |
-| `npm run check` | Check Svelte components and TypeScript |
-| `npm run format:check` | Check formatting without changing files |
-| `npm run format` | Apply formatting |
-| `npm test` | Numerical, engine, viewport, input, and scheduler regression tests |
+| Command                | Purpose                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| `npm run lint`         | Lint source, tests, and tool configuration                                        |
+| `npm run check`        | Check Svelte components and TypeScript                                            |
+| `npm run format:check` | Check formatting without changing files                                           |
+| `npm run format`       | Apply formatting                                                                  |
+| `npm test`             | Numerical, engine, viewport, input, and scheduler regression tests                |
 | `npm run test:browser` | Drawing, capture/cancellation, keyboard, settings, export, and layout smoke tests |
-| `npm run build` | Build `dist/` |
-| `npm run preview` | Serve the production build locally |
+| `npm run build`        | Build `dist/`                                                                     |
+| `npm run preview`      | Serve the production build locally                                                |
 
 Pull requests run the complete verification suite. The GitHub Pages deployment workflow also verifies before uploading/deploying the build. Browser tests write traces for failures to `test-results/`. These generated files are ignored by Git.
 

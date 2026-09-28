@@ -37,6 +37,7 @@ On first pointer contact, display detected device capabilities: max pressure lev
 ### Recording and Playback
 
 Record a sequence of pointer events (timestamps, coordinates, pressure, tilt) and replay them. Useful for:
+
 - Comparing the same stroke with different processing settings
 - Sharing test data between users
 - Automated regression testing of the rendering pipeline
@@ -48,6 +49,7 @@ Export stroke statistics and raw pointer data to CSV or JSON. Enables external a
 ### Guided Test Patterns
 
 Structured tests that prompt the user to perform specific actions:
+
 - Draw a stroke at maximum pressure
 - Draw a slow diagonal line (tests jitter)
 - Tap lightly (tests activation pressure threshold)

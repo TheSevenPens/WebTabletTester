@@ -5,6 +5,7 @@
     import RenderingSettings from './RenderingSettings.svelte';
     import ConfigSettings from './ConfigSettings.svelte';
 </script>
+
 <SidebarPanel title="Options" side="right">
     <BackgroundSettings />
     <GridSettings />

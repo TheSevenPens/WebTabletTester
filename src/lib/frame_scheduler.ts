@@ -15,7 +15,10 @@ export function createFrameScheduler(draw: () => void, clock: AnimationClock) {
     return {
         request() {
             if (pending !== null) return;
-            pending = clock.request(() => { pending = null; draw(); });
+            pending = clock.request(() => {
+                pending = null;
+                draw();
+            });
         },
         flush,
         dispose() {

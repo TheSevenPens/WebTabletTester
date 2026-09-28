@@ -15,7 +15,11 @@ export class CanvasRenderer implements StrokeRenderer {
     private dirty = true;
     private backgroundKey = '';
 
-    constructor(readonly output: HTMLCanvasElement, width: number, height: number) {
+    constructor(
+        readonly output: HTMLCanvasElement,
+        width: number,
+        height: number
+    ) {
         output.width = width;
         output.height = height;
         this.foreground = document.createElement('canvas');
@@ -30,7 +34,12 @@ export class CanvasRenderer implements StrokeRenderer {
     }
 
     setBackground(settings: AppSettings): void {
-        const key = JSON.stringify([settings.canvasColor, settings.showGrid, settings.gridSize, settings.gridColor]);
+        const key = JSON.stringify([
+            settings.canvasColor,
+            settings.showGrid,
+            settings.gridSize,
+            settings.gridColor,
+        ]);
         if (key === this.backgroundKey) return;
         this.backgroundKey = key;
         const ctx = this.backgroundContext;
@@ -38,10 +47,18 @@ export class CanvasRenderer implements StrokeRenderer {
         ctx.fillStyle = settings.canvasColor;
         ctx.fillRect(0, 0, width, height);
         if (settings.showGrid) {
-            const spacing = Number.isFinite(settings.gridSize) ? Math.max(5, settings.gridSize) : 100;
+            const spacing = Number.isFinite(settings.gridSize)
+                ? Math.max(5, settings.gridSize)
+                : 100;
             ctx.beginPath();
-            for (let x = spacing; x < width; x += spacing) { ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, height); }
-            for (let y = spacing; y < height; y += spacing) { ctx.moveTo(0, y + 0.5); ctx.lineTo(width, y + 0.5); }
+            for (let x = spacing; x < width; x += spacing) {
+                ctx.moveTo(x + 0.5, 0);
+                ctx.lineTo(x + 0.5, height);
+            }
+            for (let y = spacing; y < height; y += spacing) {
+                ctx.moveTo(0, y + 0.5);
+                ctx.lineTo(width, y + 0.5);
+            }
             ctx.lineWidth = 1;
             ctx.strokeStyle = settings.gridColor;
             ctx.stroke();

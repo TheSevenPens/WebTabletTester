@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createPaintSettings, createProcessingSettings, createViewport } from '../../src/lib/initial_state';
+import {
+    createPaintSettings,
+    createProcessingSettings,
+    createViewport,
+} from '../../src/lib/initial_state';
 import { SampleProcessor, processPressure } from '../../src/lib/processing';
 import { NumericSmoother } from '../../src/lib/utils/numeric_smoother';
 import { applyPressureCurve } from '../../src/lib/utils/numeric_curve';
@@ -14,15 +18,28 @@ import type { EngineSettings, RawSample } from '../../src/lib/types';
 
 function raw(overrides: Partial<RawSample> = {}): RawSample {
     return {
-        pointerId: 1, pointerType: 'pen', buttons: 1, pressure: 1,
-        x: 10, y: 10, tiltX: 0, tiltY: 0, azimuth: 0, altitude: 90, twist: 0, time: 0,
+        pointerId: 1,
+        pointerType: 'pen',
+        buttons: 1,
+        pressure: 1,
+        x: 10,
+        y: 10,
+        tiltX: 0,
+        tiltY: 0,
+        azimuth: 0,
+        altitude: 90,
+        twist: 0,
+        time: 0,
         ...overrides,
     };
 }
 
 function setup() {
     const renderer = { clear: vi.fn(), dab: vi.fn(), segment: vi.fn() };
-    const settings: EngineSettings = { paint: createPaintSettings(), processing: createProcessingSettings() };
+    const settings: EngineSettings = {
+        paint: createPaintSettings(),
+        processing: createProcessingSettings(),
+    };
     return { renderer, settings, engine: new StrokeEngine(renderer) };
 }
 
@@ -59,7 +76,12 @@ describe('processing contracts', () => {
 
     it('quantizes, curves, then smooths', () => {
         const smoother = new NumericSmoother();
-        const settings = { ...createProcessingSettings(), pressureQuant: 4, pressureCurve: 0.5, pressureSmoothing: 0.5 };
+        const settings = {
+            ...createProcessingSettings(),
+            pressureQuant: 4,
+            pressureCurve: 0.5,
+            pressureSmoothing: 0.5,
+        };
         processPressure(0, settings, smoother);
         expect(processPressure(0.2, settings, smoother)).toBeCloseTo(1 / 18);
     });
@@ -156,7 +178,10 @@ describe('stroke lifecycle regression coverage', () => {
 describe('brush and viewport contracts', () => {
     it('recognizes a combined hardware eraser bitmask and preserves pressure hue direction', () => {
         const settings = createPaintSettings();
-        const sample = new SampleProcessor().process(raw({ buttons: 34, pressure: 0 }), createProcessingSettings());
+        const sample = new SampleProcessor().process(
+            raw({ buttons: 34, pressure: 0 }),
+            createProcessingSettings()
+        );
         const brush = evaluateBrush(sample, { ...settings, brushColorControl: 'PRESSURE' });
         expect(brush.erase).toBe(true);
         expect(brush.size).toBe(1);
@@ -164,15 +189,22 @@ describe('brush and viewport contracts', () => {
     });
 
     it('keeps signed tilt scaling explicit', () => {
-        const sample = new SampleProcessor().process(raw({ tiltX: -30 }), createProcessingSettings());
-        expect(evaluateBrush(sample, { ...createPaintSettings(), brushSizeControl: 'TILTX' }).size).toBe(1);
+        const sample = new SampleProcessor().process(
+            raw({ tiltX: -30 }),
+            createProcessingSettings()
+        );
+        expect(
+            evaluateBrush(sample, { ...createPaintSettings(), brushSizeControl: 'TILTX' }).size
+        ).toBe(1);
     });
 
     it.each([1, 1.5, 2])('maps a zoomed/panned canvas at DPR %s', (dpr) => {
         const scale = 0.8 / dpr;
-        const point = screenToDocument({ x: 30 + 100 * scale, y: 50 + 200 * scale },
+        const point = screenToDocument(
+            { x: 30 + 100 * scale, y: 50 + 200 * scale },
             { left: 30, top: 50, width: 1920 * scale, height: 1080 * scale },
-            { width: 1920, height: 1080 });
+            { width: 1920, height: 1080 }
+        );
         expect(point.x).toBeCloseTo(100);
         expect(point.y).toBeCloseTo(200);
     });
@@ -187,7 +219,12 @@ describe('brush and viewport contracts', () => {
     });
 
     it('fits with consistent padding at DPR 2', () => {
-        const result = fitViewport({ ...createViewport(), viewportWidth: 992, viewportHeight: 572, dpr: 2 });
+        const result = fitViewport({
+            ...createViewport(),
+            viewportWidth: 992,
+            viewportHeight: 572,
+            dpr: 2,
+        });
         expect(result).toMatchObject({ zoom: 1, panX: 16, panY: 16 });
     });
 
@@ -202,24 +239,44 @@ describe('input and frame boundaries', () => {
         const sample = { pointerId: 1 } as PointerEvent;
         const event = { type: 'pointermove', getCoalescedEvents: () => [sample] } as PointerEvent;
         expect(pointerSamples(event)).toEqual([sample]);
-        expect(pointerSamples({ ...event, getCoalescedEvents: () => [] } as unknown as PointerEvent)).toHaveLength(1);
+        expect(
+            pointerSamples({ ...event, getCoalescedEvents: () => [] } as unknown as PointerEvent)
+        ).toHaveLength(1);
         expect(pointerSamples({ type: 'pointermove' } as PointerEvent)).toHaveLength(1);
     });
 
     it('uses explicit canvas dimensions rather than event.target', () => {
         const event = {
-            pointerId: 1, pointerType: 'pen', clientX: 60, clientY: 110, pressure: 0.5,
-            tiltX: 0, tiltY: 0, buttons: 1, twist: 0, timeStamp: 42,
+            pointerId: 1,
+            pointerType: 'pen',
+            clientX: 60,
+            clientY: 110,
+            pressure: 0.5,
+            tiltX: 0,
+            tiltY: 0,
+            buttons: 1,
+            twist: 0,
+            timeStamp: 42,
         } as PointerEvent;
-        expect(readPointer(event, { left: 10, top: 10, width: 960, height: 540 } as DOMRect, { width: 1920, height: 1080 }))
-            .toMatchObject({ x: 100, y: 200, altitude: 90, azimuth: 0, time: 42 });
+        expect(
+            readPointer(event, { left: 10, top: 10, width: 960, height: 540 } as DOMRect, {
+                width: 1920,
+                height: 1080,
+            })
+        ).toMatchObject({ x: 100, y: 200, altitude: 90, azimuth: 0, time: 42 });
     });
 
     it('processes every sample while publishing only once per frame', () => {
         const { engine, renderer, settings } = setup();
         const draw = vi.fn();
         let callback: FrameRequestCallback = () => {};
-        const clock = { request: vi.fn((fn: FrameRequestCallback) => { callback = fn; return 1; }), cancel: vi.fn() };
+        const clock = {
+            request: vi.fn((fn: FrameRequestCallback) => {
+                callback = fn;
+                return 1;
+            }),
+            cancel: vi.fn(),
+        };
         const frames = createFrameScheduler(draw, clock);
         engine.begin(raw(), settings);
         for (let index = 1; index <= 240; index++) {

@@ -1,6 +1,9 @@
 export function canvasBlob(canvas: HTMLCanvasElement): Promise<Blob> {
     return new Promise((resolve, reject) => {
-        canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Unable to create the PNG image.')), 'image/png');
+        canvas.toBlob(
+            (blob) => (blob ? resolve(blob) : reject(new Error('Unable to create the PNG image.'))),
+            'image/png'
+        );
     });
 }
 

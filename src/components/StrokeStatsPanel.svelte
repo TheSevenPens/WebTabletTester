@@ -2,6 +2,7 @@
     import { paintStrokeStatsWithRate } from '../lib/stores';
     import StatsRow from './StatsRow.svelte';
 </script>
+
 <section class="controlscolumn" aria-label="Stroke statistics">
     <h2>STROKE STATS</h2>
     <StatsRow label="Completed" value={$paintStrokeStatsWithRate.strokeCount} digits={0} />

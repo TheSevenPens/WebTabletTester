@@ -5,7 +5,7 @@ export function finite(value: number, fallback = 0): number {
     return Number.isFinite(value) ? value : fallback;
 }
 
-export const radiansToDegrees = (radians: number): number => radians * 180 / Math.PI;
+export const radiansToDegrees = (radians: number): number => (radians * 180) / Math.PI;
 export const wrapDegrees = (degrees: number): number => ((degrees % 360) + 360) % 360;
 
 export function quantize(value: number, levels: number): number {
@@ -20,5 +20,5 @@ export function quantize(value: number, levels: number): number {
 
 /** Count intervals, not endpoints. Down/move/up samples are all included. */
 export function sampleRate(count: number, durationMs: number): number {
-    return durationMs > 0 ? Math.max(0, count - 1) * 1000 / durationMs : 0;
+    return durationMs > 0 ? (Math.max(0, count - 1) * 1000) / durationMs : 0;
 }

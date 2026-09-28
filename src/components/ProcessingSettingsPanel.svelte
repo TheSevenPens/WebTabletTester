@@ -6,9 +6,12 @@
     import QuantizationSettings from './QuantizationSettings.svelte';
     import CurveSettings from './CurveSettings.svelte';
 </script>
+
 <SidebarPanel title="Processing" side="left">
     <SmoothingSettings />
     <QuantizationSettings />
     <CurveSettings />
-    <button onclick={() => processingSettings.set(createProcessingSettings())}>RESET PROCESSING</button>
+    <button onclick={() => processingSettings.set(createProcessingSettings())}
+        >RESET PROCESSING</button
+    >
 </SidebarPanel>

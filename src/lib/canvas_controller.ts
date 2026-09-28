@@ -21,7 +21,11 @@ type Interaction =
     | { mode: 'panning'; pointerId: number; x: number; y: number };
 
 /** Browser boundary: event/capture lifecycle, subscriptions, and presentation cadence. */
-export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLElement, options: ControllerOptions) {
+export function createCanvasController(
+    canvas: HTMLCanvasElement,
+    surface: HTMLElement,
+    options: ControllerOptions
+) {
     const view = options.viewport();
     const renderer = new CanvasRenderer(canvas, view.width, view.height);
     const engine = new StrokeEngine(renderer);
@@ -30,19 +34,32 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
     let latest: ProcessedSample | null = null;
     const abort = new AbortController();
     const signal = abort.signal;
-    const frames = createFrameScheduler(() => {
-        renderer.compose();
-        options.publish(latest, engine.statistics);
-    }, { request: (callback) => requestAnimationFrame(callback), cancel: (id) => cancelAnimationFrame(id) });
+    const frames = createFrameScheduler(
+        () => {
+            renderer.compose();
+            options.publish(latest, engine.statistics);
+        },
+        {
+            request: (callback) => requestAnimationFrame(callback),
+            cancel: (id) => cancelAnimationFrame(id),
+        }
+    );
 
-    function setPanMode() { options.panMode((spaceDown && interaction.mode === 'idle') || interaction.mode === 'panning'); }
+    function setPanMode() {
+        options.panMode(
+            (spaceDown && interaction.mode === 'idle') || interaction.mode === 'panning'
+        );
+    }
 
     function release(pointerId: number) {
         if (canvas.hasPointerCapture(pointerId)) canvas.releasePointerCapture(pointerId);
     }
 
     function cancel(pointerId?: number) {
-        if (interaction.mode !== 'idle' && (pointerId === undefined || pointerId === interaction.pointerId)) {
+        if (
+            interaction.mode !== 'idle' &&
+            (pointerId === undefined || pointerId === interaction.pointerId)
+        ) {
             const id = interaction.pointerId;
             engine.cancel(id);
             interaction = { mode: 'idle' };
@@ -70,7 +87,12 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
         if (!pan && !contact) return;
         canvas.setPointerCapture(event.pointerId);
         if (pan) {
-            interaction = { mode: 'panning', pointerId: event.pointerId, x: event.clientX, y: event.clientY };
+            interaction = {
+                mode: 'panning',
+                pointerId: event.pointerId,
+                x: event.clientX,
+                y: event.clientY,
+            };
             setPanMode();
         } else {
             interaction = { mode: 'drawing', pointerId: event.pointerId };
@@ -92,8 +114,10 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
             interaction.y = event.clientY;
             return;
         }
-        if (interaction.mode === 'drawing' &&
-            (event.buttons & (POINTER_BUTTONS.tip | POINTER_BUTTONS.eraser)) === 0) {
+        if (
+            interaction.mode === 'drawing' &&
+            (event.buttons & (POINTER_BUTTONS.tip | POINTER_BUTTONS.eraser)) === 0
+        ) {
             pointerUp(event);
             return;
         }
@@ -112,7 +136,10 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
         if (interaction.mode === 'drawing') {
             const raw = readPointer(event, canvas.getBoundingClientRect(), canvas);
             if (raw) latest = engine.end(raw, options.settings());
-            else { engine.cancel(event.pointerId); latest = null; }
+            else {
+                engine.cancel(event.pointerId);
+                latest = null;
+            }
             frames.request();
         }
         interaction = { mode: 'idle' };
@@ -125,18 +152,43 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
     canvas.addEventListener('pointerup', pointerUp, { signal });
     canvas.addEventListener('pointercancel', (event) => cancel(event.pointerId), { signal });
     canvas.addEventListener('lostpointercapture', (event) => cancel(event.pointerId), { signal });
-    canvas.addEventListener('pointerleave', () => {
-        if (interaction.mode === 'idle') { latest = null; frames.request(); }
-    }, { signal });
+    canvas.addEventListener(
+        'pointerleave',
+        () => {
+            if (interaction.mode === 'idle') {
+                latest = null;
+                frames.request();
+            }
+        },
+        { signal }
+    );
     canvas.addEventListener('contextmenu', (event) => event.preventDefault(), { signal });
-    canvas.addEventListener('keydown', (event) => {
-        if (!canHandleCanvasShortcut(event, canvas)) return;
-        if (event.code === 'Space') { event.preventDefault(); spaceDown = true; setPanMode(); }
-        if (event.key === 'Delete' || event.key === 'Backspace') { event.preventDefault(); clear(); }
-    }, { signal });
-    window.addEventListener('keyup', (event) => {
-        if (event.code === 'Space') { spaceDown = false; setPanMode(); }
-    }, { signal });
+    canvas.addEventListener(
+        'keydown',
+        (event) => {
+            if (!canHandleCanvasShortcut(event, canvas)) return;
+            if (event.code === 'Space') {
+                event.preventDefault();
+                spaceDown = true;
+                setPanMode();
+            }
+            if (event.key === 'Delete' || event.key === 'Backspace') {
+                event.preventDefault();
+                clear();
+            }
+        },
+        { signal }
+    );
+    window.addEventListener(
+        'keyup',
+        (event) => {
+            if (event.code === 'Space') {
+                spaceDown = false;
+                setPanMode();
+            }
+        },
+        { signal }
+    );
     const blur = () => {
         spaceDown = false;
         cancel();
@@ -146,21 +198,32 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
     };
     window.addEventListener('blur', blur, { signal });
     canvas.addEventListener('blur', blur, { signal });
-    surface.addEventListener('wheel', (event) => {
-        event.preventDefault();
-        const current = options.viewport();
-        const rect = surface.getBoundingClientRect();
-        const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
-        options.updateViewport(zoomAt(current, current.zoom * Math.exp(-delta * 0.001), {
-            x: event.clientX - rect.left, y: event.clientY - rect.top,
-        }));
-    }, { signal, passive: false });
+    surface.addEventListener(
+        'wheel',
+        (event) => {
+            event.preventDefault();
+            const current = options.viewport();
+            const rect = surface.getBoundingClientRect();
+            const delta =
+                event.deltaY *
+                (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
+            options.updateViewport(
+                zoomAt(current, current.zoom * Math.exp(-delta * 0.001), {
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top,
+                })
+            );
+        },
+        { signal, passive: false }
+    );
 
     function updateDimensions() {
         const rect = surface.getBoundingClientRect();
         options.updateViewport({
-            ...options.viewport(), viewportWidth: rect.width,
-            viewportHeight: rect.height, dpr: window.devicePixelRatio || 1,
+            ...options.viewport(),
+            viewportWidth: rect.width,
+            viewportHeight: rect.height,
+            dpr: window.devicePixelRatio || 1,
         });
     }
     const observer = new ResizeObserver(updateDimensions);
@@ -170,7 +233,10 @@ export function createCanvasController(canvas: HTMLCanvasElement, surface: HTMLE
 
     return {
         clear,
-        setBackground(settings: AppSettings) { renderer.setBackground(settings); frames.request(); },
+        setBackground(settings: AppSettings) {
+            renderer.setBackground(settings);
+            frames.request();
+        },
         image(includeBackground: boolean): HTMLCanvasElement {
             frames.flush();
             renderer.compose();

@@ -12,22 +12,32 @@
     import ViewPanel from './components/ViewPanel.svelte';
     import { uiState } from './lib/stores';
 
-    let canvasArea: {
-        clearForeground: () => void;
-        saveCanvas: () => Promise<void>;
-        copyForegroundToClipboard: () => Promise<void>;
-        copyWithBackgroundToClipboard: () => Promise<void>;
-    } | undefined;
+    let canvasArea:
+        | {
+              clearForeground: () => void;
+              saveCanvas: () => Promise<void>;
+              copyForegroundToClipboard: () => Promise<void>;
+              copyWithBackgroundToClipboard: () => Promise<void>;
+          }
+        | undefined;
 </script>
+
 <main class="parent">
     <div class="top-row">
         <div class="controlscontainer">
             <InfoPanel />
             <DocPanel
                 onClear={() => canvasArea?.clearForeground()}
-                onCopy={() => { void canvasArea?.copyForegroundToClipboard(); }}
-                onCopyWithBackground={() => { void canvasArea?.copyWithBackgroundToClipboard(); }}
-                onSave={() => { void canvasArea?.saveCanvas(); }} />
+                onCopy={() => {
+                    void canvasArea?.copyForegroundToClipboard();
+                }}
+                onCopyWithBackground={() => {
+                    void canvasArea?.copyWithBackgroundToClipboard();
+                }}
+                onSave={() => {
+                    void canvasArea?.saveCanvas();
+                }}
+            />
             <BrushSettingsPanel />
             <ViewPanel />
             <ButtonsPanel />

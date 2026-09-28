@@ -2,6 +2,7 @@
     import { pointerLiveStats } from '../lib/stores';
     import StatsRow from './StatsRow.svelte';
 </script>
+
 <section class="controlscolumn" aria-label="Sensors">
     <h2>SENSORS</h2>
     <StatsRow label="Pressure" value={$pointerLiveStats?.pressure} digits={4} />

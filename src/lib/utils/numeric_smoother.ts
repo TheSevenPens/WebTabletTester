@@ -4,7 +4,9 @@ import { clamp, finite, wrapDegrees } from './numerics';
 export class NumericSmoother {
     private previous: number | null = null;
 
-    reset(): void { this.previous = null; }
+    reset(): void {
+        this.previous = null;
+    }
 
     apply(input: number, amount: number, circular = false): number {
         const value = finite(input);

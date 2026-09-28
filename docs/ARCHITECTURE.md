@@ -11,21 +11,21 @@ PointerEvent → pointer_input (raw document-space samples)
              → one scheduled frame: compose dirty layers + publish UI snapshots
 ```
 
-| Module | Responsibility |
-| --- | --- |
-| `types.ts` | Settings, sample, brush, renderer, and viewport contracts |
-| `initial_state.ts` | Factories for fresh plain settings/default snapshots |
-| `stores.ts` | Authoritative user settings/viewport and UI projections of engine measurements |
-| `pointer_input.ts` | Browser event adaptation, coalesced-sample fallback, finite-value normalization |
-| `stroke_engine.ts` | One document's active drawing pointer, filter history, stroke counts, render commands |
-| `processing.ts` | Ordered sample processing and timestamp-based velocity |
-| `paint.ts` | Pure brush size/color/eraser evaluation from explicit settings and a processed sample |
-| `viewport.ts` | Pure zoom-at-point, fit, reset, and screen/document transforms |
+| Module                 | Responsibility                                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `types.ts`             | Settings, sample, brush, renderer, and viewport contracts                                       |
+| `initial_state.ts`     | Factories for fresh plain settings/default snapshots                                            |
+| `stores.ts`            | Authoritative user settings/viewport and UI projections of engine measurements                  |
+| `pointer_input.ts`     | Browser event adaptation, coalesced-sample fallback, finite-value normalization                 |
+| `stroke_engine.ts`     | One document's active drawing pointer, filter history, stroke counts, render commands           |
+| `processing.ts`        | Ordered sample processing and timestamp-based velocity                                          |
+| `paint.ts`             | Pure brush size/color/eraser evaluation from explicit settings and a processed sample           |
+| `viewport.ts`          | Pure zoom-at-point, fit, reset, and screen/document transforms                                  |
 | `canvas_controller.ts` | DOM event listeners, capture/release, idle/drawing/panning transitions, resize and blur cleanup |
-| `canvas_renderer.ts` | Cached 2D contexts, foreground/background layers, brush drawing, dirty composition |
-| `frame_scheduler.ts` | At most one pending presentation frame; flush and disposal |
-| `canvas_export.ts` | PNG Blob creation, clipboard capability/error handling, download URL lifetime |
-| `shortcuts.ts` | Focus/modifier/composition/repeat policy for canvas shortcuts |
+| `canvas_renderer.ts`   | Cached 2D contexts, foreground/background layers, brush drawing, dirty composition              |
+| `frame_scheduler.ts`   | At most one pending presentation frame; flush and disposal                                      |
+| `canvas_export.ts`     | PNG Blob creation, clipboard capability/error handling, download URL lifetime                   |
+| `shortcuts.ts`         | Focus/modifier/composition/repeat policy for canvas shortcuts                                   |
 
 The engine imports no Svelte, DOM event APIs, or clocks. It takes settings and samples explicitly and draws through an injected renderer interface, so it can be tested without a browser. `CanvasArea` is the Svelte adapter: it subscribes to settings, creates/disposes one controller, and publishes numerical snapshots. Engine measurements flow one way into presentation stores; the engine never reads those snapshots back.
 

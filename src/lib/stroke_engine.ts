@@ -1,4 +1,11 @@
-import type { Brush, EngineSettings, ProcessedSample, RawSample, StrokeRenderer, StrokeStats } from './types';
+import type {
+    Brush,
+    EngineSettings,
+    ProcessedSample,
+    RawSample,
+    StrokeRenderer,
+    StrokeStats,
+} from './types';
 import { createStrokeStats } from './initial_state';
 import { SampleProcessor } from './processing';
 import { evaluateBrush } from './paint';
@@ -14,8 +21,12 @@ export class StrokeEngine {
 
     constructor(private renderer: StrokeRenderer) {}
 
-    get pointerId(): number | null { return this.activeId; }
-    get statistics(): StrokeStats { return { ...this.stats }; }
+    get pointerId(): number | null {
+        return this.activeId;
+    }
+    get statistics(): StrokeStats {
+        return { ...this.stats };
+    }
 
     begin(raw: RawSample, settings: EngineSettings): ProcessedSample | null {
         if (this.activeId !== null) return null;
@@ -47,8 +58,11 @@ export class StrokeEngine {
         if (this.activeId !== raw.pointerId) return null;
         const sample = this.accept(raw, settings);
         // Release pressure is usually zero. Finish the endpoint using the last contact's brush.
-        if (this.previous && this.previousBrush &&
-            (sample.x !== this.previous.x || sample.y !== this.previous.y)) {
+        if (
+            this.previous &&
+            this.previousBrush &&
+            (sample.x !== this.previous.x || sample.y !== this.previous.y)
+        ) {
             this.renderer.segment(this.previous, sample, this.previousBrush);
         }
         this.stats.strokeCount++;

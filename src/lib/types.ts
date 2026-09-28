@@ -1,4 +1,7 @@
-export interface Point { x: number; y: number; }
+export interface Point {
+    x: number;
+    y: number;
+}
 export type BrushType = 'MARKER' | 'ERASER';
 export type SizeControl = 'USER' | 'PRESSURE' | 'TILTX' | 'TILTY' | 'TILTAZ' | 'TILTALT';
 export type ColorControl = Exclude<SizeControl, 'USER'> | 'DEFAULT' | 'RED' | 'BARRELROTATION';
@@ -35,8 +38,14 @@ export interface AppSettings {
 }
 
 export interface Viewport {
-    width: number; height: number; zoom: number;
-    panX: number; panY: number; viewportWidth: number; viewportHeight: number; dpr: number;
+    width: number;
+    height: number;
+    zoom: number;
+    panX: number;
+    panY: number;
+    viewportWidth: number;
+    viewportHeight: number;
+    dpr: number;
 }
 
 /** Document pixels, degrees, pressure [0,1], and a monotonic timestamp in ms. */
@@ -45,8 +54,11 @@ export interface RawSample extends Point {
     pointerType: PointerKind;
     buttons: number;
     pressure: number;
-    tiltX: number; tiltY: number;
-    azimuth: number; altitude: number; twist: number;
+    tiltX: number;
+    tiltY: number;
+    azimuth: number;
+    altitude: number;
+    twist: number;
     time: number;
 }
 
