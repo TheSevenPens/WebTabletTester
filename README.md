@@ -16,6 +16,10 @@ npm run dev
 
 Open the local URL printed by Vite, including the `/WebTabletTester/` base path. The app uses Svelte 5, TypeScript, Vite, and Canvas 2D. Product version metadata comes from `package.json`.
 
+Text files use LF line endings in Git and in working copies. `.gitattributes` enforces this even when Windows Git uses `core.autocrlf=true`; `.editorconfig` and Prettier keep editor output consistent. No global Git setting change is needed.
+
+For an older checkout with CRLF files, run `npm run format` and inspect `git diff`. If tracked content also needs one-time index normalization, first commit or stash unrelated edits, then run `git add --renormalize .` and inspect `git diff --cached` before committing any normalization changes. The Git command stages tracked changes; it does not rewrite working files. A fresh clone already uses LF.
+
 ## Verification
 
 ```sh
