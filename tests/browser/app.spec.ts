@@ -363,6 +363,10 @@ test('clipboard exports transparent foreground or an opaque composite', async ({
     page,
     context,
 }) => {
+    // Chromium's idle PNG encoder allows 1s to start plus 5.7s to finish before falling back.
+    // The default 5s assertion timeout can expire while a valid export is still pending.
+    // https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/html/canvas/canvas_async_blob_creator.cc
+    const exportExpect = expect.configure({ timeout: 10_000 });
     await tap(page);
     // Exercise the browser's write/read lifecycle, including its promised PNG data.
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -388,15 +392,15 @@ test('clipboard exports transparent foreground or an opaque composite', async ({
             }
         });
     await page.getByRole('button', { name: 'COPY', exact: true }).click();
-    await expect(page.getByRole('status')).toHaveText('Image copied to clipboard.');
-    await expect.poll(copiedPixels).toEqual({
+    await exportExpect(page.getByRole('status')).toHaveText('Image copied to clipboard.');
+    await exportExpect.poll(copiedPixels).toEqual({
         width: 1920,
         height: 1080,
         backgroundAlpha: 0,
         strokeAlpha: 255,
     });
     await page.getByRole('button', { name: 'COPY w/ BK', exact: true }).click();
-    await expect.poll(copiedPixels).toEqual({
+    await exportExpect.poll(copiedPixels).toEqual({
         width: 1920,
         height: 1080,
         backgroundAlpha: 255,

@@ -5,6 +5,7 @@ export default defineConfig({
     fullyParallel: true,
     workers: process.env.CI ? 2 : 4,
     forbidOnly: Boolean(process.env.CI),
+    failOnFlakyTests: Boolean(process.env.CI),
     retries: process.env.CI ? 2 : 0,
     reporter: 'list',
     use: { baseURL: 'http://127.0.0.1:4173/WebTabletTester/', trace: 'retain-on-failure' },

@@ -42,7 +42,7 @@ Individual commands:
 | `npm run build`         | Build `dist/`                                                                     |
 | `npm run preview`       | Serve the production build locally                                                |
 
-Pull requests run the complete verification suite. The GitHub Pages deployment workflow also verifies before uploading/deploying the build. Browser tests write traces for failures to `test-results/`. These generated files are ignored by Git.
+Pull requests run the complete verification suite. The GitHub Pages deployment workflow also verifies before uploading/deploying the build. A browser test that only passes on retry fails CI, so intermittent failures remain visible. Browser tests write traces for failures to `test-results/`. These generated files are ignored by Git.
 
 ## Controls
 
