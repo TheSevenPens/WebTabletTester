@@ -251,36 +251,49 @@ test('Space drag pans and blur releases the pan key', async ({ page }) => {
     await tap(page);
 });
 
-test('clipboard exports transparent foreground or an opaque composite', async ({ page }) => {
+test('clipboard exports transparent foreground or an opaque composite', async ({
+    page,
+    context,
+}) => {
     await tap(page);
-    await page.evaluate(() =>
-        Object.defineProperty(navigator, 'clipboard', {
-            configurable: true,
-            value: {
-                write: async (items: ClipboardItem[]) => {
-                    const blob = await items[0].getType('image/png');
-                    const bitmap = await createImageBitmap(blob);
-                    const image = document.createElement('canvas');
-                    image.width = bitmap.width;
-                    image.height = bitmap.height;
-                    const ctx = image.getContext('2d')!;
-                    ctx.drawImage(bitmap, 0, 0);
-                    document.body.dataset.copiedAlpha = String(
-                        ctx.getImageData(400, 400, 1, 1).data[3]
-                    );
-                    document.body.dataset.copiedStrokeAlpha = String(
-                        ctx.getImageData(80, 80, 1, 1).data[3]
-                    );
-                    bitmap.close();
-                },
-            },
-        })
-    );
+    // Exercise the browser's write/read lifecycle, including its promised PNG data.
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    const copiedPixels = () =>
+        page.evaluate(async () => {
+            const items = await navigator.clipboard.read();
+            const blob = await items[0].getType('image/png');
+            const bitmap = await createImageBitmap(blob);
+            try {
+                const image = document.createElement('canvas');
+                image.width = bitmap.width;
+                image.height = bitmap.height;
+                const ctx = image.getContext('2d')!;
+                ctx.drawImage(bitmap, 0, 0);
+                return {
+                    width: bitmap.width,
+                    height: bitmap.height,
+                    backgroundAlpha: ctx.getImageData(400, 400, 1, 1).data[3],
+                    strokeAlpha: ctx.getImageData(80, 80, 1, 1).data[3],
+                };
+            } finally {
+                bitmap.close();
+            }
+        });
     await page.getByRole('button', { name: 'COPY', exact: true }).click();
-    await expect(page.locator('body')).toHaveAttribute('data-copied-alpha', '0');
-    await expect(page.locator('body')).toHaveAttribute('data-copied-stroke-alpha', '255');
+    await expect(page.getByRole('status')).toHaveText('Image copied to clipboard.');
+    await expect.poll(copiedPixels).toEqual({
+        width: 1920,
+        height: 1080,
+        backgroundAlpha: 0,
+        strokeAlpha: 255,
+    });
     await page.getByRole('button', { name: 'COPY w/ BK', exact: true }).click();
-    await expect(page.locator('body')).toHaveAttribute('data-copied-alpha', '255');
+    await expect.poll(copiedPixels).toEqual({
+        width: 1920,
+        height: 1080,
+        backgroundAlpha: 255,
+        strokeAlpha: 255,
+    });
     await expect(page.getByRole('status')).toHaveText('Image copied to clipboard.');
 });
 
