@@ -8,12 +8,13 @@
         "build": "vite build",
         "preview": "vite preview",
         "lint": "eslint .",
+        "lint:selftest": "node scripts/lint-selftest.mjs",
         "check": "svelte-check --tsconfig ./tsconfig.json && tsc --noEmit",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test": "vitest run",
         "test:browser": "playwright test",
-        "verify": "npm run lint && npm run check && npm run format:check && npm test && npm run test:browser && npm run build"
+        "verify": "npm run lint && npm run lint:selftest && npm run check && npm run format:check && npm test && npm run test:browser && npm run build"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
