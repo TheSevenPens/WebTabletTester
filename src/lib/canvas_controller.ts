@@ -2,7 +2,7 @@ import type { AppSettings, EngineSettings, ProcessedSample, StrokeStats, Viewpor
 import { CanvasRenderer } from './canvas_renderer';
 import { StrokeEngine } from './stroke_engine';
 import { createFrameScheduler } from './frame_scheduler';
-import { pointerSamples, readPointer } from './pointer_input';
+import { hasContact, pointerSamples, readPointer } from './pointer_input';
 import { POINTER_BUTTONS } from './paint';
 import { canHandleCanvasShortcut } from './shortcuts';
 import { zoomAt } from './viewport';
@@ -83,9 +83,12 @@ export function createCanvasController(
         event.preventDefault();
         canvas.focus({ preventScroll: true });
         const pan = (event.buttons & POINTER_BUTTONS.middle) !== 0 || spaceDown;
-        const contact = (event.buttons & (POINTER_BUTTONS.tip | POINTER_BUTTONS.eraser)) !== 0;
-        if (!pan && !contact) return;
-        canvas.setPointerCapture(event.pointerId);
+        if (!pan && !hasContact(raw)) return;
+        try {
+            canvas.setPointerCapture(event.pointerId);
+        } catch {
+            // Synthetic or already-released pointers are not active; drawing still proceeds.
+        }
         if (pan) {
             interaction = {
                 mode: 'panning',
@@ -114,10 +117,7 @@ export function createCanvasController(
             interaction.y = event.clientY;
             return;
         }
-        if (
-            interaction.mode === 'drawing' &&
-            (event.buttons & (POINTER_BUTTONS.tip | POINTER_BUTTONS.eraser)) === 0
-        ) {
+        if (interaction.mode === 'drawing' && !hasContact(event)) {
             pointerUp(event);
             return;
         }

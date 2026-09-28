@@ -51,7 +51,7 @@ Middle-button **bits** or Space + down start a pan. Space pressed during a drawi
 - Velocity is processed-position distance divided by event-time seconds, followed by its configured EMA. Equal timestamps yield zero velocity instead of division by zero.
 - `lerp(a,b,t)` returns `a` at 0 and `b` at 1. Pressure-to-hue runs 150° → 360°, preserving the previous application's direction.
 - Brush size is limited to [0.1,300] document pixels and the configured minimum. Signed X/Y tilt scaling retains the historical 60° calibration: negative tilt falls to the minimum size. This is a deliberate compatibility contract, not an absolute-tilt mapping.
-- Hardware eraser detection uses a bitmask; foreground erasing uses `destination-out`.
+- Contact means the tip or eraser button bit for any pointer type, or a pen reporting pressure above 0. Wacom pens in Chromium report a held barrel switch as `buttons = 2` with no tip bit, so pressure is the authoritative contact signal for pens. Mice are excluded because they report pressure 0.5 for any button. Hardware eraser detection uses the eraser bit; foreground erasing uses `destination-out`.
 
 ## Measurements and presentation
 

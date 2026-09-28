@@ -109,6 +109,45 @@ test('panning uses capture and stops on release', async ({ page }) => {
     expect(await pixel(page, 80, 80)).toEqual([230, 230, 250, 255]);
 });
 
+test('a pen stroke with only the barrel button bit still draws', async ({ page }) => {
+    // Wacom pens in Chromium report a held barrel switch as buttons=2 with no tip bit.
+    const start = await point(page, 120, 120);
+    const canvas = page.locator(canvasSelector);
+    const pen = { pointerId: 7, pointerType: 'pen', isPrimary: true, bubbles: true };
+    await canvas.dispatchEvent('pointerdown', {
+        ...pen,
+        button: 2,
+        buttons: 2,
+        pressure: 0.6,
+        clientX: start.x,
+        clientY: start.y,
+    });
+    await canvas.dispatchEvent('pointermove', {
+        ...pen,
+        buttons: 2,
+        pressure: 0.7,
+        clientX: start.x + 40,
+        clientY: start.y,
+    });
+    await canvas.dispatchEvent('pointerup', {
+        ...pen,
+        button: 2,
+        buttons: 0,
+        pressure: 0,
+        clientX: start.x + 40,
+        clientY: start.y,
+    });
+    await expect.poll(() => pixel(page, 120, 120)).toEqual([0, 0, 0, 255]);
+    await expect.poll(() => pixel(page, 160, 120)).toEqual([0, 0, 0, 255]);
+    await showStats(page);
+    await expect(
+        page
+            .getByRole('region', { name: 'Stroke statistics' })
+            .locator('.stat-row')
+            .filter({ hasText: 'Completed' })
+    ).toHaveText('Completed1');
+});
+
 test('a stroke released outside the canvas is finalized once', async ({ page }) => {
     const position = await point(page);
     await page.mouse.move(position.x, position.y);

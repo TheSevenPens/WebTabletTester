@@ -13,7 +13,7 @@ import { StrokeEngine } from '../../src/lib/stroke_engine';
 import { evaluateBrush } from '../../src/lib/paint';
 import { fitViewport, screenToDocument, zoomAt } from '../../src/lib/viewport';
 import { createFrameScheduler } from '../../src/lib/frame_scheduler';
-import { pointerSamples, readPointer } from '../../src/lib/pointer_input';
+import { hasContact, pointerSamples, readPointer } from '../../src/lib/pointer_input';
 import type { EngineSettings, RawSample } from '../../src/lib/types';
 
 function raw(overrides: Partial<RawSample> = {}): RawSample {
@@ -243,6 +243,17 @@ describe('input and frame boundaries', () => {
             pointerSamples({ ...event, getCoalescedEvents: () => [] } as unknown as PointerEvent)
         ).toHaveLength(1);
         expect(pointerSamples({ type: 'pointermove' } as PointerEvent)).toHaveLength(1);
+    });
+
+    it('treats a pen with pressure as contact even when only the barrel bit is set', () => {
+        // Measured on a Wacom pen in Chromium: barrel switch held at contact gives buttons=2.
+        expect(hasContact({ pointerType: 'pen', buttons: 2, pressure: 0.6 })).toBe(true);
+        expect(hasContact({ pointerType: 'pen', buttons: 32, pressure: 0.2 })).toBe(true);
+        expect(hasContact({ pointerType: 'pen', buttons: 0, pressure: 0 })).toBe(false);
+        expect(hasContact({ pointerType: 'pen', buttons: 2, pressure: 0 })).toBe(false);
+        expect(hasContact({ pointerType: 'mouse', buttons: 2, pressure: 0.5 })).toBe(false);
+        expect(hasContact({ pointerType: 'mouse', buttons: 1, pressure: 0.5 })).toBe(true);
+        expect(hasContact({ pointerType: 'touch', buttons: 1, pressure: 0 })).toBe(true);
     });
 
     it('uses explicit canvas dimensions rather than event.target', () => {

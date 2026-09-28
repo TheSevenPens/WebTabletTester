@@ -42,7 +42,7 @@ Pull requests run the complete verification suite. The GitHub Pages deployment w
 ## Controls
 
 - Draw with the primary mouse button, pen tip, or touch; a tap creates a dab.
-- Choose Marker or Eraser in Brush. Hardware erasers are recognized through the eraser button bit.
+- Choose Marker or Eraser in Brush. Hardware erasers are recognized through the eraser button bit. Pen strokes draw whenever the pen reports pressure, including with a barrel switch held.
 - Pan with the middle mouse button, or focus the canvas and hold Space while dragging.
 - Zoom with the wheel over the drawing viewport, the percentage field, or the −/+/Fit/Reset controls.
 - Clear with the Clear button. Delete and Backspace clear **only while the canvas is focused**; editing settings never clears the document.
