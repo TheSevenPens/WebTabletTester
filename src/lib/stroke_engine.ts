@@ -57,8 +57,12 @@ export class StrokeEngine {
     end(raw: RawSample, settings: EngineSettings): ProcessedSample | null {
         if (this.activeId !== raw.pointerId) return null;
         const sample = this.accept(raw, settings);
-        // Release pressure is usually zero. Finish the endpoint using the last contact's brush.
+        // Mouse and touch report zero pressure on release, so finish their endpoint with the last
+        // contact brush. A pen release with zero pressure means the tip had already lifted; drawing
+        // to that point would put a mark where the hardware reported no contact.
+        const reportedContact = raw.pointerType !== 'pen' || raw.pressure > 0;
         if (
+            reportedContact &&
             this.previous &&
             this.previousBrush &&
             (sample.x !== this.previous.x || sample.y !== this.previous.y)

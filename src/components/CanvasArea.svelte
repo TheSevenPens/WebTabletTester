@@ -104,8 +104,8 @@
             tabindex="0"
             class:nearest-sampling={$appSettings.renderSampling === 'NEAREST'}
         >
-            Use a pointer to draw. Focus this canvas for Delete or Backspace to clear and Space to
-            pan.
+            Use a pointer to draw. Press Delete or Backspace to clear, or hold Space while dragging
+            to pan, whenever no text field has focus.
         </canvas>
     </div>
 </div>

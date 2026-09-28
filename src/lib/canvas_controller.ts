@@ -4,7 +4,7 @@ import { StrokeEngine } from './stroke_engine';
 import { createFrameScheduler } from './frame_scheduler';
 import { hasContact, pointerSamples, readPointer } from './pointer_input';
 import { POINTER_BUTTONS } from './paint';
-import { canHandleCanvasShortcut } from './shortcuts';
+import { canClearFromKeyboard, canPanFromKeyboard } from './shortcuts';
 import { zoomAt } from './viewport';
 
 interface ControllerOptions {
@@ -163,16 +163,14 @@ export function createCanvasController(
         { signal }
     );
     canvas.addEventListener('contextmenu', (event) => event.preventDefault(), { signal });
-    canvas.addEventListener(
+    window.addEventListener(
         'keydown',
         (event) => {
-            if (!canHandleCanvasShortcut(event, canvas)) return;
-            if (event.code === 'Space') {
+            if (canPanFromKeyboard(event, canvas)) {
                 event.preventDefault();
                 spaceDown = true;
                 setPanMode();
-            }
-            if (event.key === 'Delete' || event.key === 'Backspace') {
+            } else if (canClearFromKeyboard(event)) {
                 event.preventDefault();
                 clear();
             }

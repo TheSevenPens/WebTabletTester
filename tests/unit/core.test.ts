@@ -127,13 +127,31 @@ describe('stroke lifecycle regression coverage', () => {
         expect(engine.statistics).toMatchObject({ strokeCount: 1, sampleCount: 2, duration: 10 });
     });
 
-    it('finishes the release endpoint using the last contact brush', () => {
-        const { engine, settings, renderer } = setup();
-        engine.begin(raw(), settings);
-        const result = engine.end(raw({ x: 100, buttons: 0, pressure: 0, time: 10 }), settings);
-        expect(renderer.segment.mock.lastCall?.[1].x).toBe(100);
-        expect(renderer.segment.mock.lastCall?.[2].size).toBe(50);
+    it('finishes the release endpoint only where the hardware reported contact', () => {
+        // Mouse release: pressure is always zero, so the endpoint uses the last contact brush.
+        const mouse = setup();
+        mouse.engine.begin(raw({ pointerType: 'mouse', pressure: 0.5 }), mouse.settings);
+        const result = mouse.engine.end(
+            raw({ pointerType: 'mouse', x: 100, buttons: 0, pressure: 0, time: 10 }),
+            mouse.settings
+        );
+        expect(mouse.renderer.segment.mock.lastCall?.[1].x).toBe(100);
+        expect(mouse.renderer.segment.mock.lastCall?.[2].size).toBe(25);
         expect(result).toMatchObject({ pressure: 0, buttons: 0, velocity: 0 });
+
+        // Pen release with zero pressure: the tip already lifted, so no tail is drawn.
+        const lifted = setup();
+        lifted.engine.begin(raw(), lifted.settings);
+        lifted.engine.end(raw({ x: 100, buttons: 0, pressure: 0, time: 10 }), lifted.settings);
+        expect(lifted.renderer.segment).not.toHaveBeenCalled();
+        expect(lifted.engine.statistics.strokeCount).toBe(1);
+
+        // Pen release still reporting pressure: finish the endpoint with the last contact brush.
+        const pressed = setup();
+        pressed.engine.begin(raw(), pressed.settings);
+        pressed.engine.end(raw({ x: 100, buttons: 0, pressure: 0.4, time: 10 }), pressed.settings);
+        expect(pressed.renderer.segment.mock.lastCall?.[1].x).toBe(100);
+        expect(pressed.renderer.segment.mock.lastCall?.[2].size).toBe(50);
     });
 
     it('rejects another pointer and makes cancellation idempotent', () => {

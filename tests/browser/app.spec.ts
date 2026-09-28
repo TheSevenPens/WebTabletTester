@@ -62,7 +62,7 @@ test('tap, eraser, clear, and background changes preserve layer behavior', async
     await expect.poll(() => pixel(page, 80, 80)).toEqual([255, 255, 255, 255]);
 });
 
-test('editing a field does not clear the drawing, while a focused canvas shortcut does', async ({
+test('editing a field does not clear the drawing, while a shortcut elsewhere does', async ({
     page,
 }) => {
     await tap(page);
@@ -71,11 +71,55 @@ test('editing a field does not clear the drawing, while a focused canvas shortcu
     await zoom.press('Backspace');
     await zoom.press('Delete');
     expect(await pixel(page, 80, 80)).toEqual([0, 0, 0, 255]);
+    await page.getByRole('button', { name: 'Expand Options panel' }).click();
+    await page.getByLabel('Background color').focus();
+    await page.keyboard.press('Delete');
+    expect(await pixel(page, 80, 80)).toEqual([0, 0, 0, 255]);
     await page.locator(canvasSelector).focus();
     await page.keyboard.press('Control+Backspace');
     expect(await pixel(page, 80, 80)).toEqual([0, 0, 0, 255]);
     await page.keyboard.press('Backspace');
     await expect.poll(() => pixel(page, 80, 80)).toEqual([230, 230, 250, 255]);
+    // The zoom field edit above committed 10% on blur; restore the view before drawing again.
+    await page.getByRole('button', { name: 'RESET', exact: true }).click();
+    await tap(page);
+    // After clicking a toolbar button the shortcut still works; focus is on the button, not a field.
+    await page.getByRole('button', { name: 'Zoom in' }).click();
+    await page.getByRole('button', { name: 'RESET', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'RESET', exact: true })).toBeFocused();
+    await page.keyboard.press('Delete');
+    await expect.poll(() => pixel(page, 80, 80)).toEqual([230, 230, 250, 255]);
+});
+
+test('a pen release with zero pressure leaves no tail past the last contact', async ({ page }) => {
+    const start = await point(page, 120, 120);
+    const canvas = page.locator(canvasSelector);
+    const pen = { pointerId: 9, pointerType: 'pen', isPrimary: true, bubbles: true };
+    await canvas.dispatchEvent('pointerdown', {
+        ...pen,
+        button: 0,
+        buttons: 1,
+        pressure: 0.6,
+        clientX: start.x,
+        clientY: start.y,
+    });
+    await canvas.dispatchEvent('pointerup', {
+        ...pen,
+        button: 0,
+        buttons: 0,
+        pressure: 0,
+        clientX: start.x + 80,
+        clientY: start.y,
+    });
+    await expect.poll(() => pixel(page, 120, 120)).toEqual([0, 0, 0, 255]);
+    expect(await pixel(page, 160, 120)).toEqual([230, 230, 250, 255]);
+    await showStats(page);
+    await expect(
+        page
+            .getByRole('region', { name: 'Stroke statistics' })
+            .locator('.stat-row')
+            .filter({ hasText: 'Completed' })
+    ).toHaveText('Completed1');
 });
 
 test('button keyboard activation is preserved and zoom is anchored', async ({ page }) => {
@@ -278,7 +322,8 @@ test('narrow screens retain reachable toolbar and sidebar controls', async ({ pa
 
 test('Space drag pans and blur releases the pan key', async ({ page }) => {
     const position = await point(page);
-    await page.locator(canvasSelector).focus();
+    // Nothing focused: Space still enters pan mode because no control would consume it.
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
     await page.keyboard.down('Space');
     await page.mouse.move(position.x, position.y);
     await page.mouse.down();

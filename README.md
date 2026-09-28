@@ -45,7 +45,7 @@ Pull requests run the complete verification suite. The GitHub Pages deployment w
 - Choose Marker or Eraser in Brush. Hardware erasers are recognized through the eraser button bit. Pen strokes draw whenever the pen reports pressure, including with a barrel switch held.
 - Pan with the middle mouse button, or focus the canvas and hold Space while dragging.
 - Zoom with the wheel over the drawing viewport, the percentage field, or the −/+/Fit/Reset controls.
-- Clear with the Clear button. Delete and Backspace clear **only while the canvas is focused**; editing settings never clears the document.
+- Clear with the Clear button, or press Delete or Backspace. The keys are ignored while a text, number, select, or other editable field has focus, so editing settings never clears the document; they work after clicking toolbar buttons or the canvas.
 - Expand Processing or Options using their sidebar buttons. Section headings are keyboard-accessible collapse controls.
 - Each slider has a labeled numeric input and an actions disclosure for Reset/Minimum/Maximum.
 - Reset Processing resets only processing configuration.

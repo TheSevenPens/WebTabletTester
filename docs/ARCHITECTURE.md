@@ -35,9 +35,9 @@ Processing settings contain numbers only. Each engine owns its smoother instance
 
 The controller has idle, drawing, and panning states with one active pointer ID. A drawing/panning start captures that pointer. Foreign pointer moves/up/cancel events cannot alter the active interaction.
 
-Drawing starts with a dab. Moves draw segments in order. Pointer-up processes the final endpoint and uses the last contact brush when release pressure is zero, then reports released live status. Up is idempotent; a stray up never creates a stroke. Cancel, lost capture, blur, and teardown stop interactions and reset transient state. Cancelled strokes keep already-rendered marks and have a separate count.
+Drawing starts with a dab. Moves draw segments in order. Pointer-up processes the final endpoint. For mouse and touch, which always report zero pressure on release, the release point is drawn with the last contact brush. For pens the release segment is drawn only if the release sample still reports pressure; a zero-pressure release means the tip had already lifted, and no mark is placed where the hardware reported no contact. Up then reports released live status. Up is idempotent; a stray up never creates a stroke. Cancel, lost capture, blur, and teardown stop interactions and reset transient state. Cancelled strokes keep already-rendered marks and have a separate count.
 
-Middle-button **bits** or Space + down start a pan. Space pressed during a drawing stroke does not switch its mode. Capture allows release outside the element. Modifier/composition/repeated keydown events are ignored by canvas shortcuts. Delete, Backspace, and Space handling applies only to the focused canvas, preserving form editing and button keyboard activation.
+Middle-button **bits** or Space + down start a pan. Space pressed during a drawing stroke does not switch its mode. Capture allows release outside the element. Keyboard shortcuts are handled on `window` and scoped by the event target rather than by canvas focus: modifier, composition, and repeated key events are ignored; Delete and Backspace clear unless an editable field (input, textarea, select, contenteditable) has focus; Space pans unless an interactive control (editable field, button, summary, link) has focus, so button keyboard activation is preserved.
 
 ## Numerical contracts
 
